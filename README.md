@@ -5,115 +5,134 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <title>PakGold | Enterprise Node</title>
+    <title>PakGold | Cloud Infrastructure</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        :root { --bg: #06090f; --card: #0d1117; --accent: #fbbf24; --glass: rgba(13, 17, 23, 0.85); }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f0f6fc; padding-bottom: 100px; overflow-x: hidden; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         
-        /* Premium Glassmorphism */
-        .glass-card { background: var(--glass); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 28px; transition: 0.3s; }
-        .page { display: none; animation: slideUp 0.4s ease forwards; }
+        :root { 
+            --cloud-dark: #0a0e17; 
+            --cloud-blue: #1e3a8a; 
+            --cloud-accent: #3b82f6; 
+            --gold: #fbbf24;
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--cloud-dark); 
+            background-image: radial-gradient(circle at top right, #1e293b, #0a0e17);
+            color: #e2e8f0; 
+            margin: 0; padding-bottom: 100px;
+        }
+
+        /* CloudSky Card Style */
+        .cloud-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-cloud {
+            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white; font-weight: 700; border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .btn-gold {
+            background: linear-gradient(90deg, #fbbf24 0%, #d97706 100%);
+            color: #000; font-weight: 800; border-radius: 12px;
+        }
+
+        .nav-item { opacity: 0.5; transition: 0.3s; font-size: 10px; font-weight: 700; }
+        .nav-active { opacity: 1; color: var(--cloud-accent); border-top: 3px solid var(--cloud-accent); padding-top: 10px; }
+
+        .page { display: none; animation: fadeIn 0.4s ease-in-out; }
         .active-page { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Luxury Buttons */
-        .btn-premium { background: linear-gradient(135deg, #fbbf24, #d97706); color: #000; font-weight: 800; border-radius: 18px; box-shadow: 0 8px 15px rgba(217, 119, 6, 0.2); }
-        input, select { background: #161b22; border: 1px solid #30363d; border-radius: 16px; padding: 15px; color: white; width: 100%; outline: none; }
-        
-        .nav-active { color: var(--accent) !important; filter: drop-shadow(0 0 10px var(--accent)); opacity: 1 !important; }
-        marquee { background: rgba(251, 191, 36, 0.08); color: var(--accent); font-size: 11px; font-weight: 800; padding: 10px 0; border-bottom: 1px solid rgba(251, 191, 36, 0.1); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        input { background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; padding: 12px; }
     </style>
 </head>
 <body>
 
-    <marquee id="v-news">Welcome to PakGold Official Node. Secure your future with our 25-tier mining infrastructure! 😘</marquee>
-
-    <header class="p-6 flex justify-between items-center sticky top-0 bg-[#06090f]/90 backdrop-blur-md z-[5000]">
-        <div onclick="adminTap()">
-            <h1 class="text-xl font-black italic text-yellow-500 tracking-tighter uppercase">PAK<span class="text-white">GOLD</span></h1>
-            <p id="display-user" class="text-[8px] font-bold opacity-50 uppercase tracking-[3px]">Guest</p>
+    <header class="p-5 flex justify-between items-center sticky top-0 bg-slate-900/80 backdrop-blur-md z-[1000]">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">P</div>
+            <h1 class="text-lg font-extrabold tracking-tight uppercase">Pak<span class="text-blue-500">Gold</span></h1>
         </div>
         <div class="text-right">
-            <p class="text-[8px] font-black opacity-30 uppercase">Available Assets</p>
-            <h2 id="u-bal" class="text-2xl font-black tracking-tighter text-white">₨ 0.00</h2>
+            <p id="bal" class="text-xl font-bold text-blue-400">₨ 0.00</p>
+            <p class="text-[8px] uppercase font-bold opacity-50 tracking-widest">Live Balance</p>
         </div>
     </header>
 
     <main class="p-4 space-y-6">
 
-        <div id="p-home" class="page active-page space-y-6">
-            <div class="glass-card p-6 border-l-4 border-yellow-500 flex justify-between items-center">
-                <div>
-                    <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">Next Yield Cycle</p>
-                    <h3 id="timer" class="text-2xl font-black text-yellow-500 tracking-tighter">23:59:59</h3>
+        <div id="p-home" class="page active-page space-y-5">
+            <div class="cloud-card p-6 flex justify-between items-center relative overflow-hidden">
+                <div class="z-10">
+                    <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Server Status: Active</p>
+                    <h2 class="text-2xl font-black italic" id="u-display">Loading...</h2>
                 </div>
-                <div class="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center animate-pulse text-xl">⚡</div>
+                <div class="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center text-3xl animate-pulse">☁️</div>
             </div>
 
-            <div class="glass-card p-4 flex gap-2">
-                <input type="text" id="promo-box" placeholder="PROMO CODE" class="!p-3 text-center font-bold uppercase text-[12px]">
-                <button onclick="applyPromo()" class="btn-premium px-8 text-[10px] uppercase">Apply</button>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="cloud-card p-4 text-center">
+                    <p class="text-[9px] opacity-50 uppercase font-bold mb-1">Total Mining</p>
+                    <p class="text-sm font-bold">₨ 0.00</p>
+                </div>
+                <div class="cloud-card p-4 text-center">
+                    <p class="text-[9px] opacity-50 uppercase font-bold mb-1">Daily Profit</p>
+                    <p class="text-sm font-bold text-green-400">₨ 0.00</p>
+                </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="showPage('recharge')" class="glass-card p-5 text-center font-bold text-[11px] uppercase border-b-2 border-green-500">Deposit</button>
-                <button onclick="showPage('withdraw')" class="glass-card p-5 text-center font-bold text-[11px] uppercase border-b-2 border-red-500">Withdraw</button>
-            </div>
+            <button onclick="showPage('recharge')" class="w-full p-4 btn-cloud uppercase text-xs tracking-widest shadow-lg shadow-blue-500/20">Add Funds</button>
         </div>
 
         <div id="p-nodes" class="page space-y-4">
-            <div class="flex gap-2 p-1 bg-white/5 rounded-2xl mb-4">
-                <button onclick="renderNodes('normal')" id="btn-n" class="flex-1 p-3 rounded-xl bg-yellow-500 text-black text-[9px] font-black uppercase">Standard (20)</button>
-                <button onclick="renderNodes('vip')" id="btn-v" class="flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40">VIP Plans (5)</button>
+            <div class="flex gap-2 mb-4">
+                <button onclick="renderPlans('normal')" class="flex-1 p-3 bg-blue-600 rounded-xl text-[10px] font-bold uppercase">Cloud Nodes</button>
+                <button onclick="renderPlans('vip')" class="flex-1 p-3 cloud-card rounded-xl text-[10px] font-bold uppercase">VIP Servers</button>
             </div>
-            <div id="nodes-grid" class="space-y-4"></div>
+            <div id="nodes-container" class="space-y-4"></div>
         </div>
 
-        <div id="p-recharge" class="page space-y-4">
-            <div class="glass-card p-8">
-                <h3 class="text-xs font-black uppercase text-yellow-500 mb-6 tracking-widest">Add Liquidity</h3>
-                <div class="bg-white/5 p-4 rounded-2xl border-l-4 border-yellow-500 mb-6">
-                    <p class="text-[10px] font-bold opacity-60 uppercase mb-1">EasyPaisa Account</p>
-                    <p class="text-md font-black">03379827882</p>
+        <div id="p-recharge" class="page space-y-5">
+            <div class="cloud-card p-6">
+                <h3 class="text-sm font-bold mb-4 uppercase text-blue-400">Recharge Gateway</h3>
+                <div class="p-4 bg-blue-900/20 rounded-xl border border-blue-500/20 mb-5">
+                    <p class="text-[10px] opacity-60">EasyPaisa Account:</p>
+                    <p class="text-lg font-bold">03379827882</p>
                 </div>
-                <div class="space-y-4">
-                    <input type="number" id="d-amt" placeholder="Amount (PKR)">
-                    <input type="text" id="d-tid" placeholder="Transaction ID (TID)">
-                    <p class="text-[8px] font-black opacity-40 uppercase ml-2">Upload Transaction Proof (Image):</p>
-                    <input type="file" id="d-proof" class="!p-2 text-[10px]">
-                    <button onclick="submitDeposit()" class="w-full p-4 btn-premium uppercase text-[11px] tracking-widest mt-4">Verify Deposit</button>
-                </div>
+                <input type="number" id="d-amt" placeholder="Amount" class="w-full mb-3 outline-none">
+                <input type="text" id="d-tid" placeholder="Transaction ID (TID)" class="w-full mb-3 outline-none">
+                <p class="text-[9px] font-bold mb-1 ml-1 opacity-50">Upload Payment Proof:</p>
+                <input type="file" id="d-file" class="w-full p-2 text-xs mb-5">
+                <button onclick="handleDeposit()" class="w-full p-4 btn-cloud uppercase text-xs">Submit Request</button>
             </div>
         </div>
 
-        <div id="p-history" class="page space-y-4">
-            <div class="flex justify-between items-center px-1">
-                <h3 class="text-xs font-black uppercase opacity-50">Transaction Log</h3>
-                <button onclick="clearHistory()" class="text-[9px] font-black text-red-500 uppercase tracking-widest">Clear All</button>
-            </div>
-            <div id="hist-list" class="space-y-3"></div>
-        </div>
-
-        <div id="p-menu" class="page space-y-4">
-            <div class="glass-card p-6 text-center">
-                <p class="text-[8px] font-black opacity-40 uppercase mb-2">My Network Link</p>
-                <p id="ref-link" class="text-[10px] text-blue-400 break-all p-3 bg-white/5 rounded-2xl border border-dashed border-white/10">Generating...</p>
-                <button onclick="copyRef()" class="mt-4 text-[9px] font-black uppercase text-yellow-500">Copy Invitation</button>
-            </div>
-            <button class="w-full glass-card p-5 text-left text-[11px] font-bold uppercase">Company Portfolio</button>
-            <button class="w-full glass-card p-5 text-left text-[11px] font-bold uppercase">Privacy & Terms</button>
-            <button onclick="window.location.href='https://wa.me/923705519562'" class="w-full glass-card p-5 text-left text-[11px] font-bold uppercase text-green-500">Contact Help Desk</button>
-            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 rounded-2xl font-black uppercase text-[10px] mt-8">Secure Logout</button>
+        <div id="p-menu" class="page space-y-3">
+            <button onclick="alert('Coming Soon')" class="w-full cloud-card p-5 text-left text-xs font-bold uppercase flex justify-between">Account History <span>→</span></button>
+            <button onclick="alert('Coming Soon')" class="w-full cloud-card p-5 text-left text-xs font-bold uppercase flex justify-between">About Company <span>→</span></button>
+            <button onclick="window.location.href='https://wa.me/923705519562'" class="w-full cloud-card p-5 text-left text-xs font-bold uppercase text-blue-400 flex justify-between">Support Center <span>💬</span></button>
+            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 font-bold rounded-xl text-xs uppercase mt-10">Logout</button>
         </div>
 
     </main>
 
-    <nav class="fixed bottom-0 w-full h-24 glass-card rounded-t-[3rem] border-t border-white/5 flex justify-around items-center px-6 z-[10000]">
-        <button onclick="showPage('home')" id="n-home" class="nav-active flex flex-col items-center gap-1"><span class="text-2xl">🏠</span><span class="text-[8px] font-black uppercase">Home</span></button>
-        <button onclick="showPage('nodes')" id="n-nodes" class="opacity-40 flex flex-col items-center gap-1"><span class="text-2xl">⚡</span><span class="text-[8px] font-black uppercase">Nodes</span></button>
-        <button onclick="showPage('history')" id="n-history" class="opacity-40 flex flex-col items-center gap-1"><span class="text-2xl">📜</span><span class="text-[8px] font-black uppercase">Logs</span></button>
-        <button onclick="showPage('menu')" id="n-menu" class="opacity-40 flex flex-col items-center gap-1"><span class="text-2xl">👤</span><span class="text-[8px] font-black uppercase">Menu</span></button>
+    <nav class="fixed bottom-0 w-full h-20 bg-[#0a0e17]/95 border-t border-white/5 backdrop-blur-lg flex justify-around items-center px-4 z-[5000]">
+        <button onclick="showPage('home')" id="n-home" class="nav-item nav-active flex flex-col items-center">
+            <span class="text-xl">🏠</span><span>HOME</span>
+        </button>
+        <button onclick="showPage('nodes')" id="n-nodes" class="nav-item flex flex-col items-center">
+            <span class="text-xl">☁️</span><span>MINING</span>
+        </button>
+        <button onclick="showPage('menu')" id="n-menu" class="nav-item flex flex-col items-center">
+            <span class="text-xl">👤</span><span>MENU</span>
+        </button>
     </nav>
 
     <script>
@@ -122,69 +141,52 @@
         const db = firebase.firestore();
         let user = localStorage.getItem('pg_user');
 
-        // --- NODES RENDERER (25 TOTAL) ---
-        function renderNodes(type) {
-            const grid = document.getElementById('nodes-grid'); grid.innerHTML = '';
-            const btnN = document.getElementById('btn-n'); const btnV = document.getElementById('btn-v');
-            if(type === 'normal') {
-                btnN.className = "flex-1 p-3 rounded-xl bg-yellow-500 text-black text-[9px] font-black uppercase";
-                btnV.className = "flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40";
-                for(let i=1; i<=20; i++) {
-                    let cost = 200 + (i*1000);
-                    grid.innerHTML += `<div class="glass-card p-6 flex justify-between items-center border-r-4 border-yellow-500"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-yellow-500/10 flex items-center justify-center">⛏️</div><div><p class="text-[8px] font-black text-yellow-500 uppercase tracking-widest">S-Node v${i}</p><h4 class="text-xl font-black italic">₨ ${cost.toLocaleString()}</h4></div></div><button class="px-6 py-3 btn-premium text-[9px] uppercase">Rent</button></div>`;
-                }
-            } else {
-                btnV.className = "flex-1 p-3 rounded-xl bg-yellow-500 text-black text-[9px] font-black uppercase";
-                btnN.className = "flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40";
-                const vips = [50000, 100000, 250000, 500000, 1000000];
-                vips.forEach((v, idx) => {
-                    grid.innerHTML += `<div class="glass-card p-6 flex justify-between items-center border-r-4 border-green-500"><div class="flex items-center gap-4"><div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center">💎</div><div><p class="text-[8px] font-black text-green-500 uppercase tracking-widest">VIP Cluster 0${idx+1}</p><h4 class="text-xl font-black italic">₨ ${v.toLocaleString()}</h4></div></div><button class="px-6 py-3 btn-premium text-[9px] uppercase">Claim</button></div>`;
-                });
+        function renderPlans(type) {
+            const container = document.getElementById('nodes-container'); container.innerHTML = '';
+            for(let i=1; i<=(type==='normal'?20:5); i++) {
+                let cost = type==='normal' ? 200 + (i*1200) : 50000 + (i*25000);
+                container.innerHTML += `
+                <div class="cloud-card p-5 flex justify-between items-center">
+                    <div>
+                        <p class="text-[8px] font-bold text-blue-400 uppercase">Cloud Node v${i}</p>
+                        <h4 class="text-lg font-bold">₨ ${cost.toLocaleString()}</h4>
+                    </div>
+                    <button class="px-5 py-2 btn-cloud text-[9px] uppercase">Activate</button>
+                </div>`;
             }
         }
 
-        // --- DEPOSIT WITH PROOF ---
-        async function submitDeposit() {
-            const amt = document.getElementById('d-amt').value; const tid = document.getElementById('d-tid').value; const file = document.getElementById('d-proof').files[0];
-            if(!amt || !tid || !file) return alert("All fields & Receipt required! 😘");
-            const reader = new FileReader(); reader.readAsDataURL(file);
-            reader.onload = async () => {
-                await db.collection("requests").add({ user, amount: parseFloat(amt), tid, proof: reader.result, status: 'pending', type: 'deposit', time: new Date().toLocaleString() });
-                alert("Deposit Request Sent to Admin! 😘"); showPage('home');
+        async function handleDeposit() {
+            const a = document.getElementById('d-amt').value; const t = document.getElementById('d-tid').value; const f = document.getElementById('d-file').files[0];
+            if(!a || !t || !f) return alert("All fields & Proof are required, sweetie! 😘");
+            const r = new FileReader(); r.readAsDataURL(f);
+            r.onload = async () => {
+                await db.collection("requests").add({ user, amount: parseFloat(a), tid: t, proof: r.result, type: 'deposit', status: 'pending', time: Date.now() });
+                alert("Deposit submitted! Admin will verify soon. 😘"); showPage('home');
             };
         }
 
-        // --- CORE LOGIC ---
-        function initApp() {
+        function checkUser() {
             if(user) {
-                document.getElementById('display-user').innerText = "@" + user.toUpperCase();
-                document.getElementById('ref-link').innerText = "https://pakgold.net/join?ref=" + user;
+                document.getElementById('u-display').innerText = user.toUpperCase();
                 db.collection("users").doc(user).onSnapshot(d => {
-                    document.getElementById('u-bal').innerText = "₨ " + (d.data()?.balance || 0).toLocaleString();
+                    document.getElementById('bal').innerText = "₨ " + (d.data()?.balance || 0).toLocaleString();
                 });
-                renderNodes('normal'); startCycleTimer();
+                renderPlans('normal');
             } else {
                 let n = prompt("Enter Username:"); if(n) { localStorage.setItem('pg_user', n.toLowerCase()); location.reload(); }
             }
         }
 
-        function startCycleTimer() {
-            setInterval(() => {
-                let now = new Date(); let h = 23 - now.getHours(); let m = 59 - now.getMinutes(); let s = 59 - now.getSeconds();
-                document.getElementById('timer').innerText = `${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-            }, 1000);
-        }
-
         function showPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
             document.getElementById('p-'+p).classList.add('active-page');
-            document.querySelectorAll('nav button').forEach(b => { b.classList.add('opacity-40'); b.classList.remove('nav-active'); });
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('nav-active'));
             document.getElementById('n-'+p)?.classList.add('nav-active');
-            document.getElementById('n-'+p)?.classList.remove('opacity-40');
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-        window.onload = initApp;
+        window.onload = checkUser;
     </script>
 </body>
 </html>
