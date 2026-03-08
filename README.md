@@ -7,132 +7,108 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <title>PakGold | Cloud Infrastructure</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        
-        :root { 
-            --cloud-dark: #0a0e17; 
-            --cloud-blue: #1e3a8a; 
-            --cloud-accent: #3b82f6; 
-            --gold: #fbbf24;
-        }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--cloud-dark); 
-            background-image: radial-gradient(circle at top right, #1e293b, #0a0e17);
-            color: #e2e8f0; 
-            margin: 0; padding-bottom: 100px;
-        }
-
-        /* CloudSky Card Style */
-        .cloud-card {
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-cloud {
-            background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
-            color: white; font-weight: 700; border-radius: 12px;
-            transition: 0.3s;
-        }
-
-        .btn-gold {
-            background: linear-gradient(90deg, #fbbf24 0%, #d97706 100%);
-            color: #000; font-weight: 800; border-radius: 12px;
-        }
-
-        .nav-item { opacity: 0.5; transition: 0.3s; font-size: 10px; font-weight: 700; }
-        .nav-active { opacity: 1; color: var(--cloud-accent); border-top: 3px solid var(--cloud-accent); padding-top: 10px; }
-
-        .page { display: none; animation: fadeIn 0.4s ease-in-out; }
-        .active-page { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        input { background: #0f172a; border: 1px solid #334155; border-radius: 12px; color: white; padding: 12px; }
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        :root { --bg: #06090f; --card: #0d1117; --blue: #3b82f6; --gold: #fbbf24; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f0f6fc; padding-bottom: 90px; }
+        .cloud-card { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; }
+        .page { display: none; animation: fadeIn 0.4s ease; }
+        .active-page { display: block !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .btn-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; font-weight: 800; border-radius: 16px; transition: 0.2s; }
+        .btn-blue:active { transform: scale(0.96); }
+        .nav-item { opacity: 0.4; transition: 0.3s; font-size: 8px; font-weight: 800; }
+        .nav-active { opacity: 1; color: var(--blue); }
+        input { background: #161b22; border: 1px solid #30363d; border-radius: 14px; padding: 14px; color: white; width: 100%; outline: none; }
+        marquee { background: rgba(59, 130, 246, 0.1); color: var(--blue); font-size: 10px; font-weight: 800; padding: 8px 0; }
     </style>
 </head>
 <body>
 
-    <header class="p-5 flex justify-between items-center sticky top-0 bg-slate-900/80 backdrop-blur-md z-[1000]">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-bold">P</div>
-            <h1 class="text-lg font-extrabold tracking-tight uppercase">Pak<span class="text-blue-500">Gold</span></h1>
+    <marquee id="v-news">Welcome to PakGold! Secure your Cloud Nodes for high profit... 😘</marquee>
+
+    <header class="p-6 flex justify-between items-center sticky top-0 bg-[#06090f]/90 z-[5000] backdrop-blur-md">
+        <div>
+            <h1 class="text-xl font-black text-blue-500 italic uppercase">PAK<span class="text-white">GOLD</span></h1>
+            <p id="u-display" class="text-[8px] font-bold opacity-40 uppercase tracking-widest">Initialising...</p>
         </div>
         <div class="text-right">
-            <p id="bal" class="text-xl font-bold text-blue-400">₨ 0.00</p>
-            <p class="text-[8px] uppercase font-bold opacity-50 tracking-widest">Live Balance</p>
+            <p class="text-[8px] opacity-40 uppercase font-black">Cloud Balance</p>
+            <h2 id="u-bal" class="text-2xl font-black text-white tracking-tighter">₨ 0.00</h2>
         </div>
     </header>
 
     <main class="p-4 space-y-6">
 
-        <div id="p-home" class="page active-page space-y-5">
-            <div class="cloud-card p-6 flex justify-between items-center relative overflow-hidden">
-                <div class="z-10">
-                    <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Server Status: Active</p>
-                    <h2 class="text-2xl font-black italic" id="u-display">Loading...</h2>
+        <div id="p-home" class="page active-page space-y-6">
+            <div class="cloud-card p-6 border-l-4 border-blue-500 flex justify-between items-center">
+                <div>
+                    <p class="text-[9px] font-black opacity-50 uppercase">Next Yield Countdown</p>
+                    <h3 id="timer" class="text-2xl font-black text-blue-500 tracking-widest">23:59:59</h3>
                 </div>
-                <div class="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center text-3xl animate-pulse">☁️</div>
+                <div class="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center animate-bounce">☁️</div>
             </div>
 
-            <div class="grid grid-cols-2 gap-3">
-                <div class="cloud-card p-4 text-center">
-                    <p class="text-[9px] opacity-50 uppercase font-bold mb-1">Total Mining</p>
-                    <p class="text-sm font-bold">₨ 0.00</p>
-                </div>
-                <div class="cloud-card p-4 text-center">
-                    <p class="text-[9px] opacity-50 uppercase font-bold mb-1">Daily Profit</p>
-                    <p class="text-sm font-bold text-green-400">₨ 0.00</p>
-                </div>
+            <div class="cloud-card p-4 flex gap-2">
+                <input type="text" id="promo-input" placeholder="ENTER PROMO CODE" class="text-center font-bold uppercase text-[10px]">
+                <button onclick="applyPromo()" class="btn-blue px-6 text-[10px] uppercase">Apply</button>
             </div>
 
-            <button onclick="showPage('recharge')" class="w-full p-4 btn-cloud uppercase text-xs tracking-widest shadow-lg shadow-blue-500/20">Add Funds</button>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="showPage('deposit')" class="cloud-card p-5 text-center font-black text-[10px] uppercase border-b-2 border-green-500">Deposit</button>
+                <button onclick="showPage('withdraw')" class="cloud-card p-5 text-center font-black text-[10px] uppercase border-b-2 border-red-500">Withdraw</button>
+            </div>
         </div>
 
         <div id="p-nodes" class="page space-y-4">
-            <div class="flex gap-2 mb-4">
-                <button onclick="renderPlans('normal')" class="flex-1 p-3 bg-blue-600 rounded-xl text-[10px] font-bold uppercase">Cloud Nodes</button>
-                <button onclick="renderPlans('vip')" class="flex-1 p-3 cloud-card rounded-xl text-[10px] font-bold uppercase">VIP Servers</button>
+            <div class="flex gap-2 mb-4 p-1 bg-white/5 rounded-2xl">
+                <button onclick="renderNodes('normal')" id="btn-n" class="flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase">Standard Nodes</button>
+                <button onclick="renderNodes('vip')" id="btn-v" class="flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40">VIP Cluster</button>
             </div>
-            <div id="nodes-container" class="space-y-4"></div>
+            <div id="nodes-grid" class="space-y-3"></div>
         </div>
 
-        <div id="p-recharge" class="page space-y-5">
+        <div id="p-deposit" class="page space-y-4">
             <div class="cloud-card p-6">
-                <h3 class="text-sm font-bold mb-4 uppercase text-blue-400">Recharge Gateway</h3>
-                <div class="p-4 bg-blue-900/20 rounded-xl border border-blue-500/20 mb-5">
-                    <p class="text-[10px] opacity-60">EasyPaisa Account:</p>
-                    <p class="text-lg font-bold">03379827882</p>
+                <h3 class="text-xs font-black uppercase text-blue-500 mb-4">Recharge Cloud</h3>
+                <div class="bg-blue-900/10 p-4 rounded-xl mb-5 border border-blue-500/20">
+                    <p class="text-[9px] font-bold opacity-60">JazzCash/EasyPaisa:</p>
+                    <p class="text-lg font-black">03379827882</p>
                 </div>
-                <input type="number" id="d-amt" placeholder="Amount" class="w-full mb-3 outline-none">
-                <input type="text" id="d-tid" placeholder="Transaction ID (TID)" class="w-full mb-3 outline-none">
-                <p class="text-[9px] font-bold mb-1 ml-1 opacity-50">Upload Payment Proof:</p>
-                <input type="file" id="d-file" class="w-full p-2 text-xs mb-5">
-                <button onclick="handleDeposit()" class="w-full p-4 btn-cloud uppercase text-xs">Submit Request</button>
+                <input type="number" id="d-amt" placeholder="Amount (PKR)" class="mb-3">
+                <input type="text" id="d-tid" placeholder="Transaction ID (TID)" class="mb-3">
+                <p class="text-[8px] font-black opacity-30 mb-1 ml-1 uppercase">Upload Screenshot Proof:</p>
+                <input type="file" id="d-proof" class="mb-5 !p-2 text-[10px]">
+                <button onclick="submitDeposit()" class="w-full p-4 btn-blue uppercase text-[11px] tracking-widest">Verify Payment</button>
             </div>
         </div>
 
-        <div id="p-menu" class="page space-y-3">
-            <button onclick="alert('Coming Soon')" class="w-full cloud-card p-5 text-left text-xs font-bold uppercase flex justify-between">Account History <span>→</span></button>
-            <button onclick="alert('Coming Soon')" class="w-full cloud-card p-5 text-left text-xs font-bold uppercase flex justify-between">About Company <span>→</span></button>
-            <button onclick="window.location.href='https://wa.me/923705519562'" class="w-full cloud-card p-5 text-left text-xs font-bold uppercase text-blue-400 flex justify-between">Support Center <span>💬</span></button>
-            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 font-bold rounded-xl text-xs uppercase mt-10">Logout</button>
+        <div id="p-history" class="page space-y-4">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-xs font-black uppercase opacity-50">Activity Log</h3>
+                <button onclick="clearHistory()" class="text-[9px] font-black text-red-500 uppercase">Clear All</button>
+            </div>
+            <div id="h-list" class="space-y-3"></div>
+        </div>
+
+        <div id="p-menu" class="page space-y-4">
+            <div class="cloud-card p-6 text-center">
+                <p class="text-[8px] font-black opacity-40 uppercase mb-2">My Referral Link</p>
+                <p id="ref-link" class="text-[10px] text-blue-400 break-all p-3 bg-white/5 rounded-2xl border border-dashed border-white/10">Loading...</p>
+                <button onclick="copyRef()" class="mt-3 text-[9px] font-black uppercase text-blue-500">Copy Link</button>
+            </div>
+            <button class="w-full cloud-card p-5 text-left text-[11px] font-black uppercase">About PakGold</button>
+            <button class="w-full cloud-card p-5 text-left text-[11px] font-black uppercase">Privacy Policy</button>
+            <button onclick="window.location.href='https://wa.me/923705519562'" class="w-full cloud-card p-5 text-left text-[11px] font-black uppercase text-green-500">Contact Admin (Support)</button>
+            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 rounded-2xl font-black uppercase text-[10px] mt-10">Logout Securely</button>
         </div>
 
     </main>
 
-    <nav class="fixed bottom-0 w-full h-20 bg-[#0a0e17]/95 border-t border-white/5 backdrop-blur-lg flex justify-around items-center px-4 z-[5000]">
-        <button onclick="showPage('home')" id="n-home" class="nav-item nav-active flex flex-col items-center">
-            <span class="text-xl">🏠</span><span>HOME</span>
-        </button>
-        <button onclick="showPage('nodes')" id="n-nodes" class="nav-item flex flex-col items-center">
-            <span class="text-xl">☁️</span><span>MINING</span>
-        </button>
-        <button onclick="showPage('menu')" id="n-menu" class="nav-item flex flex-col items-center">
-            <span class="text-xl">👤</span><span>MENU</span>
-        </button>
+    <nav class="fixed bottom-0 w-full h-20 bg-[#0a0e17]/95 backdrop-blur-lg flex justify-around items-center px-6 z-[10000] border-t border-white/5">
+        <button onclick="showPage('home')" id="n-home" class="nav-item nav-active flex flex-col items-center gap-1"><span class="text-2xl">🏠</span><span>HOME</span></button>
+        <button onclick="showPage('nodes')" id="n-nodes" class="nav-item flex flex-col items-center gap-1"><span class="text-2xl">⚡</span><span>NODES</span></button>
+        <button onclick="showPage('history')" id="n-history" class="nav-item flex flex-col items-center gap-1"><span class="text-2xl">📜</span><span>LOGS</span></button>
+        <button onclick="showPage('menu')" id="n-menu" class="nav-item flex flex-col items-center gap-1"><span class="text-2xl">👤</span><span>MENU</span></button>
     </nav>
 
     <script>
@@ -141,52 +117,61 @@
         const db = firebase.firestore();
         let user = localStorage.getItem('pg_user');
 
-        function renderPlans(type) {
-            const container = document.getElementById('nodes-container'); container.innerHTML = '';
-            for(let i=1; i<=(type==='normal'?20:5); i++) {
-                let cost = type==='normal' ? 200 + (i*1200) : 50000 + (i*25000);
-                container.innerHTML += `
-                <div class="cloud-card p-5 flex justify-between items-center">
-                    <div>
-                        <p class="text-[8px] font-bold text-blue-400 uppercase">Cloud Node v${i}</p>
-                        <h4 class="text-lg font-bold">₨ ${cost.toLocaleString()}</h4>
-                    </div>
-                    <button class="px-5 py-2 btn-cloud text-[9px] uppercase">Activate</button>
-                </div>`;
+        // --- NODES GENERATOR (20+5) ---
+        function renderNodes(type) {
+            const grid = document.getElementById('nodes-grid'); grid.innerHTML = '';
+            const count = type === 'normal' ? 20 : 5;
+            document.getElementById('btn-n').className = type === 'normal' ? 'flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase' : 'flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40';
+            document.getElementById('btn-v').className = type === 'vip' ? 'flex-1 p-3 rounded-xl bg-blue-600 text-white text-[9px] font-black uppercase' : 'flex-1 p-3 rounded-xl text-[9px] font-black uppercase opacity-40';
+
+            for(let i=1; i<=count; i++) {
+                let cost = type === 'normal' ? 200 + (i*1500) : 50000 + (i*20000);
+                grid.innerHTML += `<div class="cloud-card p-6 flex justify-between items-center border-r-4 ${type==='normal'?'border-blue-500':'border-yellow-500'}"><div><p class="text-[8px] font-black text-blue-500 uppercase tracking-widest">${type==='normal'?'Standard':'VIP'} v0${i}</p><h4 class="text-xl font-black italic">₨ ${cost.toLocaleString()}</h4></div><button class="px-6 py-3 btn-blue text-[9px] uppercase">Rent</button></div>`;
             }
         }
 
-        async function handleDeposit() {
-            const a = document.getElementById('d-amt').value; const t = document.getElementById('d-tid').value; const f = document.getElementById('d-file').files[0];
-            if(!a || !t || !f) return alert("All fields & Proof are required, sweetie! 😘");
-            const r = new FileReader(); r.readAsDataURL(f);
-            r.onload = async () => {
-                await db.collection("requests").add({ user, amount: parseFloat(a), tid: t, proof: r.result, type: 'deposit', status: 'pending', time: Date.now() });
-                alert("Deposit submitted! Admin will verify soon. 😘"); showPage('home');
+        // --- DEPOSIT SYSTEM ---
+        async function submitDeposit() {
+            const a = document.getElementById('d-amt').value; const t = document.getElementById('d-tid').value; const f = document.getElementById('d-proof').files[0];
+            if(!a || !t || !f) return alert("All fields and proof required, sweetie! 😘");
+            const reader = new FileReader(); reader.readAsDataURL(f);
+            reader.onload = async () => {
+                await db.collection("requests").add({ user, amount: parseFloat(a), tid: t, proof: reader.result, type: 'deposit', status: 'pending', time: Date.now() });
+                alert("Deposit Logged! Admin will verify. 😘"); showPage('home');
             };
         }
 
-        function checkUser() {
+        // --- CORE SYNC ---
+        function init() {
             if(user) {
-                document.getElementById('u-display').innerText = user.toUpperCase();
+                document.getElementById('u-display').innerText = "@" + user.toUpperCase();
+                document.getElementById('ref-link').innerText = window.location.origin + "?ref=" + user;
                 db.collection("users").doc(user).onSnapshot(d => {
-                    document.getElementById('bal').innerText = "₨ " + (d.data()?.balance || 0).toLocaleString();
+                    document.getElementById('u-bal').innerText = "₨ " + (d.data()?.balance || 0).toLocaleString();
                 });
-                renderPlans('normal');
+                renderNodes('normal'); startTimer();
             } else {
-                let n = prompt("Enter Username:"); if(n) { localStorage.setItem('pg_user', n.toLowerCase()); location.reload(); }
+                let n = prompt("Login ID:"); if(n) { localStorage.setItem('pg_user', n.toLowerCase()); location.reload(); }
             }
+        }
+
+        function startTimer() {
+            setInterval(() => {
+                let d = new Date(); let h = 23-d.getHours(); let m = 59-d.getMinutes(); let s = 59-d.getSeconds();
+                document.getElementById('timer').innerText = `${h<10?'0'+h:h}:${m<10?'0'+m:m}:${s<10?'0'+s:s}`;
+            }, 1000);
         }
 
         function showPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
             document.getElementById('p-'+p).classList.add('active-page');
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('nav-active'));
+            document.querySelectorAll('.nav-item').forEach(b => { b.classList.add('opacity-40'); b.classList.remove('nav-active'); });
             document.getElementById('n-'+p)?.classList.add('nav-active');
+            document.getElementById('n-'+p)?.classList.remove('opacity-40');
         }
 
         function logout() { localStorage.clear(); location.reload(); }
-        window.onload = checkUser;
+        window.onload = init;
     </script>
 </body>
 </html>
