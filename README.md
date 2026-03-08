@@ -5,190 +5,195 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <title>PakGold | Premium Mining Infrastructure</title>
+    <title>PakGold | Professional Node</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
-        :root { --gold: #fbbf24; --dark-bg: #06090f; --card-bg: #0d1117; }
-        
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--dark-bg); color: #f0f6fc; padding-bottom: 100px; overflow-x: hidden; }
-        
-        /* Glass-morphism Effect like ApexDaily */
-        .glass-card { 
-            background: rgba(13, 17, 23, 0.8); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.05); 
-            border-radius: 28px; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
-        }
-        
-        .glass-card:active { transform: scale(0.96); }
-
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        :root { --gold: #fbbf24; --bg: #06090f; --glass: rgba(13, 17, 23, 0.8); }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: #f0f6fc; padding-bottom: 90px; }
+        .glass { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 24px; }
         .page { display: none; }
-        .active-page { display: block !important; animation: slideUp 0.5s ease-out; }
-
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Premium Gold Gradient */
-        .btn-premium { 
-            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); 
-            color: #000; font-weight: 800; border-radius: 18px; 
-            box-shadow: 0 10px 20px rgba(217, 119, 6, 0.2);
-        }
-
-        .nav-active { color: var(--gold) !important; filter: drop-shadow(0 0 8px var(--gold)); }
-
-        /* Floating News Bar */
-        .marquee-box { background: rgba(251, 191, 36, 0.05); border-y: 1px solid rgba(251, 191, 36, 0.1); }
-        marquee { font-size: 11px; font-weight: 700; color: var(--gold); padding: 8px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .active-page { display: block !important; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.4; transition: 0.3s; }
+        .nav-active { opacity: 1; color: var(--gold); }
+        input, select { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 14px; color: white; width: 100%; outline: none; font-size: 13px; }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24, #d97706); color: #000; font-weight: 800; border-radius: 14px; }
     </style>
 </head>
 <body>
 
-    <header class="p-6 flex justify-between items-center sticky top-0 bg-[#06090f]/80 backdrop-blur-lg z-[10000]">
-        <div onclick="adminAccess()">
-            <h1 class="text-xl font-black italic tracking-tighter text-yellow-500">PAK<span class="text-white">GOLD</span></h1>
-            <p class="text-[7px] font-bold opacity-40 uppercase tracking-[2px]">Enterprise Grade</p>
-        </div>
-        <div class="flex gap-4 items-center">
-            <div class="text-right">
-                <p id="u-bal" class="text-lg font-black tracking-tighter">₨ 0.00</p>
-                <p class="text-[7px] opacity-40 font-bold uppercase">Balance</p>
+    <header class="p-6 sticky top-0 bg-[#06090f]/90 backdrop-blur-md z-[5000]">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-[10px] font-bold text-yellow-500 uppercase tracking-widest">Welcome Back</p>
+                <h2 id="display-user" class="text-xl font-black italic">User</h2>
             </div>
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-500 to-yellow-800 border-2 border-white/10 flex items-center justify-center font-black text-black">A</div>
+            <div class="text-right">
+                <p class="text-[8px] opacity-40 uppercase font-black">Yield Balance</p>
+                <h2 id="u-bal" class="text-2xl font-black text-white tracking-tighter">₨ 0.00</h2>
+            </div>
+        </div>
+        
+        <div class="mt-4 flex gap-2">
+            <input type="text" id="promo-box" placeholder="PROMO CODE" class="!p-2 text-center font-bold">
+            <button onclick="applyPromo()" class="px-6 btn-gold text-[10px] uppercase">Apply</button>
         </div>
     </header>
 
-    <div class="marquee-box mb-6"><marquee id="v-news">Loading System Announcements...</marquee></div>
+    <main class="p-4 space-y-6">
 
-    <main class="px-6 space-y-8">
-        
         <div id="p-home" class="page active-page space-y-6">
-            <h3 class="text-xs font-black uppercase tracking-[3px] opacity-60">Available Mining Nodes</h3>
-            <div id="m-grid" class="space-y-4">
+            <div class="glass p-6 border-l-4 border-yellow-500">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="text-[9px] font-black opacity-50 uppercase">Next Profit Cycle</p>
+                        <h3 id="timer" class="text-2xl font-black tracking-widest text-yellow-500">23:59:59</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-full bg-yellow-500/10 flex items-center justify-center">⚡</div>
                 </div>
-        </div>
-
-        <div id="p-fund" class="page space-y-6">
-            <div class="glass-card p-8 text-center border-yellow-500/20">
-                <h3 class="text-yellow-500 font-black uppercase text-xs tracking-widest mb-6">Redeem Promo Code</h3>
-                <input type="text" id="promo-input" placeholder="ENTER CODE (e.g. GOLD786)" class="w-full bg-[#161b22] p-4 rounded-2xl border border-white/5 mb-4 text-center font-black uppercase tracking-widest">
-                <button onclick="applyPromo()" class="w-full p-4 btn-premium text-xs uppercase tracking-widest">Claim Reward</button>
             </div>
 
-            <div class="glass-card p-8">
-                <h3 class="text-white font-black uppercase text-xs tracking-widest mb-6">Manual Recharge</h3>
-                <div class="space-y-4 mb-8">
-                    <div class="flex justify-between p-4 bg-white/5 rounded-2xl border-l-4 border-yellow-500">
-                        <span class="text-[10px] opacity-60 font-bold uppercase">EasyPaisa</span>
-                        <span class="text-sm font-black">03379827882</span>
-                    </div>
-                </div>
-                <input type="number" id="dep-amt" placeholder="Amount" class="w-full bg-[#161b22] p-4 rounded-2xl mb-3">
-                <input type="text" id="dep-tid" placeholder="Transaction ID (TID)" class="w-full bg-[#161b22] p-4 rounded-2xl mb-6">
-                <button onclick="submitRequest('deposit')" class="w-full p-4 bg-white/5 rounded-2xl font-black uppercase text-[10px] border border-white/10">Submit Deposit</button>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="showPage('deposit')" class="glass p-4 text-center font-bold text-[11px] uppercase border-b-2 border-green-500">Deposit</button>
+                <button onclick="showPage('withdraw')" class="glass p-4 text-center font-bold text-[11px] uppercase border-b-2 border-red-500">Withdraw</button>
             </div>
         </div>
 
-        <div id="p-admin" class="page space-y-6">
-            <div class="glass-card p-8 border-red-500/30">
-                <h2 class="text-red-500 font-black uppercase text-xs mb-6">Authority Dashboard</h2>
-                <div id="admin-requests" class="space-y-4">
-                    </div>
+        <div id="p-nodes" class="page space-y-4">
+            <h3 class="text-xs font-black uppercase text-yellow-500">Mining Infrastructure</h3>
+            <div id="nodes-container" class="space-y-3">
+                </div>
+        </div>
+
+        <div id="p-deposit" class="page space-y-4">
+            <div class="glass p-6">
+                <h3 class="text-xs font-black uppercase mb-4">Manual Deposit</h3>
+                <div class="bg-white/5 p-4 rounded-xl mb-4 text-[11px] font-bold">
+                    <p>EasyPaisa: 03379827882</p>
+                    <p class="mt-2 text-yellow-500 italic font-black">Note: Take screenshot after payment!</p>
+                </div>
+                <input type="number" id="dep-amt" placeholder="Amount" class="mb-3">
+                <input type="text" id="dep-tid" placeholder="TID Number" class="mb-3">
+                <p class="text-[9px] opacity-50 mb-1 ml-1 uppercase">Upload Screenshot Proof:</p>
+                <input type="file" id="dep-proof" class="mb-4 !p-2">
+                <button onclick="submitDeposit()" class="w-full p-4 btn-gold uppercase text-[10px]">Verify Transaction</button>
             </div>
+        </div>
+
+        <div id="p-history" class="page space-y-4">
+            <div class="flex justify-between items-center px-1">
+                <h3 class="text-xs font-black uppercase">Recent Activity</h3>
+                <button onclick="clearHistory()" class="text-[9px] font-black text-red-500 uppercase">Clear All</button>
+            </div>
+            <div id="hist-list" class="space-y-3">
+                </div>
+        </div>
+
+        <div id="p-menu" class="page space-y-3">
+            <div class="glass p-6 mb-4">
+                <p class="text-[8px] opacity-40 uppercase font-black">Share & Earn</p>
+                <p id="ref-link" class="text-[10px] text-blue-400 font-mono mt-2 break-all p-2 bg-white/5 rounded">Loading link...</p>
+            </div>
+            <button class="w-full glass p-4 text-left text-[11px] font-bold uppercase">Company Profile</button>
+            <button class="w-full glass p-4 text-left text-[11px] font-bold uppercase">Privacy Policy</button>
+            <button onclick="window.location.href='https://wa.me/923705519562'" class="w-full glass p-4 text-left text-[11px] font-bold uppercase text-yellow-500">Contact Admin (Help Desk)</button>
+            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 rounded-2xl font-black uppercase text-[10px] mt-6">Logout Account</button>
         </div>
 
     </main>
 
-    <nav class="fixed bottom-6 left-6 right-6 h-20 glass-card flex justify-around items-center px-4 z-[10000]">
-        <button onclick="showPage('home')" id="n-home" class="nav-active flex flex-col items-center gap-1">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M11.5 2L15 6.5L10.5 10L14.5 15.5L9 22H11L15.5 16L11 11L15.5 5.5L11.5 2Z"/></svg>
-            <span class="text-[8px] font-black uppercase">Nodes</span>
+    <nav class="fixed bottom-0 w-full h-20 glass rounded-t-[2.5rem] border-t border-white/5 flex justify-around items-center px-4 z-[10000]">
+        <button onclick="showPage('home')" id="n-home" class="nav-btn nav-active">
+            <span class="text-xl">🏠</span><span class="text-[7px] font-black uppercase">Home</span>
         </button>
-        <button onclick="showPage('fund')" id="n-fund" class="opacity-40 flex flex-col items-center gap-1">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.407 2.67 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.407-2.67-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <span class="text-[8px] font-black uppercase">Wallet</span>
+        <button onclick="showPage('nodes')" id="n-nodes" class="nav-btn">
+            <span class="text-xl">⚡</span><span class="text-[7px] font-black uppercase">Nodes</span>
         </button>
-        <button onclick="showPage('admin')" id="n-admin" class="hidden opacity-40 flex flex-col items-center gap-1 text-red-500">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.4 0 2.5 1.1 2.5 2.5S13.4 12 12 12s-2.5-1.1-2.5-2.5S10.6 7 12 7z"/></svg>
-            <span class="text-[8px] font-black uppercase text-red-500">Admin</span>
+        <button onclick="showPage('history')" id="n-history" class="nav-btn">
+            <span class="text-xl">📜</span><span class="text-[7px] font-black uppercase">History</span>
+        </button>
+        <button onclick="showPage('menu')" id="n-menu" class="nav-btn">
+            <span class="text-xl">👤</span><span class="text-[7px] font-black uppercase">Menu</span>
         </button>
     </nav>
 
     <script>
-        // FIREBASE INITIALIZATION
         const firebaseConfig = { apiKey: "AIzaSyDt3ChZHyDdtM4Ir1oXRZJUywcOiV30Wtg", authDomain: "investment-84f4e.firebaseapp.com", projectId: "investment-84f4e", storageBucket: "investment-84f4e.appspot.com", messagingSenderId: "975293889308", appId: "1:975293889308:web:6d034a99cc966c75ff58d9" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
-        let currentUserId = localStorage.getItem('pg_user');
+        let user = localStorage.getItem('pg_user');
 
-        // PROMO CODE SYSTEM
-        async function applyPromo() {
-            const code = document.getElementById('promo-input').value.toUpperCase();
-            if(code === 'GOLD786') {
-                await db.collection("users").doc(currentUserId).update({ balance: firebase.firestore.FieldValue.increment(100) });
-                alert("₨ 100 Reward Added Successfully!");
-                document.getElementById('promo-input').value = '';
-            } else { alert("Invalid or Expired Code"); }
-        }
-
-        // DYNAMIC NODE RENDER (ApexDaily Style)
-        function renderNodes() {
-            const grid = document.getElementById('m-grid');
-            const nodes = [
-                { name: "QUARTZ-01", cost: 1200, profit: 95 },
-                { name: "AMBER-05", cost: 4500, profit: 380 },
-                { name: "ONYX-PRO", cost: 15000, profit: 1400 }
-            ];
-            nodes.forEach(n => {
-                grid.innerHTML += `
-                <div class="glass-card p-6 flex justify-between items-center relative overflow-hidden group">
-                    <div class="absolute top-0 left-0 w-1 h-full bg-yellow-500"></div>
+        // --- 25 MACHINES GENERATOR ---
+        function generateNodes() {
+            const container = document.getElementById('nodes-container');
+            container.innerHTML = '';
+            // 20 Normal + 5 VIP Plans
+            for(let i=1; i<=25; i++) {
+                let isVIP = i > 20;
+                let cost = isVIP ? (i-20)*50000 : 200 + (i*1000);
+                container.innerHTML += `
+                <div class="glass p-5 flex justify-between items-center border-r-4 ${isVIP?'border-green-500':'border-yellow-500'}">
                     <div>
-                        <p class="text-[8px] font-black text-yellow-500 uppercase tracking-widest mb-1">${n.name}</p>
-                        <h4 class="text-xl font-black italic">₨ ${n.cost.toLocaleString()}</h4>
-                        <p class="text-[9px] opacity-40 font-bold mt-1">Daily Yield: ₨ ${n.profit}</p>
+                        <p class="text-[8px] font-black text-yellow-500 uppercase">${isVIP?'VIP NODE':'S-NODE'} 0${i}</p>
+                        <h4 class="text-md font-black italic">₨ ${cost.toLocaleString()}</h4>
                     </div>
-                    <button class="px-6 py-3 btn-premium text-[9px] uppercase tracking-widest">Purchase</button>
+                    <button class="px-5 py-2 btn-gold text-[9px] uppercase">Activate</button>
                 </div>`;
-            });
+            }
         }
 
-        // AUTH & DASHBOARD SYNC
+        // --- DEPOSIT WITH PROOF ---
+        async function submitDeposit() {
+            const amt = document.getElementById('dep-amt').value;
+            const tid = document.getElementById('dep-tid').value;
+            const file = document.getElementById('dep-proof').files[0];
+
+            if(!amt || !tid || !file) return alert("Please fill all fields and upload proof!");
+
+            await db.collection("requests").add({
+                user: user,
+                type: 'deposit',
+                amount: parseFloat(amt),
+                info: tid,
+                proof_status: "file_attached",
+                status: "pending",
+                time: new Date().toLocaleString()
+            });
+            alert("Deposit sent! Admin will verify your screenshot and TID.");
+        }
+
+        // --- CORE LOGIC ---
         function checkUser() {
-            if(currentUserId) {
-                db.collection("users").doc(currentUserId).onSnapshot(d => {
-                    if(!d.exists) db.collection("users").doc(currentUserId).set({ balance: 0 });
+            if(user) {
+                document.getElementById('display-user').innerText = user.toUpperCase();
+                document.getElementById('ref-link').innerText = "https://pakgold.net/join?ref=" + user;
+                db.collection("users").doc(user).onSnapshot(d => {
                     document.getElementById('u-bal').innerText = "₨ " + (d.data()?.balance || 0).toLocaleString();
                 });
-                db.collection("settings").doc("news").onSnapshot(d => {
-                    if(d.exists) document.getElementById('v-news').innerText = d.data().text;
-                });
-                if(localStorage.getItem('is_admin') === 'true') {
-                    document.getElementById('n-admin').classList.remove('hidden');
-                    loadAdminPanel();
-                }
-                renderNodes();
+                generateNodes();
+                startTimer();
+                loadHistory();
             } else {
-                let n = prompt("Create Username:");
+                let n = prompt("Login Username:");
                 if(n) { localStorage.setItem('pg_user', n.toLowerCase()); location.reload(); }
             }
         }
 
-        // ADMIN SECRETS (10 Taps on Logo)
-        let taps = 0;
-        function adminAccess() {
-            taps++; if(taps === 10) {
-                let p = prompt("Admin Key:");
-                if(p === "786") { localStorage.setItem('is_admin', 'true'); location.reload(); }
-            }
+        function startTimer() {
+            setInterval(() => {
+                let d = new Date();
+                let h = 23 - d.getHours();
+                let m = 59 - d.getMinutes();
+                let s = 59 - d.getSeconds();
+                document.getElementById('timer').innerText = `${h < 10 ? '0'+h : h}:${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+            }, 1000);
         }
 
         function showPage(p) {
             document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
             document.getElementById('p-'+p).classList.add('active-page');
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active', 'opacity-100'));
-            document.getElementById('n-'+p).classList.add('nav-active');
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active'));
+            document.getElementById('n-'+p)?.classList.add('nav-active');
         }
 
         function logout() { localStorage.clear(); location.reload(); }
