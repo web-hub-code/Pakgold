@@ -3,107 +3,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-    <title>PakGold | Cloud Mining Node</title>
+    <title>PakGold | Professional Cloud Mining</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; background: #010409; color: white; padding-bottom: 100px; }
-        .cloud-card { background: #0d1117; border: 1px solid #30363d; border-radius: 20px; overflow: hidden; transition: 0.3s; }
-        .cloud-card:hover { border-color: #fbbf24; transform: translateY(-5px); }
-        .btn-buy { background: #fbbf24; color: #000; font-weight: 800; border-radius: 12px; transition: 0.2s; }
-        .btn-buy:active { transform: scale(0.95); }
-        .page { display: none; animation: fadeIn 0.4s ease; }
-        .active-page { display: block; }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+        body { font-family: 'Outfit', sans-serif; background: #0b0e11; color: #eaecef; padding-bottom: 90px; }
+        .cloud-card { background: #1e2329; border-radius: 16px; border: 1px solid #30363d; overflow: hidden; }
+        .stat-box { background: linear-gradient(135deg, #f3ba2f, #c99400); color: #000; border-radius: 20px; }
+        .nav-active { color: #f3ba2f !important; }
+        .page { display: none; }
+        .active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        nav { background: rgba(13, 17, 23, 0.95); backdrop-filter: blur(10px); border-top: 1px solid #30363d; }
+        .machine-img { width: 100%; height: 120px; background: #2b3139; display: flex; align-items: center; justify-content: center; font-size: 40px; }
     </style>
 </head>
 <body>
 
-    <header class="p-5 flex justify-between items-center border-b border-[#30363d]">
-        <div>
-            <h1 class="text-xl font-black text-yellow-500 italic">PakGold</h1>
-            <p class="text-[8px] uppercase tracking-widest opacity-50">CloudSky Infrastructure</p>
-        </div>
-        <div class="text-right">
-            <p class="text-[9px] font-bold opacity-60">BALANCE</p>
-            <p id="top-bal" class="text-sm font-black text-yellow-500">₨ 0.00</p>
-        </div>
-    </header>
-
-    <main id="app-ui" class="p-4 space-y-6">
-        
-        <div id="p-home" class="page active-page space-y-4">
-            <div class="h-40 rounded-3xl bg-gradient-to-br from-yellow-500 to-yellow-800 p-6 flex flex-col justify-end shadow-2xl">
-                <h2 class="text-2xl font-black text-black leading-none">START MINING<br>TODAY</h2>
-                <p class="text-[9px] font-bold text-black/60 mt-2 uppercase">Official Prime Solutions Node</p>
-            </div>
-
-            <div class="flex gap-2 p-1 bg-white/5 rounded-xl">
-                <button onclick="renderCloudPlans('normal')" id="btn-n" class="flex-1 py-3 text-[10px] font-black uppercase rounded-lg bg-yellow-500 text-black">Standard</button>
-                <button onclick="renderCloudPlans('vip')" id="btn-v" class="flex-1 py-3 text-[10px] font-black uppercase rounded-lg opacity-40">VIP Nodes</button>
-            </div>
-
-            <div id="machine-grid" class="grid grid-cols-1 gap-4">
-                </div>
-        </div>
-
-        <div id="p-wallet" class="page space-y-4 text-center">
-            <div class="cloud-card p-6">
-                <h3 class="text-yellow-500 font-bold mb-4">DEPOSIT FUNDS</h3>
-                <p class="text-[10px] mb-2 opacity-60">Send PKR to accounts below</p>
-                <div class="bg-white/5 p-4 rounded-xl text-left text-xs mb-4">
-                    <p><b>EasyPaisa:</b> 03379827882</p>
-                    <p><b>JazzCash:</b> 03705519562</p>
-                </div>
-                <input type="number" id="dep-amt" placeholder="Amount Sent" class="w-full p-4 bg-black border border-[#30363d] rounded-xl mb-3 outline-none">
-                <button onclick="alert('Proof Submitted!')" class="w-full p-4 btn-buy uppercase text-xs">Confirm Payment</button>
+    <div id="p-home" class="page active p-4 space-y-4">
+        <div class="stat-box p-6 shadow-2xl">
+            <p class="text-[10px] font-bold opacity-70 uppercase tracking-widest">Total Balance</p>
+            <h1 class="text-3xl font-black italic">PKR <span id="v-bal">0.00</span></h1>
+            <div class="mt-4 flex justify-between text-[10px] font-bold border-t border-black/10 pt-3">
+                <div><p class="opacity-70">DAILY INCOME</p><p>PKR 150.00</p></div>
+                <div><p class="opacity-70">WITHDRAWN</p><p>PKR 0.00</p></div>
             </div>
         </div>
-    </main>
 
-    <nav class="fixed bottom-0 w-full p-4 flex justify-around items-center z-[5000]">
-        <button onclick="changePage('home')" class="flex flex-col items-center gap-1"><span class="text-xl">⚡</span><span class="text-[8px] font-bold">MINING</span></button>
-        <button onclick="changePage('wallet')" class="flex flex-col items-center gap-1 opacity-40"><span class="text-xl">💰</span><span class="text-[8px] font-bold">RECHARGE</span></button>
-        <button onclick="location.reload()" class="flex flex-col items-center gap-1 opacity-40"><span class="text-xl">👤</span><span class="text-[8px] font-bold">ME</span></button>
+        <div class="bg-[#1e2329] p-2 rounded-lg flex items-center gap-2 border border-white/5">
+            <span class="text-yellow-500">📢</span>
+            <marquee class="text-[10px] font-bold text-gray-400">Welcome to PakGold by Prime Solutions! Minimum investment is only PKR 200. Secure your future now...</marquee>
+        </div>
+
+        <h3 class="text-sm font-bold ml-1">Mining Equipment</h3>
+        <div id="machine-grid" class="grid grid-cols-1 gap-4">
+            </div>
+    </div>
+
+    <div id="p-wallet" class="page p-4 space-y-4">
+        <div class="cloud-card p-6 text-center">
+            <h2 class="text-yellow-500 font-bold">RECHARGE WALLET</h2>
+            <div class="my-4 space-y-2 text-xs text-left bg-black/20 p-4 rounded-xl">
+                <p><b>EasyPaisa:</b> 03379827882</p>
+                <p><b>JazzCash:</b> 03705519562</p>
+            </div>
+            <input type="number" placeholder="Enter Amount" class="w-full p-4 bg-[#2b3139] rounded-xl outline-none mb-3">
+            <button class="w-full p-4 bg-yellow-500 text-black font-black rounded-xl text-xs uppercase">Submit Deposit</button>
+        </div>
+    </div>
+
+    <div id="p-me" class="page p-4 space-y-4">
+        <div class="cloud-card p-6 flex items-center gap-4">
+            <div class="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center text-2xl">👤</div>
+            <div>
+                <h2 id="u-name" class="font-bold text-lg">User_786</h2>
+                <p class="text-[10px] text-gray-400 uppercase">VIP Level: 01</p>
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="cloud-card p-4 text-center"><p class="text-xl">📊</p><p class="text-[10px] font-bold">RECORDS</p></div>
+            <div class="cloud-card p-4 text-center"><p class="text-xl">🛠️</p><p class="text-[10px] font-bold">SETTINGS</p></div>
+            <div class="cloud-card p-4 text-center"><p class="text-xl">📄</p><p class="text-[10px] font-bold">LEGAL</p></div>
+            <div onclick="location.reload()" class="cloud-card p-4 text-center border-red-500/30"><p class="text-xl">❌</p><p class="text-[10px] font-bold text-red-500">LOGOUT</p></div>
+        </div>
+    </div>
+
+    <nav class="fixed bottom-0 w-full bg-[#1e2329] border-t border-white/5 p-4 flex justify-around items-center z-[5000]">
+        <div onclick="showPage('home')" id="n-home" class="flex flex-col items-center gap-1 nav-active">
+            <span class="text-xl">⚡</span><span class="text-[8px] font-black uppercase">Home</span>
+        </div>
+        <div onclick="showPage('wallet')" id="n-wallet" class="flex flex-col items-center gap-1 text-gray-500">
+            <span class="text-xl">📥</span><span class="text-[8px] font-black uppercase">Fund</span>
+        </div>
+        <div onclick="showPage('me')" id="n-me" class="flex flex-col items-center gap-1 text-gray-500">
+            <span class="text-xl">👤</span><span class="text-[8px] font-black uppercase">Me</span>
+        </div>
     </nav>
 
     <script>
-        // --- MACHINE GENERATION (15+5) ---
-        const CLOUD_MACHINES = [];
+        // 🛠️ MACHINES DATA (200 Start, 15+5)
+        const machines = [];
         for(let i=1; i<=15; i++) {
-            let cost = 200 + (i-1)*1500;
-            CLOUD_MACHINES.push({ id: `CLOUD-V${i}`, price: cost, daily: (cost*0.1).toFixed(0), total: (cost*3).toFixed(0) });
+            let price = 200 + (i-1)*1200;
+            machines.push({ name: `S-NODE 0${i}`, price: price, hourly: (price*0.005).toFixed(2), daily: (price*0.12).toFixed(0) });
         }
+        // VIPs
+        const vips = [
+            { name: "GOLD VIP-1", price: 50000, hourly: 250, daily: 6000 },
+            { name: "DIAMOND VIP-2", price: 100000, hourly: 550, daily: 13200 }
+        ];
 
-        function renderCloudPlans(type) {
+        function render() {
             const grid = document.getElementById('machine-grid');
-            grid.innerHTML = '';
-            
-            CLOUD_MACHINES.forEach(m => {
+            [...machines, ...vips].forEach(m => {
                 grid.innerHTML += `
                 <div class="cloud-card">
-                    <div class="p-4 flex justify-between items-center border-b border-white/5">
-                        <span class="text-[10px] font-black text-yellow-500 uppercase">${m.id} MACHINE</span>
-                        <span class="text-[9px] bg-green-500/20 text-green-500 px-2 py-1 rounded-md">ACTIVE NOW</span>
-                    </div>
-                    <div class="p-5 grid grid-cols-2 gap-4">
-                        <div><p class="text-[8px] opacity-40">DAILY PROFIT</p><p class="font-bold text-sm">₨ ${m.daily}</p></div>
-                        <div><p class="text-[8px] opacity-40">TOTAL REVENUE</p><p class="font-bold text-sm">₨ ${m.total}</p></div>
-                        <div><p class="text-[8px] opacity-40">PRICE</p><p class="font-black text-lg text-yellow-500">₨ ${m.price}</p></div>
-                        <div class="flex items-end"><button class="btn-buy w-full py-2 text-[10px] uppercase">Rent Now</button></div>
+                    <div class="machine-img">${m.name.includes('VIP') ? '💎' : '⛏️'}</div>
+                    <div class="p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-[10px] font-black text-yellow-500 uppercase">${m.name}</span>
+                            <span class="text-[10px] font-bold text-gray-400">Term: 30 Days</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-[10px] mb-4">
+                            <div class="bg-black/20 p-2 rounded-lg"><p class="opacity-50">HOURLY</p><p class="text-green-500 font-bold">PKR ${m.hourly}</p></div>
+                            <div class="bg-black/20 p-2 rounded-lg"><p class="opacity-50">DAILY</p><p class="text-green-500 font-bold">PKR ${m.daily}</p></div>
+                        </div>
+                        <button class="w-full p-3 bg-yellow-500 text-black font-black rounded-xl text-[10px] uppercase">Buy Machine (PKR ${m.price})</button>
                     </div>
                 </div>`;
             });
         }
 
-        function changePage(p) {
-            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
-            document.getElementById('p-' + p).classList.add('active-page');
+        function showPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('p-'+id).classList.add('active');
+            document.querySelectorAll('nav div').forEach(d => d.classList.remove('nav-active'));
+            document.getElementById('n-'+id).classList.add('nav-active');
         }
 
-        window.onload = () => { renderCloudPlans('normal'); }
+        window.onload = render;
     </script>
 </body>
 </html>
