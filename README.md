@@ -2,135 +2,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GBTS Ultimate Academy | Prime Solutions</title>
+    <title>GBTS God-Mode Elite | Prime Solutions</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap');
-        body { font-family: 'Outfit', sans-serif; background: #f8fafc; color: #1e293b; overflow-x: hidden; }
-        .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid #e2e8f0; }
+        body { font-family: 'Outfit', sans-serif; background: #f0f4f8; color: #1e293b; transition: 0.3s; }
         .tab-content { display: none; }
-        .active-tab { display: block; animation: slideUp 0.4s ease; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .active-tab { display: block; animation: zoomIn 0.3s ease; }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
         
-        /* Level Cards */
-        .level-card { border-radius: 40px; transition: 0.4s; background: white; border: 2px solid transparent; cursor: pointer; }
-        .level-card:hover:not(.locked) { transform: translateY(-10px); border-color: #1e3a8a; box-shadow: 0 20px 40px rgba(30,58,138,0.1); }
-        .locked { filter: grayscale(1); opacity: 0.5; cursor: not-allowed; background: #f1f5f9; }
-        .pending-glow { border: 2px solid #f59e0b; animation: pulse 2s infinite; background: #fffbeb; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        /* Advanced Chat */
+        #chatBox { height: 450px; overflow-y: auto; scroll-behavior: smooth; display: flex; flex-direction: column; gap: 10px; padding: 15px; }
+        .msg-bubble { background: white; padding: 12px 16px; border-radius: 20px 20px 20px 5px; max-width: 85%; position: relative; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+        .reply-box { font-size: 11px; background: #f1f5f9; padding: 5px 10px; border-left: 3px solid #1e3a8a; border-radius: 5px; margin-bottom: 5px; color: #64748b; }
+        .react-btn { font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .react-btn:hover { transform: scale(1.3); }
 
-        /* Chat System */
-        #chatBox { height: 350px; overflow-y: auto; scroll-behavior: smooth; border-radius: 25px; }
-        .msg { margin-bottom: 12px; padding: 12px 18px; border-radius: 20px 20px 20px 0; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.03); max-width: 80%; }
-        .msg-sender { font-size: 10px; font-weight: 900; color: #1e3a8a; text-transform: uppercase; margin-bottom: 2px; display: block; }
-        
-        /* Admin Broadcast Overlay */
-        #broadcast { display: none; background: #ef4444; color: white; padding: 10px; text-align: center; font-weight: 900; font-size: 12px; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; animation: blink 1s infinite; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        /* Lock Screen */
+        #lockOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; color: white; flex-direction: column; align-items: center; justify-content: center; }
+        .banned-msg { display: none; position: fixed; inset: 0; background: white; z-index: 4000; flex-direction: column; align-items: center; justify-content: center; text-align: center; p: 20px; }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-20">
 
-    <div id="broadcast">⚠️ SYSTEM NOTIFICATION: NEW SYLLABUS UPDATED!</div>
+    <div id="lockOverlay">
+        <h1 class="text-6xl font-black mb-4 text-red-600 animate-pulse">LOCKDOWN</h1>
+        <p class="text-xl font-bold uppercase tracking-widest">System Maintenance in Progress</p>
+    </div>
 
-    <div id="loginScreen" class="fixed inset-0 bg-[#020617] z-[2000] flex items-center justify-center p-6 hidden">
-        <div class="bg-white p-12 rounded-[60px] max-w-md w-full text-center shadow-2xl">
-            <h2 class="text-4xl font-black text-slate-900 mb-2 italic">PRIME ELITE</h2>
-            <p class="text-[10px] font-bold text-blue-500 mb-10 tracking-[0.3em] uppercase">Examination Hub 2026</p>
-            <input id="userName" type="text" placeholder="Enter Full Name" class="w-full p-6 bg-slate-50 rounded-3xl mb-4 border-2 border-transparent focus:border-blue-600 outline-none text-center font-bold">
-            <button onclick="login()" class="w-full bg-blue-900 text-white py-5 rounded-3xl font-black text-xl hover:scale-95 transition-all shadow-xl">START MISSION</button>
+    <div id="banScreen" class="banned-msg">
+        <h1 class="text-7xl mb-4">🚫</h1>
+        <h2 class="text-4xl font-black text-red-600 mb-2">ACCESS DENIED</h2>
+        <p class="font-bold text-slate-500">Aapko administration ne block kar diya hai.<br>Mazeed maloomat ke liye helpline par raabta karein.</p>
+    </div>
+
+    <div id="loginScreen" class="fixed inset-0 bg-slate-900 z-[2000] flex items-center justify-center p-6 hidden">
+        <div class="bg-white p-12 rounded-[50px] max-w-md w-full text-center shadow-2xl">
+            <h2 class="text-4xl font-black text-blue-900 mb-6 italic">PRIME ACADEMY</h2>
+            <input id="uInput" type="text" placeholder="Apna Name Likhein" class="w-full p-5 bg-gray-100 rounded-3xl mb-4 outline-none font-bold text-center border-2 border-transparent focus:border-blue-600">
+            <button onclick="doLogin()" class="w-full bg-blue-900 text-white py-4 rounded-3xl font-black text-lg">ENTER HUB</button>
         </div>
     </div>
 
-    <nav class="glass-nav sticky top-0 z-50 p-5 px-8 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center text-white font-black text-xs">P</div>
-            <h1 class="font-black text-lg italic tracking-tighter text-blue-900">PRIME HUB</h1>
-        </div>
-        <div class="flex gap-6">
-            <button onclick="showTab('levelsTab')" class="text-[10px] font-black uppercase text-blue-900">Levels</button>
-            <button onclick="showTab('chatTab')" class="text-[10px] font-black uppercase text-gray-500">Global Discussion</button>
-            <button onclick="showTab('bookTab')" class="text-[10px] font-black uppercase text-gray-500">Syllabus</button>
-            <button onclick="logout()" class="text-[10px] font-black uppercase text-red-500 underline">Exit</button>
+    <nav class="bg-white sticky top-0 z-50 p-4 border-b flex justify-between items-center px-8 shadow-sm">
+        <h1 class="font-black text-xl italic text-blue-900">PRIME HUB</h1>
+        <div class="flex gap-5">
+            <button onclick="showTab('levelsTab')" class="text-[10px] font-black uppercase text-blue-900">Exams</button>
+            <button onclick="showTab('chatTab')" class="text-[10px] font-black uppercase text-slate-500">Discussion</button>
+            <button onclick="showTab('godPanel')" id="adminLink" class="hidden text-[10px] font-black uppercase text-red-600 border-2 border-red-600 px-2 rounded">God Mode</button>
+            <button onclick="logout()" class="text-[10px] font-black uppercase text-red-500">Logout</button>
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-6 mt-6">
-
+    <main class="max-w-6xl mx-auto p-4 mt-6">
+        
         <div id="levelsTab" class="tab-content active-tab">
-            <div class="mb-10">
-                <h2 class="text-4xl font-black italic uppercase tracking-tighter">Mission Progress</h2>
-                <p id="welcome" class="text-blue-600 font-bold">Officer Status: Online</p>
-            </div>
             <div id="levelGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6"></div>
         </div>
 
         <div id="chatTab" class="tab-content">
-            <div class="max-w-2xl mx-auto">
-                <h2 class="text-3xl font-black mb-8 italic uppercase text-center">Candidate Discussion</h2>
-                <div id="chatBox" class="bg-slate-200/50 p-6 mb-4"></div>
-                <div class="flex gap-2">
-                    <input id="chatMsg" type="text" placeholder="Type a message..." class="flex-1 p-5 rounded-3xl outline-none border-2 focus:border-blue-900 font-medium">
-                    <button onclick="sendMsg()" class="bg-blue-900 text-white px-10 rounded-3xl font-black shadow-lg">SEND</button>
+            <div class="max-w-3xl mx-auto bg-slate-100 rounded-[40px] p-6 shadow-inner">
+                <div id="replyPreview" class="hidden bg-blue-100 p-3 rounded-2xl mb-2 flex justify-between items-center">
+                    <span id="replyingToText" class="text-xs font-bold text-blue-900 italic"></span>
+                    <button onclick="cancelReply()" class="text-red-500 font-black">×</button>
+                </div>
+                <div id="chatBox"></div>
+                <div class="flex gap-2 mt-4 bg-white p-2 rounded-3xl shadow-lg">
+                    <input id="msgInput" type="text" placeholder="Type a message..." class="flex-1 p-4 outline-none font-medium">
+                    <button onclick="pushMsg()" class="bg-blue-900 text-white px-8 rounded-2xl font-black">SEND</button>
                 </div>
             </div>
         </div>
 
-        <div id="bookTab" class="tab-content">
-            <h2 class="text-4xl font-black mb-10 italic uppercase text-center">Preparation Bible</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-8 rounded-[40px] border-l-[12px] border-blue-900 shadow-sm">
-                    <h4 class="font-black text-xl mb-4 text-blue-900">English Comprehensive</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        <b>Grammar:</b> Focus on Tenses, Active/Passive, and Direct/Indirect.<br>
-                        <b>Vocabulary:</b> Repeat: <i>Ambiguous, Benevolent, Cease, Dwelling.</i><br>
-                        <b>Test Tip:</b> Always read the passage twice before answering MCQs.
-                    </p>
-                </div>
-                <div class="bg-white p-8 rounded-[40px] border-l-[12px] border-green-600 shadow-sm">
-                    <h4 class="font-black text-xl mb-4 text-green-700">Islamic Studies Detailed</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        <b>Zakat:</b> Made compulsory in 2 AH. Gold Nisaab: 7.5 Tola.<br>
-                        <b>History:</b> First Masjid: Quba. Total Ghazwat: 27.<br>
-                        <b>Quran:</b> Surah Naml has two Bismillahs.
-                    </p>
-                </div>
-                <div class="bg-white p-8 rounded-[40px] border-l-[12px] border-orange-500 shadow-sm">
-                    <h4 class="font-black text-xl mb-4 text-orange-600">GK & Gilgit Baltistan</h4>
-                    <p class="text-sm text-gray-600 leading-relaxed">
-                        <b>Rivers:</b> Indus is the longest river. Neelum is in Kashmir.<br>
-                        <b>GB Districts:</b> Ghizer, Hunza, Nagar, Skardu, Shigar... (Total 14).<br>
-                        <b>Height:</b> Rakaposhi (7788m), Nanga Parbat (8126m).
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div id="godPanel" class="tab-content mt-12 bg-slate-950 p-10 rounded-[60px] text-white">
+        <div id="godPanel" class="tab-content bg-slate-900 p-10 rounded-[50px] text-white">
             <div class="flex justify-between items-center mb-10">
-                <h2 class="text-3xl font-black text-blue-400">GOD MODE DASHBOARD</h2>
-                <button onclick="broadcastMsg()" class="bg-yellow-500 text-black px-4 py-2 rounded-full font-black text-[10px]">SEND BROADCAST</button>
+                <h2 class="text-3xl font-black text-blue-400 italic">SYSTEM OVERRIDE</h2>
+                <div class="flex gap-2">
+                    <button onclick="toggleLock()" class="bg-red-600 px-4 py-2 rounded-xl text-xs font-bold">LOCKDOWN SITE</button>
+                </div>
             </div>
-            <div id="adminRequests" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-            <div class="mt-10 pt-6 border-t border-slate-800">
-                <button onclick="localStorage.clear(); location.reload();" class="text-red-500 font-bold text-xs">GLOBAL RESET (DELETE EVERYTHING)</button>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-slate-800 p-6 rounded-3xl">
+                    <h4 class="text-yellow-500 font-black mb-4 uppercase text-xs">Approval Requests</h4>
+                    <div id="reqList" class="space-y-3"></div>
+                </div>
+                <div class="bg-slate-800 p-6 rounded-3xl">
+                    <h4 class="text-red-500 font-black mb-4 uppercase text-xs">User Management (Ban System)</h4>
+                    <div class="flex gap-2 mb-4">
+                        <input id="banInput" type="text" placeholder="User Name" class="flex-1 p-2 rounded bg-slate-700 text-white outline-none">
+                        <button onclick="manageUser(true)" class="bg-red-600 px-3 rounded font-bold">BAN</button>
+                        <button onclick="manageUser(false)" class="bg-green-600 px-3 rounded font-bold">UNBAN</button>
+                    </div>
+                </div>
             </div>
         </div>
-
     </main>
 
-    <div id="testBox" class="hidden fixed inset-0 bg-white z-[1500] p-6 overflow-y-auto">
-        <div class="max-w-3xl mx-auto">
-            <h2 id="lvlTitle" class="text-4xl font-black text-blue-900 mb-12 italic uppercase text-center">EXAM START</h2>
-            <div id="quiz" class="space-y-6"></div>
-            <button onclick="finishTest()" class="w-full bg-blue-900 text-white py-6 rounded-[40px] mt-12 font-black text-2xl shadow-2xl">SUBMIT PAPER</button>
-        </div>
-    </div>
-
     <footer class="fixed bottom-0 left-0 right-0 p-4 text-center">
-        <span onclick="triggerGod()" class="text-[8px] text-gray-300 opacity-20 cursor-default">PRIME_SOLUTIONS_ROOT_KEY_2026</span>
+        <span onclick="triggerGod()" class="text-[8px] text-gray-400 opacity-20 cursor-default">PRIME_SOLUTIONS_GOD_KEY</span>
     </footer>
 
     <script>
@@ -147,134 +119,145 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let me = { name: "", level: 1, status: "ready" };
-        let godTaps = 0;
+        let me = { name: "", level: 1, status: "ready", isGod: false };
+        let replyData = null;
+        let taps = 0;
 
         window.onload = () => {
-            const saved = localStorage.getItem('u_name');
+            const saved = localStorage.getItem('hub_user');
             if(saved) {
                 me.name = saved;
-                me.level = parseInt(localStorage.getItem('u_lvl_' + saved)) || 1;
-                me.status = localStorage.getItem('u_status_' + saved) || "ready";
-                document.getElementById('welcome').innerText = "Officer: " + saved.toUpperCase();
-                renderLevels();
+                checkBanStatus();
+                listenLock();
                 listenChat();
-                listenBroadcast();
+                renderLevels();
             } else {
                 document.getElementById('loginScreen').classList.remove('hidden');
             }
         };
 
-        function login() {
-            const n = document.getElementById('userName').value.trim();
+        function doLogin() {
+            const n = document.getElementById('uInput').value.trim();
             if(!n) return;
-            localStorage.setItem('u_name', n);
+            localStorage.setItem('hub_user', n);
             location.reload();
         }
 
         function logout() { localStorage.clear(); location.reload(); }
+
+        // --- CHAT WITH REPLIES & REACTIONS ---
+        function pushMsg() {
+            const txt = document.getElementById('msgInput').value.trim();
+            if(!txt) return;
+            db.ref('global_chat_v2').push({
+                name: me.name,
+                text: txt,
+                replyTo: replyData,
+                time: Date.now()
+            });
+            cancelReply();
+            document.getElementById('msgInput').value = '';
+        }
+
+        function listenChat() {
+            db.ref('global_chat_v2').limitToLast(30).on('value', snap => {
+                const box = document.getElementById('chatBox');
+                box.innerHTML = '';
+                snap.forEach(c => {
+                    const d = c.val();
+                    const key = c.key;
+                    box.innerHTML += `
+                        <div class="msg-bubble ${d.name === me.name ? 'self-end' : 'self-start'}">
+                            <span class="text-[10px] font-black text-blue-900 uppercase">${d.name}</span>
+                            ${d.replyTo ? `<div class="reply-box">Replying to: ${d.replyTo}</div>` : ''}
+                            <p class="text-sm font-medium">${d.text}</p>
+                            <div class="mt-2 flex gap-2">
+                                <span class="react-btn" onclick="addReact('${key}', '🔥')">🔥</span>
+                                <span class="react-btn" onclick="addReact('${key}', '👍')">👍</span>
+                                <span class="text-[10px] text-blue-400 font-bold ml-4 cursor-pointer" onclick="setReply('${d.name}', '${d.text}')">REPLY</span>
+                            </div>
+                            <div id="react-${key}" class="text-[10px] mt-1 font-bold text-orange-500"></div>
+                        </div>
+                    `;
+                    // Fetch Reactions
+                    db.ref('reactions/'+key).on('value', rSnap => {
+                        const rArea = document.getElementById('react-'+key);
+                        if(rArea && rSnap.val()) rArea.innerText = Object.values(rSnap.val()).join(' ');
+                    });
+                });
+                box.scrollTop = box.scrollHeight;
+            });
+        }
+
+        function setReply(name, text) {
+            replyData = name + ": " + text;
+            document.getElementById('replyPreview').classList.remove('hidden');
+            document.getElementById('replyingToText').innerText = "Replying to: " + name;
+        }
+
+        function cancelReply() {
+            replyData = null;
+            document.getElementById('replyPreview').classList.add('hidden');
+        }
+
+        function addReact(key, emoji) {
+            db.ref('reactions/'+key).push(emoji);
+        }
+
+        // --- BAN & LOCKDOWN SYSTEM ---
+        function checkBanStatus() {
+            db.ref('banned_users/' + me.name).on('value', snap => {
+                if(snap.val()) document.getElementById('banScreen').style.display = 'flex';
+            });
+        }
+
+        function manageUser(ban) {
+            const target = document.getElementById('banInput').value.trim();
+            if(!target) return;
+            db.ref('banned_users/' + target).set(ban ? true : null);
+            alert(target + (ban ? " Banned!" : " Unbanned!"));
+            document.getElementById('banInput').value = '';
+        }
+
+        function toggleLock() {
+            db.ref('lockdown').once('value', snap => {
+                db.ref('lockdown').set(!snap.val());
+            });
+        }
+
+        function listenLock() {
+            db.ref('lockdown').on('value', snap => {
+                document.getElementById('lockOverlay').style.display = snap.val() ? 'flex' : 'none';
+            });
+        }
+
+        // --- GOD MODE TRIGGER ---
+        function triggerGod() {
+            taps++;
+            if(taps === 4) {
+                const p = prompt("ENTER SECRET GOD KEY:");
+                if(p === "prime786") {
+                    me.isGod = true;
+                    document.getElementById('adminLink').classList.remove('hidden');
+                    showTab('godPanel');
+                    alert("GOD MODE ACCESS GRANTED!");
+                }
+                taps = 0;
+            }
+        }
 
         function renderLevels() {
             const grid = document.getElementById('levelGrid');
             grid.innerHTML = '';
             for(let i=1; i<=10; i++) {
                 let locked = i > me.level;
-                let pending = (i === me.level && me.status === "pending");
                 grid.innerHTML += `
-                    <div onclick="openTest(${i}, ${locked}, ${pending})" class="level-card p-10 text-center shadow-md ${locked ? 'locked' : ''} ${pending ? 'pending-glow' : ''}">
-                        <div class="text-5xl mb-4">${locked ? '🔒' : (pending ? '⏳' : '🎖️')}</div>
-                        <h4 class="font-black text-sm">LEVEL ${i}</h4>
-                        <p class="text-[9px] font-bold mt-2 ${pending ? 'text-orange-500' : 'text-blue-600'}">${pending ? 'PENDING' : (locked ? 'LOCKED' : 'START')}</p>
+                    <div class="level-card p-10 text-center shadow-lg ${locked ? 'locked' : 'border-white'}">
+                        <div class="text-5xl mb-3">${locked ? '🔒' : '🎖️'}</div>
+                        <h4 class="font-black text-xs">LEVEL ${i}</h4>
                     </div>
                 `;
             }
-            updateGodPanel();
-        }
-
-        function openTest(n, l, p) {
-            if(l || p) return;
-            document.getElementById('testBox').classList.remove('hidden');
-            document.getElementById('lvlTitle').innerText = "Level 0" + n + " Professional Exam";
-            const quiz = document.getElementById('quiz');
-            quiz.innerHTML = '';
-            for(let i=1; i<=6; i++) {
-                quiz.innerHTML += `
-                    <div class="bg-slate-50 p-8 rounded-[40px] border-2 border-slate-100">
-                        <p class="font-black text-lg mb-6">Question 0${i}: Advanced GK/Syllabus Topic for Level ${n}?</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <label class="p-5 bg-white border-2 rounded-3xl cursor-pointer"><input type="radio" name="q${i}" value="1"> Option Alpha</label>
-                            <label class="p-5 bg-white border-2 rounded-3xl cursor-pointer"><input type="radio" name="q${i}" value="0"> Option Beta</label>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-
-        function finishTest() {
-            localStorage.setItem('u_status_' + me.name, "pending");
-            alert("Result: 85% PASSED! Request sent to God Mode for Approval.");
-            location.reload();
-        }
-
-        // CHAT LOGIC
-        function sendMsg() {
-            const msg = document.getElementById('chatMsg').value.trim();
-            if(!msg) return;
-            db.ref('global_chat').push({ name: me.name, text: msg, time: Date.now() });
-            document.getElementById('chatMsg').value = '';
-        }
-
-        function listenChat() {
-            const box = document.getElementById('chatBox');
-            db.ref('global_chat').limitToLast(20).on('value', snap => {
-                box.innerHTML = '';
-                snap.forEach(c => {
-                    const d = c.val();
-                    box.innerHTML += `<div class="msg"><span class="msg-sender">${d.name}</span><p class="text-sm font-medium">${d.text}</p></div>`;
-                });
-                box.scrollTop = box.scrollHeight;
-            });
-        }
-
-        // BROADCAST
-        function broadcastMsg() {
-            const m = prompt("Enter Broadcast Message:");
-            if(m) db.ref('broadcast').set(m);
-        }
-
-        function listenBroadcast() {
-            db.ref('broadcast').on('value', snap => {
-                const b = document.getElementById('broadcast');
-                if(snap.val()) { b.innerText = "📣 " + snap.val(); b.style.display = 'block'; }
-            });
-        }
-
-        // GOD MODE
-        function triggerGod() {
-            godTaps++;
-            if(godTaps === 4) {
-                const k = prompt("ENTER GOD KEY:");
-                if(k === "prime786") showTab('godPanel');
-                godTaps = 0;
-            }
-        }
-
-        function updateGodPanel() {
-            const admin = document.getElementById('adminRequests');
-            if(me.status === "pending") {
-                admin.innerHTML = `
-                    <div class="bg-white p-6 rounded-3xl flex justify-between items-center text-slate-900">
-                        <div><p class="font-black">${me.name}</p><p class="text-[10px] font-bold">Level ${me.level} Pass</p></div>
-                        <button onclick="godApprove()" class="bg-green-500 text-white px-6 py-2 rounded-xl font-bold">Approve</button>
-                    </div>
-                `;
-            } else { admin.innerHTML = "<p class='text-slate-500 italic text-xs'>No requests.</p>"; }
-        }
-
-        function godApprove() {
-            localStorage.setItem('u_lvl_' + me.name, me.level + 1);
-            localStorage.setItem('u_status_' + me.name, "ready");
-            location.reload();
         }
 
         function showTab(id) {
