@@ -2,98 +2,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GB Police Exam Portal | Prime Solutions</title>
+    <title>GB Police Official Mock Test | 2026</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .quiz-container { max-width: 800px; margin: 2rem auto; }
-        .option-label { transition: all 0.2s; border: 2px solid #e5e7eb; }
-        .option-label:hover { border-color: #2563eb; background-color: #eff6ff; }
-        input[type="radio"]:checked + span { color: #2563eb; font-weight: 600; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+        body { font-family: 'Roboto', sans-serif; scroll-behavior: smooth; }
+        .section-card { border-left: 5px solid #1e3a8a; background: white; transition: 0.3s; }
+        .option-box:hover { background-color: #f1f5f9; border-color: #1e3a8a; }
+        input[type="radio"] { accent-color: #1e3a8a; }
     </style>
 </head>
-<body class="p-4">
+<body class="bg-gray-100">
 
-    <div class="quiz-container">
-        <div class="bg-blue-900 text-white p-6 rounded-t-2xl shadow-lg">
-            <h1 class="text-2xl font-bold">GB Police Recruitment Test 2026</h1>
-            <p class="text-blue-200">Total Marks: 100 | Subject: All-in-One Mock Paper</p>
-            <div class="mt-4 flex justify-between items-center bg-blue-800 p-3 rounded-lg">
-                <span>Time Remaining: <span id="timer" class="font-mono font-bold text-yellow-400">90:00</span></span>
-                <span id="score-display" class="hidden font-bold">Score: 0/100</span>
+    <nav class="sticky top-0 z-50 bg-blue-900 text-white p-4 shadow-xl">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="font-bold text-xl">GB Police Exam Portal</h1>
+                <p class="text-xs text-blue-300">Constable (BPS-07) Mock Paper</p>
+            </div>
+            <div class="bg-blue-800 px-4 py-2 rounded-lg font-mono text-lg font-bold text-yellow-400" id="timer">
+                90:00
             </div>
         </div>
+    </nav>
 
-        <form id="quizForm" class="bg-white p-6 rounded-b-2xl shadow-md space-y-8">
-            
-            <div class="border-b pb-6">
-                <h2 class="text-blue-700 font-bold mb-4 uppercase text-sm tracking-widest">Section A: English</h2>
-                <p class="mb-4 font-medium">1. Choose the correct spelling:</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <label class="option-label p-3 rounded-xl cursor-pointer"><input type="radio" name="q1" value="0"> Commitee</label>
-                    <label class="option-label p-3 rounded-xl cursor-pointer"><input type="radio" name="q1" value="1"> Committee</label>
+    <div class="max-w-5xl mx-auto p-4 md:p-8">
+        <form id="officialExamForm">
+
+            <div class="section-card p-6 mb-8 rounded-r-xl shadow-md">
+                <h2 class="text-blue-900 font-black text-xl mb-6 border-b pb-2 uppercase italic">Section A: English (20 Marks)</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold mb-3">1. He is proficient ______ English.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q1" value="B" class="mr-2"> In</label>
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q1" value="A" class="mr-2"> At</label>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-semibold mb-3">2. Choose the Correct Spelling:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q2" value="A" class="mr-2"> Occasion</label>
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q2" value="C" class="mr-2"> Occassion</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="border-b pb-6">
-                <h2 class="text-blue-700 font-bold mb-4 uppercase text-sm tracking-widest">Section B: General Knowledge</h2>
-                <p class="mb-4 font-medium">2. Which is the largest district of Gilgit-Baltistan by area?</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <label class="option-label p-3 rounded-xl cursor-pointer"><input type="radio" name="q2" value="0"> Gilgit</label>
-                    <label class="option-label p-3 rounded-xl cursor-pointer"><input type="radio" name="q2" value="1"> Ghanche</label>
+            <div class="section-card p-6 mb-8 rounded-r-xl shadow-md border-l-green-600">
+                <h2 class="text-green-700 font-black text-xl mb-6 border-b pb-2 uppercase italic">Section B: GB Geography & GK (20 Marks)</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold mb-3">3. K2 is located in which district of GB?</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q3" value="C" class="mr-2"> Shigar</label>
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q3" value="B" class="mr-2"> Skardu</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="border-b pb-6">
-                <h2 class="text-blue-700 font-bold mb-4 uppercase text-sm tracking-widest">Section C: Islamiyat</h2>
-                <p class="mb-4 font-medium">3. How many Ghazwas are mentioned in the Holy Quran?</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <label class="option-label p-3 rounded-xl cursor-pointer"><input type="radio" name="q3" value="0"> 12</label>
-                    <label class="option-label p-3 rounded-xl cursor-pointer"><input type="radio" name="q3" value="1"> 27</label>
+            <div class="section-card p-6 mb-8 rounded-r-xl shadow-md border-l-red-600">
+                <h2 class="text-red-700 font-black text-xl mb-6 border-b pb-2 uppercase italic">Section C: Mathematics & IQ (20 Marks)</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <p class="font-semibold mb-3">4. Calculate 25% of 80:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q4" value="B" class="mr-2"> 20</label>
+                            <label class="option-box p-3 border rounded-lg cursor-pointer flex items-center"><input type="radio" name="q4" value="A" class="mr-2"> 15</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <button type="button" onclick="calculateScore()" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 transition shadow-lg">
-                FINISH & SHOW RESULT
-            </button>
+            <div class="fixed bottom-6 right-6">
+                <button type="button" onclick="showResult()" class="bg-blue-900 text-white font-bold py-4 px-8 rounded-full shadow-2xl hover:bg-black transition-all transform hover:scale-105">
+                    Finish Test & Get Marks
+                </button>
+            </div>
+
         </form>
+    </div>
 
-        <div id="resultModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-            <div class="bg-white p-8 rounded-2xl max-w-sm w-full text-center">
-                <h2 class="text-3xl font-bold mb-2">Test Completed!</h2>
-                <p class="text-gray-600 mb-6">Your total marks are:</p>
-                <div id="finalScore" class="text-5xl font-black text-blue-600 mb-6">0</div>
-                <button onclick="location.reload()" class="bg-blue-600 text-white px-6 py-2 rounded-lg">Retake Test</button>
-            </div>
+    <div id="resultBox" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-[100]">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full text-center">
+            <h3 class="text-2xl font-bold mb-4">Exam Completed!</h3>
+            <div class="text-6xl font-black text-blue-600 mb-2" id="finalScore">0</div>
+            <p class="text-gray-500 mb-6 font-bold uppercase tracking-widest">Total Marks Scored</p>
+            <button onclick="location.reload()" class="bg-gray-900 text-white w-full py-3 rounded-xl font-bold">Restart Test</button>
         </div>
     </div>
 
     <script>
-        // Correct Answers Matrix
-        const answers = { q1: "1", q2: "1", q3: "1" };
+        // Answers Configuration
+        const key = { q1: "B", q2: "A", q3: "C", q4: "B" };
 
-        function calculateScore() {
+        function showResult() {
             let score = 0;
-            const form = document.forms['quizForm'];
+            const totalQuestions = Object.keys(key).length;
+            const form = new FormData(document.getElementById('officialExamForm'));
             
-            // Logic to check answers
-            if(form['q1'].value === answers.q1) score += 33;
-            if(form['q2'].value === answers.q2) score += 33;
-            if(form['q3'].value === answers.q3) score += 34;
+            for(let [question, answer] of Object.entries(key)) {
+                if(form.get(question) === answer) {
+                    score++;
+                }
+            }
 
-            document.getElementById('finalScore').innerText = score + "/100";
-            document.getElementById('resultModal').classList.remove('hidden');
+            // Calculate percentage based on 100
+            const final = Math.round((score / totalQuestions) * 100);
+            document.getElementById('finalScore').innerText = final + "/100";
+            document.getElementById('resultBox').classList.remove('hidden');
         }
 
-        // Timer Logic
-        let timeLeft = 5400;
+        // Timer
+        let seconds = 5400;
         setInterval(() => {
-            if(timeLeft <= 0) return;
-            timeLeft--;
-            let mins = Math.floor(timeLeft / 60);
-            let secs = timeLeft % 60;
-            document.getElementById('timer').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if(seconds <= 0) return;
+            seconds--;
+            let m = Math.floor(seconds / 60);
+            let s = seconds % 60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
         }, 1000);
     </script>
 </body>
