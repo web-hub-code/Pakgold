@@ -2,233 +2,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GB Police Dark Portal | Muhammad Nazim</title>
+    <title>GB Police Exam Hub | Nazim</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Noto+Nastaliq+Urdu:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Ultra Dark Palette */
-            --pure-black: #020617;
-            --card-dark: #0f172a;
-            --accent-cyan: #22d3ee;
-            --accent-purple: #818cf8;
-            --text-silver: #94a3b8;
-            --text-white: #f8fafc;
-            --neon-border: rgba(34, 211, 238, 0.3);
+            /* تھوڑا روشن ڈارک شیڈز */
+            --bg-main: #1e293b; 
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-blue: #38bdf8;
+            --accent-green: #4ade80;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
         }
 
         body {
             font-family: 'Poppins', 'Noto Nastaliq Urdu', sans-serif;
-            background-color: var(--pure-black);
-            background-image: 
-                radial-gradient(at 0% 0%, rgba(129, 140, 248, 0.05) 0px, transparent 50%),
-                radial-gradient(at 100% 0%, rgba(34, 211, 238, 0.05) 0px, transparent 50%);
-            color: var(--text-white);
+            background: var(--bg-main);
+            /* ہلکا سا گریڈینٹ تاکہ بالکل کالا نہ لگے */
+            background-image: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: var(--text-main);
             margin: 0;
-            padding: 0;
             line-height: 1.6;
         }
 
-        /* Dark Header with Glassmorphism */
         header {
             padding: 60px 20px;
             text-align: center;
             background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--neon-border);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid var(--glass-border);
         }
 
         header h1 {
             font-size: 2.8rem;
             margin: 0;
-            background: linear-gradient(to right, var(--accent-cyan), var(--accent-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5));
-        }
-
-        .status-badge {
-            display: inline-block;
-            margin-top: 15px;
-            padding: 5px 15px;
-            background: rgba(34, 211, 238, 0.1);
-            border: 1px solid var(--accent-cyan);
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: var(--accent-cyan);
+            color: var(--accent-blue);
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
         }
 
         .container {
             max-width: 1100px;
-            margin: 40px auto;
+            margin: -30px auto 50px;
             padding: 0 20px;
         }
 
-        /* Dark Navigation */
-        .section-nav {
+        /* Category Sections */
+        .section-box {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(12px);
+        }
+
+        h2.cat-title {
+            color: var(--accent-blue);
+            font-size: 1.5rem;
+            margin-bottom: 25px;
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
         }
 
-        .nav-link {
-            background: var(--card-dark);
-            color: var(--text-silver);
-            padding: 12px 25px;
-            border-radius: 12px;
-            text-decoration: none;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            background: var(--accent-cyan);
-            color: var(--pure-black);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
-            transform: translateY(-3px);
-        }
-
-        .category-header {
-            color: var(--accent-cyan);
-            border-right: 4px solid var(--accent-cyan);
-            padding-right: 15px;
-            margin: 50px 0 25px;
-            font-size: 1.8rem;
-        }
-
-        /* Dark Mode Cards */
+        /* Question Cards - Cleaner Look */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 15px;
         }
 
         .card {
-            background: var(--card-dark);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
             border-radius: 16px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            border-color: var(--accent-cyan);
-            background: rgba(30, 41, 59, 0.8);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-            transform: scale(1.02);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: var(--accent-blue);
+            transform: translateY(-3px);
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--accent-cyan);
-            opacity: 0;
-            transition: 0.3s;
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .q-tag {
-            color: var(--accent-purple);
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .question-text {
-            font-size: 1.15rem;
-            color: var(--text-white);
-            margin-bottom: 15px;
-            display: block;
-        }
-
-        .ans-box {
-            background: rgba(34, 211, 238, 0.05);
-            color: var(--accent-cyan);
-            padding: 10px 15px;
-            border-radius: 8px;
-            border-right: 3px solid var(--accent-cyan);
+        .q-text {
             font-weight: 500;
+            color: var(--text-main);
+            display: block;
         }
+
+        .a-text {
+            display: none;
+            margin-top: 12px;
+            color: var(--accent-green);
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 10px;
+        }
+
+        .card.open .a-text {
+            display: block;
+        }
+
+        /* Math Table */
+        .symbol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .symbol-item {
+            background: rgba(56, 189, 248, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .sym { font-size: 1.5rem; color: var(--accent-blue); display: block; }
+        .lab { font-size: 0.8rem; color: var(--text-dim); }
 
         footer {
             text-align: center;
-            padding: 60px;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-silver);
-            margin-top: 80px;
+            padding: 40px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
         }
-
-        /* Custom Scrollbar for Dark Mode */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--pure-black); }
-        ::-webkit-scrollbar-thumb { background: var(--card-dark); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
 
     </style>
 </head>
 <body>
 
 <header>
-    <h1>GB POLICE PORTAL</h1>
-    <div class="status-badge">● Candidate: Muhammad Nazim | Post: Foot Constable</div>
+    <h1>GB Police Prep Portal</h1>
+    <p style="color: var(--text-dim)">باصلاحیت امیدوار: محمد ناظم</p>
 </header>
 
 <div class="container">
-    <div class="section-nav">
-        <a href="#" class="nav-link">اسلامیات</a>
-        <a href="#" class="nav-link">مطالعہ پاکستان</a>
-        <a href="#" class="nav-link">جنرل نالج</a>
-        <a href="#" class="nav-link">ریاضی</a>
-    </div>
 
-    <h2 class="category-header">🌙 اسلامیات (Deep Dark Mode)</h2>
-    <div class="grid">
-        <div class="card">
-            <span class="q-tag">Question</span>
-            <span class="question-text">پہلے حافظ قرآن صحابی کا نام بتائیں؟</span>
-            <div class="ans-box">حضرت عثمان غنی (R.A)</div>
-        </div>
-
-        <div class="card">
-            <span class="q-tag">Question</span>
-            <span class="question-text">اسلام قبول کرنے والے پہلے رومی صحابی؟</span>
-            <div class="ans-box">حضرت صہیب رومی (R.A)</div>
-        </div>
-
-        <div class="card">
-            <span class="q-tag">Question</span>
-            <span class="question-text">غزوہ خندق میں مدینہ کا محاصرہ کتنے دن رہا؟</span>
-            <div class="ans-box">30 دن</div>
+    <div class="section-box">
+        <h2 class="cat-title">🏔️ گلگت بلتستان اسپیشل</h2>
+        <div class="grid">
+            <div class="card" onclick="this.classList.toggle('open')">
+                <span class="q-text">K2 کی کل بلندی کتنی ہے؟</span>
+                <div class="a-text">8,611 میٹر</div>
+            </div>
+            <div class="card" onclick="this.classList.toggle('open')">
+                <span class="q-text">ضلع غذر کا رقبہ کتنا ہے؟</span>
+                <div class="a-text">9,635 مربع کلومیٹر</div>
+            </div>
+            <div class="card" onclick="this.classList.toggle('open')">
+                <span class="q-text">GB کی پہلی خاتون گورنر؟</span>
+                <div class="a-text">بیگم شمع خالد</div>
+            </div>
         </div>
     </div>
 
-    <h2 class="category-header">🇵🇰 مطالعہ پاکستان</h2>
-    <div class="grid">
-        <div class="card">
-            <span class="q-tag">Geography</span>
-            <span class="question-text">پاکستان کا کل رقبہ کتنا ہے؟</span>
-            <div class="ans-box">796,096 مربع کلومیٹر</div>
-        </div>
-        <div class="card">
-            <span class="q-tag">History</span>
-            <span class="question-text">اردو ہندی تنازعہ کب شروع ہوا؟</span>
-            <div class="ans-box">1867 میں</div>
+    <div class="section-box">
+        <h2 class="cat-title">📐 ریاضی کی علامات</h2>
+        <div class="symbol-grid">
+            <div class="symbol-item"><span class="sym">∴</span><span class="lab">لہٰذا</span></div>
+            <div class="symbol-item"><span class="sym">∵</span><span class="lab">کیونکہ</span></div>
+            <div class="symbol-item"><span class="sym">≅</span><span class="lab">مماثل ہے</span></div>
+            <div class="symbol-item"><span class="sym">∝</span><span class="lab">تناسب</span></div>
+            <div class="symbol-item"><span class="sym">∈</span><span class="lab">رکن ہے</span></div>
+            <div class="symbol-item"><span class="sym">∞</span><span class="lab">لامحدود</span></div>
         </div>
     </div>
+
+    <div class="section-box">
+        <h2 class="cat-title">📖 اسلامیات و مطالعہ پاکستان</h2>
+        <div class="grid">
+            <div class="card" onclick="this.classList.toggle('open')">
+                <span class="q-text">اردو کس زبان کا لفظ ہے؟</span>
+                <div class="a-text">ترکی (لشکر)</div>
+            </div>
+            <div class="card" onclick="this.classList.toggle('open')">
+                <span class="q-text">فتحِ مکہ پر آپ ﷺ نے کونسی سورہ تلاوت فرمائی؟</span>
+                <div class="a-text">سورہ الفتح</div>
+            </div>
+            <div class="card" onclick="this.classList.toggle('open')">
+                <span class="q-text">پاکستان کا کل رقبہ کتنا ہے؟</span>
+                <div class="a-text">796,096 مربع کلومیٹر</div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <footer>
-    <p>Created by <b>Prime Solutions</b> | Dark Ops Edition</p>
+    <p>Prime Solutions © 2026 | Created for Muhammad Nazim</p>
 </footer>
 
 </body>
