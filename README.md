@@ -3,267 +3,227 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAK GOLD | Ultra All-In-One</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
+<title>PAKGOLD v2 - Premium Dashboard</title>
 
 <style>
 body{
 margin:0;
-font-family:Inter;
-background:radial-gradient(circle at top,#141a2e,#0b0f1a);
+font-family:Arial;
+background:linear-gradient(135deg,#0f172a,#020617);
 color:white;
 }
 
-/* HEADER */
-.header{
-display:flex;
-justify-content:space-between;
-padding:18px;
-font-weight:800;
+.sidebar{
+position:fixed;
+left:0;top:0;
+width:250px;
+height:100%;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(12px);
+padding:20px;
 }
-.logo span{color:#d4af37}
 
-/* CARDS */
+.sidebar h2{
+color:#fbbf24;
+text-align:center;
+}
+
+.sidebar button{
+width:100%;
+margin:8px 0;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#1e293b;
+color:white;
+cursor:pointer;
+transition:0.3s;
+}
+
+.sidebar button:hover{
+background:#fbbf24;
+color:black;
+}
+
+.main{
+margin-left:270px;
+padding:20px;
+}
+
 .card{
-margin:12px;
-padding:16px;
-border-radius:20px;
 background:rgba(255,255,255,0.06);
-backdrop-filter:blur(15px);
-border:1px solid rgba(255,255,255,0.1);
-animation:fade .4s ease;
+padding:20px;
+margin:10px;
+border-radius:15px;
+backdrop-filter:blur(10px);
+animation:fade 0.4s ease;
 }
 
 @keyframes fade{
-from{opacity:0;transform:translateY(15px)}
+from{opacity:0;transform:translateY(10px)}
 to{opacity:1;transform:translateY(0)}
 }
 
-/* BUTTON */
-.btn{
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-background:linear-gradient(135deg,#d4af37,#b8860b);
-font-weight:800;
-}
-
-/* INPUT */
-.input{
-width:100%;
-padding:12px;
-margin:6px 0;
-border-radius:12px;
-border:none;
-background:rgba(255,255,255,0.08);
-color:white;
-}
-
-/* NAV */
-.nav{
-position:fixed;
-bottom:0;
-width:100%;
-display:flex;
-background:rgba(0,0,0,0.6);
-backdrop-filter:blur(10px);
-}
-.nav div{
-flex:1;
-text-align:center;
+input,button{
 padding:10px;
-font-size:12px;
+margin:5px;
+border-radius:10px;
+border:none;
 }
 
-/* PAGES */
-.page{display:none;padding-bottom:80px}
-.page.active{display:block}
+button{
+cursor:pointer;
+background:#fbbf24;
+color:black;
+font-weight:bold;
+}
+
+.hidden{display:none;}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+td,th{
+padding:10px;
+border-bottom:1px solid #334155;
+}
 </style>
 </head>
 
-<body onload="init()">
+<body>
 
-<!-- LOGIN -->
-<div id="login" class="page active">
-<div class="card">
-<h2>PAK GOLD LOGIN</h2>
-<input class="input" id="ph" placeholder="Phone">
-<input class="input" id="pw" type="password" placeholder="Password">
-<button class="btn" onclick="login()">Login</button>
-</div>
-</div>
-
-<!-- HOME -->
-<div id="home" class="page">
-<div class="header">
-<div class="logo">PAK <span>GOLD</span></div>
+<div class="sidebar">
+<h2>PAKGOLD v2</h2>
+<button onclick="show('home')">Home</button>
+<button onclick="show('requests')">Requests</button>
+<button onclick="show('history')">History</button>
+<button onclick="show('ref')">Referral</button>
+<button onclick="show('admin')">Admin</button>
 </div>
 
-<div class="card">
-<h3>Welcome <span id="u"></span></h3>
-<h1>Balance: <span id="bal">0</span></h1>
+<div class="main">
+
+<div id="home" class="card">
+<h2>Welcome Sweetie 😘</h2>
+<p>Premium Live Dashboard</p>
+<p>Points: <span id="points">0</span></p>
 </div>
 
-<div class="card">
-<button class="btn" onclick="nav('deposit')">Deposit</button><br><br>
-<button class="btn" onclick="nav('withdraw')">Withdraw</button><br><br>
-<button class="btn" onclick="nav('history')">History</button>
+<div id="requests" class="card hidden">
+<h2>Send Request</h2>
+<input id="amount" placeholder="Enter request value"/>
+<button onclick="sendRequest()">Submit</button>
 </div>
 
-<div class="card">
-<button class="btn" onclick="earn()">+ Demo Earn</button>
-</div>
-</div>
-
-<!-- DEPOSIT -->
-<div id="deposit" class="page">
-<div class="card">
-<h3>Deposit Request</h3>
-<input class="input" id="damt">
-<input class="input" id="dtid">
-<button class="btn" onclick="req('Deposit')">Submit</button>
-</div>
-</div>
-
-<!-- WITHDRAW -->
-<div id="withdraw" class="page">
-<div class="card">
-<h3>Withdraw Request</h3>
-<input class="input" id="wamt">
-<input class="input" id="wacc">
-<button class="btn" onclick="req('Withdraw')">Submit</button>
-</div>
-</div>
-
-<!-- HISTORY -->
-<div id="history" class="page">
-<div class="card">
+<div id="history" class="card hidden">
 <h2>History</h2>
-<div id="hist"></div>
-</div>
-</div>
-
-<!-- ADMIN -->
-<div id="admin" class="page">
-<div class="card">
-<h2>ADMIN PANEL</h2>
-<div id="reqs"></div>
-</div>
+<div id="historyBox"></div>
 </div>
 
-<!-- NAV -->
-<div class="nav">
-<div onclick="nav('home')">Home</div>
-<div onclick="nav('deposit')">Depo</div>
-<div onclick="nav('withdraw')">Wth</div>
-<div onclick="nav('admin')">Admin</div>
+<div id="ref" class="card hidden">
+<h2>Referral System</h2>
+<p>Your Code: <span id="refCode">-</span></p>
 </div>
 
-<script>
-firebase.initializeApp({
-apiKey:"demo",
-databaseURL:"https://dark-web-9-default-rtdb.firebaseio.com"
+<div id="admin" class="card hidden">
+<h2>Admin Panel</h2>
+<div id="reqTable"></div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyCMG6KG_oD8cjEk4YpbxXik-C5qK5MDHk",
+authDomain: "dark-web-9.firebaseapp.com",
+databaseURL: "https://dark-web-9-default-rtdb.firebaseio.com",
+projectId: "dark-web-9",
+storageBucket: "dark-web-9.firebasestorage.app",
+messagingSenderId: "564328425161",
+appId: "1:564328425161:web:eb109ab77356dafe7f4f18"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth();
+
+let uid = "";
+
+signInAnonymously(auth).then(u=>{
+uid = u.user.uid;
+initUser();
+loadRequests();
 });
 
-const db=firebase.database();
-let user=null;
+window.show = (id)=>{
+document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+};
 
-function init(){
-user=localStorage.getItem("u");
-if(user){show("home");load();historyLoad();}
-else show("login");
-}
-
-function show(p){
-document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
-document.getElementById(p).classList.add("active");
-}
-
-function login(){
-user=ph.value;
-localStorage.setItem("u",user);
-db.ref("users/"+user).update({bal:0});
-init();
-}
-
-function load(){
-db.ref("users/"+user).on("value",s=>{
-let d=s.val()||{bal:0};
-u.innerText=user;
-bal.innerText=d.bal;
+function initUser(){
+set(ref(db,"users/"+uid),{
+points:0,
+refCode: uid.slice(0,6)
 });
-}
+document.getElementById("refCode").innerText = uid.slice(0,6);
 
-function earn(){
-db.ref("users/"+user).once("value",s=>{
-let d=s.val()||{bal:0};
-db.ref("users/"+user).update({bal:d.bal+10});
-log("Earned +10");
-});
+onValue(ref(db,"users/"+uid),(snap)=>{
+if(snap.exists()){
+document.getElementById("points").innerText = snap.val().points;
 }
-
-function req(t){
-let obj={type:t,user:user,status:"Pending",time:Date.now()};
-if(t=="Deposit"){obj.amount=damt.value;obj.tid=dtid.value;}
-if(t=="Withdraw"){obj.amount=wamt.value;obj.acc=wacc.value;}
-db.ref("req").push(obj);
-log(t+" Sent");
-}
-
-function log(t){
-db.ref("hist/"+user).push({t,time:Date.now()});
-historyLoad();
-}
-
-function historyLoad(){
-db.ref("hist/"+user).on("value",s=>{
-let h="";
-s.forEach(x=>{
-h+=`<div class="card">${x.val().t}</div>`;
-});
-hist.innerHTML=h;
 });
 }
 
-function nav(p){
-show(p);
-if(p=="admin")admin();
-}
+window.sendRequest = ()=>{
+let val = document.getElementById("amount").value;
 
-function admin(){
-if(localStorage.getItem("admin")!=="true"){
-alert("No Access");
-show("home");
-return;
-}
-
-db.ref("req").on("value",s=>{
-let h="";
-s.forEach(x=>{
-let d=x.val();
-if(d.status=="Pending"){
-h+=`
-<div class="card">
-<b>${d.type}</b><br>
-User:${d.user}<br>
-Amt:${d.amount}<br><br>
-<button onclick="a('${x.key}')">Approve</button>
-<button onclick="r('${x.key}')">Reject</button>
-</div>`;
-}
+let r = push(ref(db,"requests"));
+set(r,{
+uid:uid,
+value:val,
+status:"pending",
+time:Date.now()
 });
-reqs.innerHTML=h;
+
+alert("Request Sent 🚀");
+};
+
+function loadRequests(){
+onValue(ref(db,"requests"),snap=>{
+let html = "<table><tr><th>User</th><th>Value</th><th>Status</th><th>Action</th></tr>";
+
+snap.forEach(r=>{
+let d = r.val();
+html += `
+<tr>
+<td>${d.uid.slice(0,5)}</td>
+<td>${d.value}</td>
+<td>${d.status}</td>
+<td>
+<button onclick="approve('${r.key}')">Approve</button>
+<button onclick="reject('${r.key}')">Reject</button>
+</td>
+</tr>
+`;
+});
+
+document.getElementById("reqTable").innerHTML = html;
 });
 }
 
-function a(k){db.ref("req/"+k).update({status:"Approved"})}
-function r(k){db.ref("req/"+k).update({status:"Rejected"})}
+window.approve = (id)=>{
+update(ref(db,"requests/"+id),{status:"approved"});
+};
+
+window.reject = (id)=>{
+update(ref(db,"requests/"+id),{status:"rejected"});
+};
 </script>
 
 </body>
