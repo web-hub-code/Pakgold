@@ -1,9 +1,8 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAK GOLD | Global Empire v3.0</title>
+    <title>PAK GOLD | Official Premium</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
@@ -11,269 +10,258 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --neon: #ffcc00; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --sub: #64748b; --success: #10b981; --error: #ef4444; }
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
+        :root { --neon: #ffcc00; --bg: #0b0f19; --card: #161b2c; --text: #ffffff; --sub: #94a3b8; --acc: #22c55e; --err: #ef4444; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: var(--bg); color: var(--text); }
 
-        .page { display:none; animation: fadeIn 0.4s ease-out; padding-bottom: 120px; min-height: 100vh; }
+        /* Modern UI */
+        .page { display:none; animation: slideUp 0.4s ease; padding-bottom: 100px; }
         .page.active { display:block; }
-        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
 
-        /* UI Elements */
-        .glass-card { background: var(--card); margin: 15px; padding: 25px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
-        .neon-btn { background: var(--text); color: white; border: none; padding: 16px; border-radius: 20px; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; }
-        .neon-btn:active { background: var(--neon); color: black; transform: scale(0.98); }
-        .input-box { width: 100%; padding: 18px; border-radius: 18px; border: 2px solid #f1f5f9; background: #f8fafc; font-size: 1rem; outline: none; margin-bottom: 15px; }
-
-        /* Navigation */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 15px 0 30px; border-top: 1px solid #f1f5f9; z-index: 999; }
-        .nav-item { color: var(--sub); text-align: center; font-size: 0.65rem; font-weight: 700; }
-        .nav-item.active { color: var(--neon); }
-        .nav-item i { font-size: 1.5rem; display: block; margin-bottom: 5px; }
-
-        /* Nodes Scroll */
-        .scroll-nodes { display: flex; overflow-x: auto; gap: 15px; padding: 10px 20px; scrollbar-width: none; }
-        .vip-node { border: 2px solid var(--neon); background: #fffdf2; }
+        .glass-card { background: var(--card); margin: 15px; padding: 20px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05); }
+        .input-grp { margin-bottom: 15px; }
+        .input-grp input, .input-grp select { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #2d3748; background: #0b0f19; color: white; outline: none; }
         
-        /* History Items */
-        .h-card { padding: 15px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
-        .status-pend { color: var(--neon); font-weight: 800; }
-        .status-done { color: var(--success); font-weight: 800; }
+        .neon-btn { background: var(--neon); color: #000; border: none; padding: 15px; border-radius: 15px; font-weight: 800; cursor: pointer; width: 100%; box-shadow: 0 4px 15px rgba(255,204,0,0.3); }
+        .neon-btn.reject { background: var(--err); color: white; }
+
+        /* Header */
+        .top-bar { padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .user-id-chip { background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 20px; font-size: 0.7rem; color: var(--neon); }
+
+        /* Nav */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: rgba(22,27,44,0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0 25px; border-top: 1px solid rgba(255,255,255,0.05); }
+        .nav-item { color: var(--sub); text-align: center; font-size: 0.6rem; }
+        .nav-item.active { color: var(--neon); }
+        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body onload="checkSession()">
 
-    <!-- AUTH PAGE -->
-    <section id="auth-pg" class="page active" style="padding: 60px 30px;">
-        <h1 style="font-size: 2.8rem; font-weight: 900; letter-spacing: -2px;">PAK <span style="color:var(--neon)">GOLD</span></h1>
-        <p id="auth-sub" style="color:var(--sub); margin-bottom: 40px; font-weight: 600;">Secure Mining Protocol v3.0</p>
-        
-        <input type="number" id="auth-phone" class="input-box" placeholder="Phone Number">
-        <input type="password" id="auth-pass" class="input-box" placeholder="Access Password">
-        <div id="signup-extra" style="display:none;"><input type="text" id="auth-ref" class="input-box" placeholder="Referral Link (Optional)"></div>
-        
-        <button class="neon-btn" onclick="handleAuth()" id="auth-btn">LOGIN SESSION</button>
-        <p onclick="toggleAuth()" style="text-align:center; margin-top:25px; font-weight:800; font-size:0.75rem; color:var(--sub);" id="toggle-txt">New Miner? Create Account</p>
+    <!-- AUTH SECTION -->
+    <section id="auth-pg" class="page active" style="padding: 40px 20px;">
+        <h1 style="color:var(--neon); font-size: 2.5rem; font-weight: 800;">PAK GOLD</h1>
+        <p style="color:var(--sub); margin-bottom: 30px;">Login to your trusted dashboard</p>
+        <div class="input-grp"><input type="number" id="auth-ph" placeholder="Phone Number"></div>
+        <div class="input-grp"><input type="password" id="auth-ps" placeholder="Password"></div>
+        <div id="signup-box" style="display:none;">
+            <div class="input-grp"><input type="text" id="auth-ref" placeholder="Referral Code (Optional)"></div>
+        </div>
+        <button class="neon-btn" onclick="handleAuth()">ENTER SYSTEM</button>
+        <p onclick="toggleAuth()" style="text-align:center; margin-top:20px; font-size:0.8rem;" id="t-txt">New user? Signup</p>
     </section>
 
     <!-- DASHBOARD -->
     <section id="dash-pg" class="page">
-        <div style="padding: 25px; display: flex; justify-content: space-between; align-items: center;">
-            <b style="font-size:1.2rem;">CORE <span style="color:var(--neon)">GOLD</span></b>
-            <i class="fa fa-bell" onclick="alert('No new notifications sweetie!')"></i>
+        <div class="top-bar">
+            <div><small style="color:var(--sub)">Welcome back,</small><br><b id="u-ph-display">User</b></div>
+            <div class="user-id-chip" id="u-id-display">ID: ---</div>
         </div>
 
-        <div class="glass-card" style="background: var(--text); color: white; position: relative; overflow: hidden;">
-            <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: var(--neon); border-radius: 50%; opacity: 0.2; filter: blur(30px);"></div>
-            <small style="opacity: 0.6; font-weight: 700; letter-spacing: 1px;">AVAILABLE ASSETS</small>
-            <h1 style="font-size: 3.2rem; margin: 10px 0; font-weight: 800;">Rs <span id="u-wallet">0.00</span></h1>
-            <div style="display: flex; gap: 30px; margin-top: 15px;">
-                <div><small style="opacity: 0.6;">Today's Mining</small><br><b style="color:var(--neon); font-size: 1.1rem;" id="u-profit">0.00</b></div>
-                <div><small style="opacity: 0.6;">Total Team</small><br><b id="u-team" style="font-size: 1.1rem;">0</b></div>
+        <div class="glass-card" style="background: linear-gradient(135deg, #ffcc00, #f59e0b); color: #000;">
+            <p style="font-weight: 700; opacity: 0.8;">TOTAL BALANCE (After Tax)</p>
+            <h1 style="font-size: 2.5rem; font-weight: 900;">Rs <span id="u-wallet">0</span></h1>
+            <div style="display:flex; justify-content:space-between; margin-top:15px; background:rgba(0,0,0,0.1); padding:10px; border-radius:10px;">
+                <span>Profit: <b id="u-profit">0</b></span>
+                <span>Team: <b id="u-team">0</b></span>
             </div>
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 15px;">
-            <div class="glass-card" onclick="nav('depo-pg')" style="margin:0; text-align:center; padding:15px;"><i class="fa fa-qrcode" style="color:var(--neon)"></i><br><span style="font-size:0.6rem; font-weight:800;">Deposit</span></div>
-            <div class="glass-card" onclick="nav('with-pg')" style="margin:0; text-align:center; padding:15px;"><i class="fa fa-paper-plane"></i><br><span style="font-size:0.6rem; font-weight:800;">Withdraw</span></div>
-            <div class="glass-card" onclick="window.open('https://chat.whatsapp.com/YOUR_LINK_HERE')" style="margin:0; text-align:center; padding:15px;"><i class="fab fa-whatsapp" style="color:#25D366"></i><br><span style="font-size:0.6rem; font-weight:800;">Group</span></div>
-            <div class="glass-card" onclick="nav('history-pg')" style="margin:0; text-align:center; padding:15px;"><i class="fa fa-list-check"></i><br><span style="font-size:0.6rem; font-weight:800;">History</span></div>
+        <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; padding:0 15px;">
+            <div class="glass-card" onclick="nav('depo-pg')" style="margin:0; text-align:center; padding:15px;"><i class="fa fa-arrow-down" style="color:var(--neon)"></i><br><small>Deposit</small></div>
+            <div class="glass-card" onclick="nav('with-pg')" style="margin:0; text-align:center; padding:15px;"><i class="fa fa-arrow-up"></i><br><small>Withdraw</small></div>
+            <div class="glass-card" onclick="window.open('https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3')" style="margin:0; text-align:center; padding:15px;"><i class="fab fa-whatsapp"></i><br><small>Group</small></div>
+            <div class="glass-card" onclick="nav('promo-pg')" style="margin:0; text-align:center; padding:15px;"><i class="fa fa-gift"></i><br><small>Promo</small></div>
         </div>
 
-        <h3 style="padding: 30px 20px 5px;">VIP Elite Nodes</h3>
-        <div class="scroll-nodes" id="vip-list"></div>
-
-        <h3 style="padding: 10px 20px 5px;">Economical Nodes</h3>
-        <div id="regular-list"></div>
+        <h3 style="padding:20px;">Mining Nodes</h3>
+        <div id="plan-list"></div>
     </section>
 
     <!-- DEPOSIT PAGE -->
     <section id="depo-pg" class="page">
-        <h2 style="padding:20px;">Secure Deposit</h2>
+        <h2 style="padding:20px;">Modern Deposit</h2>
         <div class="glass-card">
-            <p style="font-size:0.8rem; color:var(--sub); margin-bottom:15px;">Transfer to: <b>JazzCash (03XX-XXXXXXX)</b></p>
-            <input type="number" id="depo-amt" class="input-box" placeholder="Amount (Min 500)">
-            <input type="text" id="depo-tid" class="input-box" placeholder="Transaction ID (TID)">
-            <button class="neon-btn" onclick="submitDeposit()">SUBMIT REQUEST</button>
+            <p style="font-size:0.7rem; color:var(--sub)">*5% System Tax applicable on all deposits</p><br>
+            <div class="input-grp">
+                <select id="depo-method">
+                    <option value="JazzCash/SadaPay (03705519562)">JazzCash/SadaPay (03705519562)</option>
+                    <option value="EasyPaisa (03379827882)">EasyPaisa (03379827882)</option>
+                </select>
+            </div>
+            <div class="input-grp"><input type="number" id="depo-amt" placeholder="Amount (Min 500)"></div>
+            <div class="input-grp"><input type="text" id="depo-tid" placeholder="TID Number (Transaction ID)"></div>
+            <button class="neon-btn" onclick="submitDepo()">SUBMIT PROOF</button>
         </div>
     </section>
 
-    <!-- WITHDRAWAL PAGE -->
+    <!-- WITHDRAW PAGE -->
     <section id="with-pg" class="page">
-        <h2 style="padding:20px;">Request Payout</h2>
+        <h2 style="padding:20px;">Withdraw Funds</h2>
         <div class="glass-card">
-            <input type="number" id="with-amt" class="input-box" placeholder="Amount (Min 500)">
-            <input type="text" id="with-wallet" class="input-box" placeholder="EasyPaisa/JazzCash Number">
-            <button class="neon-btn" onclick="submitWithdraw()">WITHDRAW NOW</button>
-        </div>
-    </section>
-
-    <!-- HISTORY PAGE -->
-    <section id="history-pg" class="page">
-        <h2 style="padding:20px;">Finance Logs</h2>
-        <div class="glass-card" id="hist-list">
-            <p style="text-align:center; color:var(--sub);">No transactions found.</p>
+            <div class="input-grp">
+                <select id="with-method">
+                    <option value="JazzCash">JazzCash</option>
+                    <option value="EasyPaisa">EasyPaisa</option>
+                    <option value="SadaPay">SadaPay</option>
+                    <option value="Binance (USDT)">Binance (USDT)</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+            </div>
+            <div class="input-grp"><input type="number" id="with-amt" placeholder="Amount"></div>
+            <div class="input-grp"><input type="text" id="with-acc" placeholder="Account Number"></div>
+            <div class="input-grp"><input type="text" id="with-name" placeholder="Account Holder Name"></div>
+            <button class="neon-btn" onclick="submitWith()">REQUEST PAYOUT</button>
         </div>
     </section>
 
     <!-- ADMIN PANEL -->
     <section id="admin-pg" class="page">
-        <h2 style="padding:20px;">God Mode Control</h2>
-        <div class="glass-card">
-            <h4>Update User Wallet</h4>
-            <input type="number" id="adm-ph" class="input-box" placeholder="User Phone">
-            <input type="number" id="adm-val" class="input-box" placeholder="Amount to Add">
-            <button class="neon-btn" onclick="adminAdd()">INJECT BALANCE</button>
-        </div>
-        <div id="admin-requests" style="padding:20px;"></div>
-    </section>
-
-    <!-- INFO PAGE -->
-    <section id="info-pg" class="page">
-        <h2 style="padding:20px;">Company Profile</h2>
-        <div class="glass-card">
-            <h4>PAK GOLD OFFICIAL</h4>
-            <p style="font-size:0.8rem; color:var(--sub); line-height:1.6;">Email: support@pakgold.com<br>Location: Blue Area, Islamabad<br>License: #2026-PG-99</p>
-        </div>
-        <div class="glass-card">
-            <h4>Privacy Policy</h4>
-            <p style="font-size:0.75rem; color:var(--sub);">We use end-to-end encryption. Your funds are protected by decentralized blockchain proof-of-stake.</p>
-        </div>
+        <h2 style="padding:20px;">Master Administration</h2>
+        <div id="admin-req-list" style="padding:0 10px;"></div>
     </section>
 
     <!-- NAV BAR -->
-    <nav class="nav-bar" id="bot-nav" style="display:none;">
-        <div class="nav-item active" onclick="nav('dash-pg')"><i class="fa fa-house"></i>Home</div>
-        <div class="nav-item" onclick="nav('info-pg')"><i class="fa fa-shield-halved"></i>Policy</div>
-        <div class="nav-item" onclick="nav('history-pg')"><i class="fa fa-clock-rotate-left"></i>Logs</div>
-        <div class="nav-item" onclick="logout()"><i class="fa fa-right-from-bracket"></i>Exit</div>
+    <nav class="nav-bar" id="bottom-nav" style="display:none;">
+        <div class="nav-item active" onclick="nav('dash-pg')"><i class="fa fa-home"></i>Home</div>
+        <div class="nav-item" onclick="nav('depo-pg')"><i class="fa fa-plus"></i>Depo</div>
+        <div class="nav-item" onclick="nav('with-pg')"><i class="fa fa-wallet"></i>With</div>
+        <div class="nav-item" onclick="logout()"><i class="fa fa-sign-out"></i>Exit</div>
     </nav>
 
     <script>
         const fbConfig = { apiKey: "AIzaSyCMG6KG_oD8cjEk4YpbxXik-C5q8K5MDHk", databaseURL: "https://dark-web-9-default-rtdb.firebaseio.com" };
         firebase.initializeApp(fbConfig); const db = firebase.database();
-        let user = localStorage.getItem('pg_empire_user');
+        let user = localStorage.getItem('pg_user');
+        let isSignup = false;
 
         function checkSession() {
-            if(user) { 
-                if(user === "78692") { nav('admin-pg'); loadAdminRequests(); }
+            if(user) {
+                document.getElementById('bottom-nav').style.display = 'flex';
+                if(user === "03705519562") { nav('admin-pg'); loadAdmin(); }
                 else { nav('dash-pg'); syncUser(); }
-                document.getElementById('bot-nav').style.display = 'flex';
             }
-            loadAllNodes();
+            renderPlans();
+        }
+
+        function toggleAuth() {
+            isSignup = !isSignup;
+            document.getElementById('signup-box').style.display = isSignup ? 'block' : 'none';
+            document.getElementById('t-txt').innerText = isSignup ? "Already have account? Login" : "New user? Signup";
         }
 
         function handleAuth() {
-            const ph = document.getElementById('auth-phone').value;
-            const ps = document.getElementById('auth-pass').value;
-            if(ph === "78692" && ps === "sweetie123") { localStorage.setItem('pg_empire_user', "78692"); location.reload(); return; }
+            const ph = document.getElementById('auth-ph').value;
+            const ps = document.getElementById('auth-ps').value;
+            const ref = document.getElementById('auth-ref').value;
+
+            if(ph === "03705519562" && ps === "admin786") {
+                localStorage.setItem('pg_user', ph); location.reload(); return;
+            }
+
             db.ref('users/'+ph).once('value', s => {
-                if(!s.exists()) db.ref('users/'+ph).set({phone:ph, pass:ps, wallet:0, profit:0, speed:0});
-                localStorage.setItem('pg_empire_user', ph); location.reload();
+                if(isSignup) {
+                    if(s.exists()) return alert("User exists");
+                    const myID = "PG" + Math.floor(Math.random()*89999 + 10000);
+                    db.ref('users/'+ph).set({phone:ph, pass:ps, wallet:0, profit:0, speed:0, myRef:myID, refBy:ref||'none'});
+                    // Referral Bonus Logic
+                    if(ref) {
+                        db.ref('users').orderByChild('myRef').equalTo(ref).once('value', rs => {
+                            rs.forEach(child => {
+                                db.ref('users/'+child.key).update({wallet: child.val().wallet + 100}); // Rs 100 per referral
+                            });
+                        });
+                    }
+                    alert("Account Created!");
+                }
+                localStorage.setItem('pg_user', ph); location.reload();
             });
         }
 
         function syncUser() {
             db.ref('users/'+user).on('value', s => {
                 const d = s.val();
-                document.getElementById('u-wallet').innerText = d.wallet.toLocaleString();
+                document.getElementById('u-wallet').innerText = Math.floor(d.wallet);
                 document.getElementById('u-profit').innerText = d.profit.toFixed(2);
+                document.getElementById('u-id-display').innerText = "ID: " + d.myRef;
+                document.getElementById('u-ph-display').innerText = d.phone;
             });
             setInterval(() => {
                 db.ref('users/'+user).once('value', s => {
                     const d = s.val(); if(d.speed > 0) db.ref('users/'+user).update({profit: d.profit + d.speed});
                 });
             }, 1000);
-            loadHistory();
         }
 
-        function loadAllNodes() {
-            const regs = Array.from({length: 15}, (_, i) => ({n:`Reg-Node ${i+1}`, p:(i+1)*200, d:(i+1)*25}));
-            const vips = Array.from({length: 5}, (_, i) => ({n:`VIP Elite ${i+1}`, p:(i+1)*5000, d:(i+1)*850}));
-            
-            let regCont = document.getElementById('regular-list');
-            let vipCont = document.getElementById('vip-list');
-
-            regs.forEach(i => {
-                regCont.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div><b>${i.n}</b><br><small>Earn Rs ${i.d}/Day</small></div>
-                    <button class="neon-btn" style="width:auto; padding:8px 15px;" onclick="buyNode(${i.p}, ${i.d/86400})">Rs ${i.p}</button>
-                </div>`;
-            });
-
-            vips.forEach(i => {
-                vipCont.innerHTML += `<div class="glass-card vip-node" style="min-width:200px; text-align:center;">
-                    <i class="fa fa-crown" style="color:var(--neon)"></i><br><b>${i.n}</b><br>
-                    <b style="color:var(--success)">+Rs ${i.d}/Day</b><br><br>
-                    <button class="neon-btn" onclick="buyNode(${i.p}, ${i.d/86400})">Rs ${i.p}</button>
-                </div>`;
-            });
-        }
-
-        function buyNode(p, s) {
-            db.ref('users/'+user).once('value', v => {
-                if(v.val().wallet < p) return alert("Insufficient Assets!");
-                db.ref('users/'+user).update({wallet: v.val().wallet - p, speed: v.val().speed + s});
-                alert("Node Established! 🚀");
-            });
-        }
-
-        function submitDeposit() {
-            const amt = document.getElementById('depo-amt').value;
+        function submitDepo() {
+            const amt = parseInt(document.getElementById('depo-amt').value);
             const tid = document.getElementById('depo-tid').value;
-            db.ref('requests').push({type:'Deposit', user:user, amt:amt, tid:tid, status:'Pending'});
-            alert("Request sent to Admin!");
+            const met = document.getElementById('depo-method').value;
+            if(amt < 500) return alert("Min 500");
+            const afterTax = amt * 0.95; // 5% Tax
+            db.ref('requests').push({type:'Deposit', user:user, amt:afterTax, fullAmt:amt, tid:tid, method:met, status:'Pending'});
+            alert("Deposit Proof Sent! Wait for Approval.");
         }
 
-        function submitWithdraw() {
-            const amt = document.getElementById('with-amt').value;
-            const wall = document.getElementById('with-wallet').value;
+        function submitWith() {
+            const amt = parseInt(document.getElementById('with-amt').value);
+            const acc = document.getElementById('with-acc').value;
+            const met = document.getElementById('with-method').value;
             db.ref('users/'+user).once('value', s => {
-                if(s.val().wallet < amt) return alert("Low Balance!");
-                db.ref('requests').push({type:'Withdraw', user:user, amt:amt, wall:wall, status:'Pending'});
+                if(s.val().wallet < amt) return alert("Low Balance");
+                const afterTax = amt * 0.95;
+                db.ref('requests').push({type:'Withdraw', user:user, amt:afterTax, fullAmt:amt, acc:acc, method:met, status:'Pending'});
                 db.ref('users/'+user).update({wallet: s.val().wallet - amt});
-                alert("Withdraw Request sent!");
+                alert("Withdrawal Requested! Tax Deducted.");
             });
         }
 
-        function loadHistory() {
+        function loadAdmin() {
             db.ref('requests').on('value', s => {
-                let h = document.getElementById('hist-list'); h.innerHTML = "";
-                s.forEach(child => {
-                    if(child.val().user === user) {
-                        h.innerHTML += `<div class="h-card">
-                            <div><b>${child.val().type}</b><br><small>Rs ${child.val().amt}</small></div>
-                            <span class="${child.val().status==='Pending'?'status-pend':'status-done'}">${child.val().status}</span>
-                        </div>`;
-                    }
-                });
-            });
-        }
-
-        // ADMIN FUNCTIONS
-        function loadAdminRequests() {
-            db.ref('requests').on('value', s => {
-                let cont = document.getElementById('admin-requests'); cont.innerHTML = "<h3>Pending Requests</h3>";
+                let html = "<h3>Pending Tasks</h3>";
                 s.forEach(child => {
                     if(child.val().status === 'Pending') {
-                        cont.innerHTML += `<div class="glass-card">
-                            <p><b>${child.val().type}</b> | User: ${child.val().user}</p>
-                            <p>Amt: ${child.val().amt} | Info: ${child.val().tid || child.val().wall}</p>
-                            <button onclick="approveReq('${child.key}', '${child.val().user}', ${child.val().amt}, '${child.val().type}')" style="background:var(--success); color:white; border:none; padding:10px; border-radius:10px;">Approve</button>
+                        const d = child.val();
+                        html += `<div class="glass-card">
+                            <b>${d.type} [${d.method}]</b><hr style="opacity:0.1;margin:10px 0;">
+                            User: ${d.user} | Amount: ${d.fullAmt}<br>
+                            Detail: ${d.tid || d.acc}<br><br>
+                            <button class="neon-btn" onclick="approve('${child.key}','${d.user}',${d.amt},'${d.type}')">APPROVE</button>
+                            <button class="neon-btn reject" onclick="reject('${child.key}','${d.user}',${d.fullAmt},'${d.type}')" style="margin-top:5px;">REJECT</button>
                         </div>`;
                     }
                 });
+                document.getElementById('admin-req-list').innerHTML = html;
             });
         }
 
-        function approveReq(key, uid, amt, type) {
+        function approve(key, uid, amt, type) {
             if(type === 'Deposit') {
                 db.ref('users/'+uid).once('value', s => {
-                    db.ref('users/'+uid).update({wallet: s.val().wallet + parseInt(amt)});
+                    db.ref('users/'+uid).update({wallet: s.val().wallet + amt});
                 });
             }
-            db.ref('requests/'+key).update({status: 'Completed'});
-            alert("Approved!");
+            db.ref('requests/'+key).update({status:'Approved'});
+        }
+
+        function reject(key, uid, amt, type) {
+            if(type === 'Withdraw') { // Return money on reject
+                db.ref('users/'+uid).once('value', s => {
+                    db.ref('users/'+uid).update({wallet: s.val().wallet + amt});
+                });
+            }
+            db.ref('requests/'+key).update({status:'Rejected'});
+        }
+
+        function renderPlans() {
+            let list = document.getElementById('plan-list');
+            for(let i=1; i<=15; i++) {
+                list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><i class="fa fa-microchip" style="color:var(--neon)"></i> <b>Node V${i}</b><br><small>Rs ${i*50}/day</small></div>
+                    <button class="neon-btn" style="width:auto; padding:8px 15px;" onclick="buy(${i*1000}, ${i*50/86400})">Rs ${i*1000}</button>
+                </div>`;
+            }
         }
 
         function nav(id) {
