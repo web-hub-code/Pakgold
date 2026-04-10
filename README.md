@@ -3,72 +3,44 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAKGOLD - Premium SaaS Dashboard</title>
+<title>PAKGOLD ULTRA DASHBOARD</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#0b1220;
+background:#050816;
 color:white;
 overflow-x:hidden;
 }
 
-/* HERO */
-.hero{
-height:100vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-background:radial-gradient(circle at top,#fbbf24,#0b1220);
-}
-
-.hero h1{
-font-size:55px;
-animation:fade 1s ease;
+.glow{
 color:#fbbf24;
+text-shadow:0 0 10px #fbbf24;
 }
 
-.hero p{
-opacity:0.8;
-}
-
-.btn{
-padding:12px 22px;
-margin-top:20px;
-background:#fbbf24;
-border:none;
-border-radius:10px;
-cursor:pointer;
-font-weight:bold;
-}
-
-/* SIDEBAR */
 .sidebar{
 position:fixed;
-left:0;top:0;
-width:250px;
+left:0;
+top:0;
+width:220px;
 height:100%;
 background:rgba(255,255,255,0.05);
 backdrop-filter:blur(12px);
-padding:20px;
-display:none;
+padding:15px;
 }
 
 .sidebar h2{
-color:#fbbf24;
 text-align:center;
 }
 
 .sidebar button{
 width:100%;
 margin:8px 0;
-padding:12px;
+padding:10px;
 border:none;
 border-radius:10px;
-background:#1e293b;
+background:#111827;
 color:white;
 cursor:pointer;
 transition:0.3s;
@@ -79,205 +51,137 @@ background:#fbbf24;
 color:black;
 }
 
-/* MAIN */
 .main{
-margin-left:270px;
+margin-left:240px;
 padding:20px;
-display:none;
 }
 
 .card{
 background:rgba(255,255,255,0.06);
 padding:20px;
 border-radius:15px;
-margin:10px;
-backdrop-filter:blur(10px);
-animation:fade 0.4s ease;
+margin-bottom:15px;
+animation:fadeIn 0.6s ease-in-out;
 }
 
-@keyframes fade{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1;transform:translateY(0)}
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
 }
 
-input,button{
-padding:10px;
-border-radius:10px;
-border:none;
-margin:5px;
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
 }
 
-button{
-cursor:pointer;
+.box{
+background:rgba(255,255,255,0.05);
+padding:15px;
+border-radius:12px;
+text-align:center;
+transition:0.3s;
+}
+
+.box:hover{
+transform:scale(1.05);
+background:rgba(251,191,36,0.1);
+}
+
+.badge{
+color:#fbbf24;
 font-weight:bold;
 }
 
-/* TABLE */
-table{
-width:100%;
-border-collapse:collapse;
+.topbar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
 }
 
-td,th{
-padding:10px;
-border-bottom:1px solid #334155;
+.pulse{
+animation:pulse 1.5s infinite;
 }
 
-.hidden{display:none;}
-
-@media(max-width:768px){
-.sidebar{width:200px}
-.main{margin-left:0}
-.hero h1{font-size:32px}
+@keyframes pulse{
+0%{box-shadow:0 0 0 0 rgba(251,191,36,0.7);}
+70%{box-shadow:0 0 0 15px rgba(251,191,36,0);}
+100%{box-shadow:0 0 0 0 rgba(251,191,36,0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero" id="hero">
-<h1>PAKGOLD 💰</h1>
-<p>Premium SaaS Dashboard System</p>
-<button class="btn" onclick="start()">Enter Dashboard</button>
+<div class="sidebar">
+<h2 class="glow">PAKGOLD</h2>
+<button>Dashboard</button>
+<button>Invest</button>
+<button>Deposit</button>
+<button>Withdraw</button>
+<button>Referral</button>
+<button>History</button>
+<button>Logout</button>
 </div>
 
-<!-- SIDEBAR -->
-<div class="sidebar" id="sidebar">
-<h2>PAKGOLD</h2>
-<button onclick="show('home')">Dashboard</button>
-<button onclick="show('requests')">Requests</button>
-<button onclick="show('admin')">Admin</button>
-<button onclick="logout()">Logout</button>
+<div class="main">
+
+<div class="topbar">
+<h1 class="glow">Dashboard</h1>
+<span class="badge pulse">LIVE DEMO</span>
 </div>
 
-<!-- MAIN -->
-<div class="main" id="main">
+<div class="grid">
 
-<div id="home" class="card">
-<h2>Welcome to PAKGOLD 🚀</h2>
-<p>User ID: <span id="uid"></span></p>
-<p>Status: Active Session</p>
+<div class="box">
+<h3>Balance</h3>
+<p>₨ 12,500</p>
 </div>
 
-<div id="requests" class="card hidden">
-<h2>Create Request</h2>
-<input id="msg" placeholder="Enter request message"/>
-<button onclick="send()">Submit</button>
-<div id="list"></div>
+<div class="box">
+<h3>Nodes</h3>
+<p>15 Active</p>
 </div>
 
-<div id="admin" class="card hidden">
-<h2>Admin Panel</h2>
-<div id="adminList"></div>
+<div class="box">
+<h3>Profit</h3>
+<p>₨ 2,340</p>
+</div>
+
+<div class="box">
+<h3>Referrals</h3>
+<p>8 Users</p>
 </div>
 
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, set, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+<div class="card">
+<h2 class="glow">Activity Feed</h2>
+<ul>
+<li>✔ Deposit request pending</li>
+<li>✔ Node activated</li>
+<li>✔ Referral bonus added</li>
+<li>✔ Withdrawal queued</li>
+</ul>
+</div>
 
-const firebaseConfig = {
-apiKey: "AIzaSyCMG6KG_oD8cjEk4YpbxXik-C5qK5MDHk",
-authDomain: "dark-web-9.firebaseapp.com",
-databaseURL: "https://dark-web-9-default-rtdb.firebaseio.com",
-projectId: "dark-web-9",
-storageBucket: "dark-web-9.firebasestorage.app",
-messagingSenderId: "564328425161",
-appId: "1:564328425161:web:eb109ab77356dafe7f4f18"
-};
+<div class="card">
+<h2 class="glow">Investment Plans</h2>
+<div class="grid">
+<div class="box">Basic Plan<br>₨200 Node</div>
+<div class="box">Pro Plan<br>₨500 Node</div>
+<div class="box">VIP Plan<br>₨1000 Node</div>
+</div>
+</div>
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth();
+<div class="card">
+<h2 class="glow">Referral System</h2>
+<p>Your Code: <b>PAK12345</b></p>
+<p>Earn rewards by inviting friends 💎</p>
+</div>
 
-let uid="";
-
-window.start=()=>{
-document.getElementById("hero").style.display="none";
-document.getElementById("sidebar").style.display="block";
-document.getElementById("main").style.display="block";
-
-signInAnonymously(auth).then(u=>{
-uid=u.user.uid;
-document.getElementById("uid").innerText=uid.slice(0,8);
-load();
-loadAdmin();
-});
-};
-
-window.show=(id)=>{
-document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
-document.getElementById(id).classList.remove("hidden");
-};
-
-window.send=()=>{
-let msg=document.getElementById("msg").value;
-
-let r=push(ref(db,"requests"));
-set(r,{
-uid:uid,
-msg:msg,
-status:"pending",
-time:Date.now()
-});
-
-document.getElementById("msg").value="";
-};
-
-function load(){
-onValue(ref(db,"requests"),snap=>{
-let html="";
-snap.forEach(r=>{
-let d=r.val();
-if(d.uid===uid){
-html+=`<p>📩 ${d.msg} - ${d.status}</p>`;
-}
-});
-document.getElementById("list").innerHTML=html;
-});
-}
-
-function loadAdmin(){
-onValue(ref(db,"requests"),snap=>{
-let html=`<table>
-<tr><th>User</th><th>Message</th><th>Status</th><th>Action</th></tr>`;
-
-snap.forEach(r=>{
-let d=r.val();
-
-html+=`
-<tr>
-<td>${d.uid.slice(0,5)}</td>
-<td>${d.msg}</td>
-<td>${d.status}</td>
-<td>
-<button onclick="approve('${r.key}')">✔</button>
-<button onclick="reject('${r.key}')">❌</button>
-</td>
-</tr>
-`;
-});
-
-html+="</table>";
-document.getElementById("adminList").innerHTML=html;
-});
-}
-
-window.approve=(id)=>{
-update(ref(db,"requests/"+id),{status:"approved"});
-};
-
-window.reject=(id)=>{
-update(ref(db,"requests/"+id),{status:"rejected"});
-};
-
-window.logout=()=>{
-location.reload();
-};
-</script>
+</div>
 
 </body>
 </html>
