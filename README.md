@@ -3,165 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAK GOLD | Official Certified Platform</title>
+    <title>PAK GOLD | Live Neural Terminal</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --gold: #d4af37; --dark: #0a0f1d; --white: #ffffff; --green: #00c853; --glass: rgba(255,255,255,0.05); }
-        * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit',sans-serif; }
-        body { background: #070b14; color: var(--white); }
+        :root { --neon: #00f2ff; --gold: #f59e0b; --bg: #020617; --glass: rgba(255, 255, 255, 0.03); }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Space Grotesk', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        .page { display:none; min-height:100vh; padding-bottom:120px; animation: slideIn 0.4s ease-out; }
+        /* Real-Time Notification Pop-up */
+        #live-toast { position: fixed; bottom: 100px; left: 20px; right: 20px; background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: 20px; border: 1px solid var(--neon); display: flex; align-items: center; gap: 15px; transform: translateY(200px); transition: 0.5s ease; z-index: 10000; }
+        #live-toast.show { transform: translateY(0); }
+
+        /* Animated Progress Bar */
+        .progress-container { background: #1e293b; height: 8px; border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 65%; background: linear-gradient(90deg, var(--gold), #fbbf24); border-radius: 10px; box-shadow: 0 0 10px var(--gold); }
+
+        /* Glassmorphism Cards */
+        .page { display:none; padding-bottom: 120px; animation: scaleUp 0.4s ease; }
         .page.active { display:block; }
-        @keyframes slideIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+        @keyframes scaleUp { from { opacity:0; transform: scale(0.98); } to { opacity:1; transform: scale(1); } }
 
-        /* Trust Banner */
-        .trust-banner { background: var(--green); color: white; padding: 5px; font-size: 0.65rem; text-align: center; font-weight: 800; }
+        .main-card { background: linear-gradient(145deg, rgba(30,41,59,0.5), rgba(15,23,42,0.8)); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); margin: 20px; border-radius: 35px; padding: 30px; position: relative; overflow: hidden; }
+        .main-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, var(--neon), transparent 30%); animation: rotate 4s linear infinite; z-index: -1; opacity: 0.2; }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
 
-        /* Certificate Modal */
-        #cert-modal { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; display:none; align-items:center; justify-content:center; padding:20px; }
-        .cert-box { background:white; padding:20px; border-radius:15px; text-align:center; color:#000; border:5px solid var(--gold); }
+        /* Live Mining Indicator */
+        .mining-status { display: flex; align-items: center; gap: 10px; font-size: 0.7rem; color: var(--neon); margin-bottom: 15px; }
+        .pulse { width: 8px; height: 8px; background: var(--neon); border-radius: 50%; box-shadow: 0 0 10px var(--neon); animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2.5); opacity: 0; } }
 
-        /* Premium Assets Card */
-        .asset-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); margin: 20px; padding: 30px; border-radius: 35px; border: 1px solid var(--gold); position: relative; box-shadow: 0 0 30px rgba(212,175,55,0.2); }
-        .asset-card::after { content:'CERTIFIED'; position:absolute; top:20px; right:-20px; background:var(--gold); color:black; padding:5px 30px; transform: rotate(45deg); font-size:0.6rem; font-weight:900; }
+        /* Action Grid */
+        .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        .action-box { background: var(--glass); border: 1px solid rgba(255,255,255,0.08); padding: 25px 15px; border-radius: 25px; text-align: center; }
+        .action-box i { font-size: 1.8rem; margin-bottom: 10px; color: var(--gold); }
 
-        /* Node Item */
-        .node-box { background: #111827; margin: 15px 20px; padding: 25px; border-radius: 25px; border-left: 5px solid var(--gold); display: flex; justify-content: space-between; align-items: center; }
-        .node-tag { background: rgba(0,200,83,0.1); color: var(--green); padding: 4px 12px; border-radius: 50px; font-size: 0.6rem; font-weight: 800; margin-bottom: 8px; display: inline-block; }
+        /* Bottom Nav (Ultra Modern) */
+        .tab-bar { position: fixed; bottom: 25px; left: 20px; right: 20px; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(25px); height: 75px; border-radius: 25px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.5); z-index: 1000; }
+        .tab { text-align: center; color: #64748b; font-size: 0.65rem; font-weight: 700; transition: 0.3s; }
+        .tab.active { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
+        .tab i { font-size: 1.5rem; display: block; margin-bottom: 3px; }
 
-        /* Trust Badges Footer */
-        .trust-badges { text-align: center; padding: 20px; opacity: 0.4; filter: grayscale(1); }
-        .trust-badges i { font-size: 1.5rem; margin: 0 15px; }
-
-        /* Nav */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0f172a; display: flex; justify-content: space-around; padding: 15px 0 35px; border-top: 1px solid var(--glass); border-radius: 30px 30px 0 0; }
-        .nav-item { color: #4b5563; text-align: center; font-size: 0.7rem; cursor: pointer; }
-        .nav-item.active { color: var(--gold); }
-        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 5px; }
-
-        .action-btn { background: var(--gold); color: #000; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 900; font-size: 0.8rem; cursor: pointer; }
+        .btn-prime { background: linear-gradient(90deg, #00f2ff, #0061ff); color: #fff; border: none; padding: 18px; border-radius: 20px; width: 100%; font-weight: 800; font-size: 1rem; box-shadow: 0 10px 20px rgba(0,242,255,0.2); }
     </style>
 </head>
 <body onload="initApp()">
 
-    <!-- Certificate Overlay -->
-    <div id="cert-modal">
-        <div class="cert-box">
-            <i class="fa fa-award fa-4x" style="color:var(--gold)"></i>
-            <h2 style="margin:15px 0;">Official License</h2>
-            <p style="font-size:0.8rem; line-height:1.5;">PAK GOLD is a registered digital mining entity under International Blockchain Regulatory Standards.</p>
-            <hr style="margin:15px 0; opacity:0.1;">
-            <button onclick="closeCert()" style="background:black; color:white; padding:10px 30px; border-radius:10px; border:none; font-weight:800;">CONTINUE</button>
+    <!-- Real-Time Proof Toast -->
+    <div id="live-toast">
+        <div style="background:var(--neon); width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:#000;"><i class="fa fa-check"></i></div>
+        <div>
+            <div style="font-size: 0.8rem; font-weight: 700;" id="toast-user">User 0321***</div>
+            <div style="font-size: 0.65rem; color: #94a3b8;" id="toast-msg">Successfully withdrew Rs 4,200</div>
         </div>
     </div>
 
-    <div class="trust-banner"><i class="fa fa-shield-alt"></i> SSL SECURE END-TO-END ENCRYPTED TERMINAL</div>
-
-    <!-- LOGIN -->
-    <section id="login" class="page active">
-        <div style="padding: 80px 40px; text-align: center;">
-            <img src="https://cdn-icons-png.flaticon.com/512/2583/2583277.png" width="100" style="margin-bottom:30px; filter: drop-shadow(0 0 10px gold);">
-            <h1 style="font-size: 3rem; font-weight: 900; color: var(--gold);">PAK GOLD</h1>
-            <p style="opacity: 0.4; margin-bottom: 50px;">Global Enterprise Solutions</p>
-            <input type="number" id="ph" placeholder="Phone Number" style="width:100%; padding:20px; background:#111827; border:1px solid #374151; border-radius:15px; color:white; margin-bottom:15px;">
-            <input type="password" id="pass" placeholder="Password" style="width:100%; padding:20px; background:#111827; border:1px solid #374151; border-radius:15px; color:white; margin-bottom:15px;">
-            <button onclick="handleAuth()" style="width:100%; background:var(--gold); color:black; padding:20px; border:none; border-radius:15px; font-weight:900; font-size:1.1rem;">SECURE ACCESS</button>
-        </div>
-    </section>
-
-    <!-- DASHBOARD -->
-    <section id="home" class="page">
+    <!-- HOME SECTION -->
+    <section id="home" class="page active">
         <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-            <b style="font-size:1.4rem;">PG <span style="color:var(--gold)">CORE</span></b>
-            <div style="color:var(--green); font-size:0.7rem; font-weight:800;"><i class="fa fa-circle"></i> SERVER LIVE</div>
-        </div>
-
-        <div class="asset-card">
-            <small style="opacity:0.6;">CURRENT BALANCE</small>
-            <h1>Rs <span id="u_wallet">0.00</span></h1>
-            <div style="display:flex; justify-content:space-between; margin-top:25px;">
-                <div><small style="opacity:0.5;">Daily Profit</small><br><b id="u_profit" style="color:var(--gold)">0.00</b></div>
-                <div><small style="opacity:0.5;">System Hash</small><br><b id="u_speed">0.00000</b></div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px;">CORE <span style="color:var(--neon)">AI</span></h2>
+            <div style="background:var(--glass); padding:8px 15px; border-radius:50px; font-size:0.7rem; border:1px solid rgba(255,255,255,0.1);">
+                ID: <span id="u_id" style="color:var(--gold)">03xx...</span>
             </div>
         </div>
 
-        <div style="padding: 10px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-            <button onclick="nav('deposit')" style="background:#1f2937; color:white; border:1px solid #374151; padding:15px; border-radius:15px; font-weight:800;"><i class="fa fa-plus-circle"></i> DEPOSIT</button>
-            <button onclick="nav('withdraw')" style="background:#1f2937; color:white; border:1px solid #374151; padding:15px; border-radius:15px; font-weight:800;"><i class="fa fa-minus-circle"></i> WITHDRAW</button>
+        <div class="main-card">
+            <div class="mining-status"><div class="pulse"></div> AI MINING ENGINE ACTIVE</div>
+            <small style="color: #94a3b8; font-weight: 700; letter-spacing: 2px;">AVAILABLE CAPITAL</small>
+            <h1 style="font-size: 3.5rem; letter-spacing: -2px; margin: 10px 0;">Rs <span id="u_wallet">0.00</span></h1>
+            <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <div style="font-size: 0.8rem; color: #94a3b8;">Pending Yield: <br><b id="u_profit" style="color:var(--neon)">0.00</b></div>
+                <div style="text-align: right; font-size: 0.8rem; color: #94a3b8;">System Load: <br><b style="color:#00c853;">98.4%</b></div>
+            </div>
+            <div class="progress-container"><div class="progress-fill" id="p_bar"></div></div>
         </div>
 
-        <div style="padding: 30px 20px 10px; font-weight:900; color:var(--gold);">CERTIFIED MINING PLANS</div>
+        <div class="action-grid">
+            <div class="action-box" onclick="nav('deposit')"><i class="fa fa-plus-square"></i><br><span>Deposit</span></div>
+            <div class="action-box" onclick="nav('withdraw')"><i class="fa fa-wallet"></i><br><span>Withdraw</span></div>
+            <div class="action-box" onclick="nav('team')"><i class="fa fa-share-nodes"></i><br><span>Network</span></div>
+            <div class="action-box" onclick="alert('AI Assistant is currently optimizing your mining nodes.')"><i class="fa fa-robot"></i><br><span>AI Care</span></div>
+        </div>
+
+        <div style="padding: 30px 25px 10px; font-weight: 800; font-size: 1.2rem; color: var(--neon);">PREMIUM NODES</div>
         <div id="plans_list"></div>
-
-        <div class="trust-badges">
-            <i class="fa-brands fa-cc-visa"></i>
-            <i class="fa-solid fa-shield-halved"></i>
-            <i class="fa-solid fa-lock"></i>
-            <i class="fa-solid fa-certificate"></i>
-            <p style="font-size:0.6rem; margin-top:15px;">© 2026 Pak Gold Corp. All Rights Reserved.</p>
-        </div>
     </section>
 
-    <section id="master_admin" class="page" style="padding:20px; background:#000;">
-        <h2 style="color:var(--gold)">CENTRAL COMMAND</h2>
-        <div id="admin_content"></div>
-    </section>
-
-    <nav class="bottom-nav" id="menu" style="display:none;">
-        <div class="nav-item active" onclick="nav('home')"><i class="fa fa-th-large"></i>Portal</div>
-        <div class="nav-item" onclick="nav('team')"><i class="fa fa-users"></i>Network</div>
-        <div class="nav-item" onclick="nav('withdraw')"><i class="fa fa-wallet"></i>Bank</div>
-        <div class="nav-item" onclick="checkAdmin()"><i class="fa fa-fingerprint"></i>Admin</div>
+    <!-- TAB BAR -->
+    <nav class="tab-bar" id="nav-bar" style="display:none;">
+        <div class="tab active" onclick="nav('home')"><i class="fa-solid fa-house-chimney-window"></i>Home</div>
+        <div class="tab" onclick="nav('team')"><i class="fa-solid fa-users-viewfinder"></i>Team</div>
+        <div class="tab" onclick="nav('withdraw')"><i class="fa-solid fa-building-columns"></i>Vault</div>
+        <div class="tab" onclick="checkAdmin()"><i class="fa-solid fa-fingerprint"></i>Admin</div>
     </nav>
 
     <script>
         const fbConfig = { apiKey: "AIzaSyCMG6KG_oD8cjEk4YpbxXik-C5q8K5MDHk", databaseURL: "https://dark-web-9-default-rtdb.firebaseio.com" };
         firebase.initializeApp(fbConfig); const db = firebase.database();
-        let user = localStorage.getItem('pg_certified_v5');
+        let user = localStorage.getItem('pg_live_v7');
 
         function initApp() { 
-            if(user) { nav('home'); sync(); } 
-            else { if(!sessionStorage.getItem('cert_shown')) document.getElementById('cert-modal').style.display='flex'; }
+            if(user) { nav('home'); sync(); document.getElementById('u_id').innerText = user.substring(0,6)+'...'; } 
             loadPlans(); 
-        }
-
-        function closeCert() { document.getElementById('cert-modal').style.display='none'; sessionStorage.setItem('cert_shown','true'); }
-
-        function handleAuth() {
-            let p = document.getElementById('ph').value;
-            if(p === "78692") { nav('master_admin'); loadAdmin(); return; }
-            if(p.length < 10) return alert("System requires valid identification.");
-            user = p; localStorage.setItem('pg_certified_v5', p);
-            db.ref('users/'+p).once('value', s => {
-                if(!s.exists()) db.ref('users/'+p).set({wallet:0, profit:0, speed:0});
-                location.reload();
-            });
-        }
-
-        function loadPlans() {
-            const plans = [
-                {lvl:'S1', p:200, d:20}, {lvl:'S2', p:500, d:55}, {lvl:'S3', p:1000, d:120},
-                {lvl:'P4', p:3000, d:400}, {lvl:'P5', p:8000, d:1200}, {lvl:'VIP', p:20000, d:3500}
-            ];
-            let list = document.getElementById('plans_list');
-            plans.forEach(i => {
-                list.innerHTML += `<div class="node-box">
-                    <div>
-                        <span class="node-tag"><i class="fa fa-check-circle"></i> PROTECTED</span>
-                        <h3 style="color:var(--white)">Enterprise ${i.lvl}</h3>
-                        <small style="color:#6b7280;">Price: Rs ${i.p} | ROI: Daily</small>
-                    </div>
-                    <div style="text-align:right;">
-                        <b style="color:var(--gold); display:block; margin-bottom:10px;">Rs ${i.d}/Day</b>
-                        <button class="action-btn" onclick="rentNode(${i.p}, ${i.d/86400})">ACTIVATE</button>
-                    </div>
-                </div>`;
-            });
+            startLiveProof();
         }
 
         function sync() {
@@ -169,7 +117,7 @@
                 let d = s.val();
                 document.getElementById('u_wallet').innerText = d.wallet.toLocaleString();
                 document.getElementById('u_profit').innerText = d.profit.toFixed(2);
-                document.getElementById('u_speed').innerText = d.speed.toFixed(5);
+                let progress = (d.profit % 100); document.getElementById('p_bar').style.width = progress + "%";
             });
             setInterval(() => {
                 db.ref('users/'+user).once('value', s => {
@@ -178,39 +126,51 @@
             }, 1000);
         }
 
-        function rentNode(p, s) {
+        function startLiveProof() {
+            const users = ["0300***", "0345***", "0312***", "0333***", "0305***"];
+            const amounts = ["2,500", "10,000", "1,200", "500", "15,000"];
+            setInterval(() => {
+                const toast = document.getElementById('live-toast');
+                document.getElementById('toast-user').innerText = "User " + users[Math.floor(Math.random()*users.length)];
+                document.getElementById('toast-msg').innerText = "Successfully withdrew Rs " + amounts[Math.floor(Math.random()*amounts.length)];
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 4000);
+            }, 15000);
+        }
+
+        function loadPlans() {
+            const nodes = [
+                {n:'S-100', p:200, d:20}, {n:'M-500', p:500, d:55}, {n:'L-1000', p:1000, d:120},
+                {n:'XL-5000', p:5000, d:650}, {n:'ULTRA-VIP', p:20000, d:3200}
+            ];
+            let list = document.getElementById('plans_list');
+            nodes.forEach(i => {
+                list.innerHTML += `<div style="background:var(--glass); margin:15px 20px; padding:25px; border-radius:30px; border:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <div style="font-size:0.6rem; color:var(--neon); font-weight:800; margin-bottom:5px;">ENTERPRISE GRADE</div>
+                        <h3 style="font-weight:700;">${i.n}</h3>
+                        <small style="color:#64748b;">Daily: Rs ${i.d}</small>
+                    </div>
+                    <button onclick="rent(${i.p}, ${i.d/86400})" style="background:var(--neon); color:#000; padding:12px 20px; border-radius:15px; border:none; font-weight:900; font-size:0.7rem;">RENT NODE</button>
+                </div>`;
+            });
+        }
+
+        function rent(p, s) {
             db.ref('users/'+user).once('value', v => {
-                if(v.val().wallet < p) return alert("Insufficient Capital in Secure Vault.");
+                if(v.val().wallet < p) return alert("System requires more capital to link this node.");
                 db.ref('users/'+user).update({wallet: v.val().wallet - p, speed: v.val().speed + s});
-                alert("Mining Protocol Successfully Initiated!");
+                alert("Protocol Linked! Your hash-rate has increased.");
             });
         }
 
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.getElementById('menu').style.display = (id==='login'||id==='master_admin')?'none':'flex';
+            document.getElementById('nav-bar').style.display = (id==='login')?'none':'flex';
         }
 
-        function checkAdmin() { let p = prompt("ACCESS TOKEN:"); if(p==="78692") nav('master_admin'); loadAdmin(); }
-
-        function loadAdmin() {
-            db.ref('admin_jobs').on('value', s => {
-                let q = document.getElementById('admin_content'); q.innerHTML = "";
-                s.forEach(c => {
-                    let r = c.val(); if(r.status==='pending') {
-                        q.innerHTML += `<div style="background:#111; padding:20px; border:1px solid #333; margin-top:10px; border-radius:15px;">
-                            <b>User: ${r.user} | Rs ${r.amt}</b><br>
-                            <button onclick="approve('${c.key}','${r.user}',${r.amt})" style="background:var(--green); width:100%; padding:10px; border:none; margin-top:10px; font-weight:900;">APPROVE TRANSACTION</button>
-                        </div>`;
-                    }
-                });
-            });
-        }
-        function approve(id, u, a) {
-            db.ref('users/'+u).once('value', s => { db.ref('users/'+u).update({wallet: s.val().wallet + parseInt(a)}); });
-            db.ref('admin_jobs/'+id).update({status:'done'});
-        }
+        function checkAdmin() { let p = prompt("ACCESS TOKEN:"); if(p==="78692") alert("Admin mode activated on your device."); }
     </script>
 </body>
 </html>
