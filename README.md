@@ -3,89 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAKGOLD ULTRA DASHBOARD</title>
+<title>PAKGOLD PWA FINAL</title>
+
+<link rel="manifest" href="manifest.json">
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#050816;
+background:#0b1220;
 color:white;
-overflow-x:hidden;
 }
 
-.glow{
-color:#fbbf24;
-text-shadow:0 0 10px #fbbf24;
+.center{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
 }
 
-.sidebar{
-position:fixed;
-left:0;
-top:0;
+input,button{
+padding:12px;
+margin:6px;
 width:220px;
-height:100%;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(12px);
-padding:15px;
-}
-
-.sidebar h2{
-text-align:center;
-}
-
-.sidebar button{
-width:100%;
-margin:8px 0;
-padding:10px;
 border:none;
 border-radius:10px;
-background:#111827;
-color:white;
-cursor:pointer;
-transition:0.3s;
 }
 
-.sidebar button:hover{
+button{
 background:#fbbf24;
-color:black;
+font-weight:bold;
+cursor:pointer;
 }
 
-.main{
-margin-left:240px;
-padding:20px;
+.app{
+display:none;
+padding:15px;
 }
 
 .card{
 background:rgba(255,255,255,0.06);
-padding:20px;
-border-radius:15px;
-margin-bottom:15px;
-animation:fadeIn 0.6s ease-in-out;
-}
-
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(20px);}
-to{opacity:1;transform:translateY(0);}
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-}
-
-.box{
-background:rgba(255,255,255,0.05);
 padding:15px;
 border-radius:12px;
-text-align:center;
-transition:0.3s;
+margin:10px 0;
 }
 
-.box:hover{
-transform:scale(1.05);
-background:rgba(251,191,36,0.1);
+.nav{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+.nav button{
+flex:1;
+background:#111827;
+color:white;
+}
+
+.nav button:hover{
+background:#fbbf24;
+color:black;
 }
 
 .badge{
@@ -93,95 +71,146 @@ color:#fbbf24;
 font-weight:bold;
 }
 
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:20px;
-}
-
-.pulse{
-animation:pulse 1.5s infinite;
-}
-
-@keyframes pulse{
-0%{box-shadow:0 0 0 0 rgba(251,191,36,0.7);}
-70%{box-shadow:0 0 0 15px rgba(251,191,36,0);}
-100%{box-shadow:0 0 0 0 rgba(251,191,36,0);}
-}
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-<h2 class="glow">PAKGOLD</h2>
-<button>Dashboard</button>
-<button>Invest</button>
-<button>Deposit</button>
-<button>Withdraw</button>
-<button>Referral</button>
-<button>History</button>
-<button>Logout</button>
+<!-- LOGIN -->
+<div class="center" id="loginBox">
+<h2 class="badge">PAKGOLD LOGIN</h2>
+<input id="user" placeholder="Username">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login / Register</button>
 </div>
 
-<div class="main">
+<!-- APP -->
+<div class="app" id="app">
 
-<div class="topbar">
-<h1 class="glow">Dashboard</h1>
-<span class="badge pulse">LIVE DEMO</span>
-</div>
-
-<div class="grid">
-
-<div class="box">
-<h3>Balance</h3>
-<p>₨ 12,500</p>
-</div>
-
-<div class="box">
-<h3>Nodes</h3>
-<p>15 Active</p>
-</div>
-
-<div class="box">
-<h3>Profit</h3>
-<p>₨ 2,340</p>
-</div>
-
-<div class="box">
-<h3>Referrals</h3>
-<p>8 Users</p>
-</div>
-
-</div>
+<h2>PAKGOLD DASHBOARD 💎</h2>
+<p>Welcome <span id="uname"></span></p>
 
 <div class="card">
-<h2 class="glow">Activity Feed</h2>
-<ul>
-<li>✔ Deposit request pending</li>
-<li>✔ Node activated</li>
-<li>✔ Referral bonus added</li>
-<li>✔ Withdrawal queued</li>
-</ul>
+Balance: <span id="bal">0</span><br>
+Nodes: <span id="nodes">0</span>
 </div>
 
-<div class="card">
-<h2 class="glow">Investment Plans</h2>
-<div class="grid">
-<div class="box">Basic Plan<br>₨200 Node</div>
-<div class="box">Pro Plan<br>₨500 Node</div>
-<div class="box">VIP Plan<br>₨1000 Node</div>
-</div>
-</div>
-
-<div class="card">
-<h2 class="glow">Referral System</h2>
-<p>Your Code: <b>PAK12345</b></p>
-<p>Earn rewards by inviting friends 💎</p>
+<div class="nav">
+<button onclick="show('home')">Home</button>
+<button onclick="show('deposit')">Deposit</button>
+<button onclick="show('withdraw')">Withdraw</button>
+<button onclick="show('requests')">Requests</button>
+<button onclick="logout()">Logout</button>
 </div>
 
+<div id="home" class="card">
+Premium Dashboard UI 🚀
 </div>
+
+<div id="deposit" class="card" style="display:none">
+<h3>Deposit</h3>
+<input id="damount" placeholder="Amount">
+<button onclick="deposit()">Send Request</button>
+</div>
+
+<div id="withdraw" class="card" style="display:none">
+<h3>Withdraw</h3>
+<input id="wamount" placeholder="Amount">
+<button onclick="withdraw()">Send Request</button>
+</div>
+
+<div id="requests" class="card" style="display:none">
+<h3>Your Requests</h3>
+<p>All deposit/withdraw requests go to admin panel</p>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, child, push } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+apiKey: "YOUR_KEY",
+authDomain: "YOUR_DOMAIN",
+databaseURL: "YOUR_DB",
+projectId: "YOUR_PROJECT"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let currentUser = "";
+
+/* LOGIN */
+window.login = async () => {
+let u = user.value;
+let p = pass.value;
+
+let snap = await get(child(ref(db), "users/" + u));
+
+if (snap.exists()) {
+let d = snap.val();
+if (d.password !== p) return alert("Wrong Password");
+
+currentUser = u;
+load(d);
+
+} else {
+set(ref(db, "users/" + u), {
+password: p,
+balance: 0,
+nodes: 0
+});
+
+currentUser = u;
+load({ balance: 0, nodes: 0 });
+}
+};
+
+/* LOAD USER */
+function load(d){
+loginBox.style.display = "none";
+app.style.display = "block";
+
+uname.innerText = currentUser;
+bal.innerText = d.balance;
+nodes.innerText = d.nodes;
+}
+
+/* DEPOSIT */
+window.deposit = () => {
+push(ref(db, "requests/deposit"), {
+user: currentUser,
+amount: damount.value,
+status: "pending"
+});
+alert("Deposit Request Sent");
+};
+
+/* WITHDRAW */
+window.withdraw = () => {
+push(ref(db, "requests/withdraw"), {
+user: currentUser,
+amount: wamount.value,
+status: "pending"
+});
+alert("Withdraw Request Sent");
+};
+
+/* NAV */
+window.show = (id) => {
+["home","deposit","withdraw","requests"].forEach(x=>{
+document.getElementById(x).style.display="none";
+});
+document.getElementById(id).style.display="block";
+};
+
+/* LOGOUT */
+window.logout = () => location.reload();
+
+</script>
 
 </body>
 </html>
