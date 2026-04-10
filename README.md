@@ -4,356 +4,298 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>PakGold | Professional Mining Platform</title>
     
-    <!-- Core Engine & Styles -->
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
         :root {
-            --primary: #c5a059; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; 
-            --secondary: #0f172a; --success: #10b981; --error: #ef4444; --shadow: 0 10px 30px rgba(0,0,0,0.05);
+            --gold: #c5a059; --dark: #0f172a; --light: #f1f5f9; --white: #ffffff;
+            --success: #10b981; --shadow: 0 10px 30px rgba(0,0,0,0.08);
         }
+        [data-theme='dark'] { --light: #0f172a; --white: #1e293b; --dark: #f8fafc; }
 
-        [data-theme='dark'] {
-            --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --secondary: #c5a059;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--light); color: var(--dark); overflow-x: hidden; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; transition: 0.3s; }
-        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-        .page { display: none; min-height: 100vh; padding-bottom: 120px; animation: fadeIn 0.5s ease; }
+        .page { display: none; min-height: 100vh; padding-bottom: 100px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* UI Components */
-        .header { background: var(--card); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow); }
-        .hero { background: var(--primary); color: white; margin: 15px; padding: 25px; border-radius: 30px; position: relative; overflow: hidden; }
-        .card { background: var(--card); margin: 15px; padding: 20px; border-radius: 20px; box-shadow: var(--shadow); border: 1px solid rgba(0,0,0,0.02); }
+        /* Header & Cards */
+        .header { background: var(--white); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+        .card { background: var(--white); margin: 15px; padding: 20px; border-radius: 20px; box-shadow: var(--shadow); }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; }
-        .plan-card { background: var(--card); padding: 20px; border-radius: 20px; text-align: center; border: 2px solid transparent; }
-        .plan-card:active { border-color: var(--primary); transform: scale(0.95); }
-
-        /* Inputs & Buttons */
-        input, select, textarea { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #e2e8f0; background: var(--bg); color: var(--text); font-weight: 600; outline: none; }
-        .btn-gold { background: var(--secondary); color: white; border: none; padding: 18px; border-radius: 15px; width: 100%; font-weight: 900; cursor: pointer; }
+        /* Stats Dashboard */
+        .stat-card { background: linear-gradient(135deg, #c5a059, #9c7d42); color: white; margin: 15px; padding: 25px; border-radius: 25px; position: relative; overflow: hidden; }
         
-        /* Fake Notifications */
-        #fake-notif { position: fixed; bottom: 100px; left: 20px; right: 20px; background: var(--secondary); color: white; padding: 12px; border-radius: 15px; font-size: 0.8rem; z-index: 9999; display: none; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        /* Action Buttons */
+        .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; }
+        .act-btn { background: var(--white); padding: 15px; border-radius: 15px; text-align: center; font-weight: 600; cursor: pointer; box-shadow: var(--shadow); }
+        .act-btn i { color: var(--gold); font-size: 1.5rem; margin-bottom: 5px; }
 
-        /* Bottom Nav */
-        .nav { position: fixed; bottom: 0; width: 100%; background: var(--card); display: flex; justify-content: space-around; padding: 10px 0 25px; border-top: 1px solid rgba(0,0,0,0.05); z-index: 1000; }
-        .nav-item { text-align: center; font-size: 0.7rem; color: #94a3b8; flex: 1; cursor: pointer; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item i { font-size: 1.4rem; margin-bottom: 4px; display: block; }
-
-        /* Admin Section Styles */
-        .admin-req { background: #111; padding: 15px; border-radius: 15px; margin-bottom: 10px; border-left: 4px solid var(--primary); }
+        /* Inputs & Selection */
+        input, select { width: 100%; padding: 15px; margin-bottom: 12px; border-radius: 12px; border: 1px solid #ddd; background: var(--white); color: var(--dark); font-size: 1rem; outline: none; }
+        .btn-gold { background: var(--gold); color: white; border: none; padding: 16px; border-radius: 12px; width: 100%; font-weight: 700; cursor: pointer; }
+        
+        /* Node Cards */
+        .node { background: var(--white); margin: 15px; padding: 15px; border-radius: 20px; display: flex; align-items: center; gap: 15px; border-left: 5px solid var(--gold); }
+        
+        /* Nav */
+        .nav { position: fixed; bottom: 0; width: 100%; background: var(--white); display: flex; justify-content: space-around; padding: 12px 0 25px; border-top: 1px solid #eee; }
+        .nav-item { color: #94a3b8; text-align: center; font-size: 0.75rem; flex: 1; }
+        .nav-item.active { color: var(--gold); }
+        .nav-item i { font-size: 1.4rem; display: block; }
     </style>
 </head>
 <body onload="init()">
 
-    <!-- Fake Notification Popup -->
-    <div id="fake-notif" class="animate__animated animate__fadeInUp"></div>
-
-    <!-- Login/Register Page -->
+    <!-- 1. AUTH PAGE -->
     <section id="login" class="page active">
-        <div style="padding: 60px 30px; text-align: center;">
-            <div class="animate__animated animate__bounceIn">
-                <i class="fa-solid fa-gem" style="font-size: 4rem; color: var(--primary); margin-bottom: 20px;"></i>
-            </div>
-            <h1 style="font-size: 2.5rem; font-weight: 900; color: var(--primary);">PAK<span>GOLD</span></h1>
-            <p style="opacity: 0.6; margin-bottom: 40px;">Advanced Mining Ecosystem</p>
-            
+        <div style="padding: 50px 30px; text-align: center;">
+            <h1 style="color:var(--gold); font-size: 2.5rem; font-weight:800;">PAK GOLD</h1>
+            <p style="opacity:0.6; margin-bottom:30px;">Professional Mining Ecosystem</p>
             <input type="number" id="ph" placeholder="Phone Number">
             <input type="password" id="pass" placeholder="Password">
-            <input type="text" id="ref_id" placeholder="Referral ID (Optional)">
-            <input type="password" id="adm_key" placeholder="Admin PIN">
-            
-            <button class="btn-gold" onclick="handleAuth()">INITIALIZE ACCESS</button>
+            <input type="password" id="adm_key" placeholder="Admin Terminal PIN">
+            <button class="btn-gold" onclick="handleAuth()">SECURE LOGIN</button>
         </div>
     </section>
 
-    <!-- Main Dashboard -->
+    <!-- 2. HOME DASHBOARD -->
     <section id="home" class="page">
         <div class="header">
-            <div style="font-weight:900; color:var(--primary);">PAK GOLD</div>
-            <button onclick="toggleTheme()" style="background:none; border:none; color:var(--text); font-size:1.2rem;">
-                <i class="fa-solid fa-circle-half-stroke"></i>
-            </button>
+            <b style="color:var(--gold)">PAK GOLD PRO</b>
+            <i class="fa-solid fa-bell"></i>
         </div>
-
-        <div class="hero">
-            <small style="opacity:0.8; letter-spacing:1px;">TOTAL BALANCE</small>
-            <div style="font-size:2.5rem; font-weight:900;">Rs <span id="u_wallet">0.00</span></div>
-            <div style="display:flex; justify-content:space-between; margin-top:20px; background:rgba(255,255,255,0.15); padding:15px; border-radius:20px;">
-                <div><small>Today's Profit</small><br><b id="u_profit">0.0000</b></div>
-                <div><small>Hash Rate</small><br><b id="u_speed">0.000/s</b></div>
+        <div class="stat-card">
+            <small>Current Balance</small>
+            <h2 style="font-size: 2.2rem;">Rs <span id="u_wallet">0.00</span></h2>
+            <div style="display:flex; justify-content:space-between; margin-top:15px; background:rgba(255,255,255,0.1); padding:10px; border-radius:10px;">
+                <span>Profit: <b id="u_profit">0.00</b></span>
+                <span>Speed: <b id="u_speed">0.00</b></span>
             </div>
         </div>
 
-        <div style="padding: 0 15px;"><h3 style="margin-bottom:15px;">Available Mining Nodes</h3></div>
-        <div class="grid" id="node_grid"></div>
+        <div class="action-row">
+            <div class="act-btn" onclick="nav('deposit')"><i class="fa-solid fa-plus-circle"></i><br>Deposit</div>
+            <div class="act-btn" onclick="nav('withdraw')"><i class="fa-solid fa-arrow-up-right-from-square"></i><br>Withdraw</div>
+        </div>
+
+        <div style="padding: 20px 15px 5px;"><h3>Premium Nodes</h3></div>
+        <div id="node_container"></div>
     </section>
 
-    <!-- Team & Referral System -->
-    <section id="team" class="page">
+    <!-- 3. DEPOSIT SYSTEM -->
+    <section id="deposit" class="page">
+        <div class="header"><i class="fa-solid fa-arrow-left" onclick="nav('home')"></i> <b>Deposit Funds</b> <div></div></div>
         <div class="card">
-            <h3>Partnership Program</h3>
-            <p style="font-size:0.9rem; margin:10px 0;">Referral Code: <b id="my_code" style="color:var(--primary);">---</b></p>
-            <button class="btn-gold" onclick="copyLink()">COPY INVITE LINK</button>
-        </div>
-        <div class="card">
-            <h4>My Direct Team Chart</h4>
-            <div id="team_container" style="margin-top:15px; font-size:0.9rem;"></div>
-        </div>
-    </section>
-
-    <!-- Financial History -->
-    <section id="history" class="page">
-        <div style="padding:20px;">
-            <h3>Activity History</h3>
-            <div id="hist_list" class="card" style="padding:0; margin:15px 0;"></div>
-        </div>
-    </section>
-
-    <!-- Menu, Promo & Support -->
-    <section id="menu" class="page">
-        <div class="card">
-            <h3>Promo Code</h3>
-            <p style="font-size:0.8rem; opacity:0.7; margin-bottom:10px;">Enter codes shared on WhatsApp group.</p>
-            <input type="text" id="promo_code" placeholder="Enter Code Here">
-            <button class="btn-gold" style="background:var(--primary)" onclick="applyPromo()">CLAIM BONUS</button>
-        </div>
-
-        <div class="card">
-            <h4>Help & Support</h4>
-            <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3" class="btn-gold" style="display:block; text-align:center; text-decoration:none; margin-bottom:10px; background:#25d366;">
-                <i class="fab fa-whatsapp"></i> Official WhatsApp Group
-            </a>
-            <textarea id="issue" placeholder="Describe your issue or feedback..."></textarea>
-            <button class="btn-gold" onclick="sendMail()">SEND EMAIL REPORT</button>
-        </div>
-
-        <div class="card" style="font-size:0.8rem; opacity:0.8;">
-            <details><summary><b>Privacy Policy</b></summary><p>All data is secured via PakGold encryption.</p></details>
-            <details style="margin-top:10px;"><summary><b>Company FAQ</b></summary><p>Withdrawals are processed within 24 hours.</p></details>
-        </div>
-    </section>
-
-    <!-- Admin Power Panel -->
-    <section id="admin" class="page" style="background:#000; color:white;">
-        <div style="padding:20px;">
-            <h2 style="color:var(--primary);">MASTER CONTROL</h2>
-            <div id="adm_requests"></div>
+            <label>Select Method:</label>
+            <select id="dep_method" onchange="updateDepInfo()">
+                <option value="JazzCash">JazzCash / SadaPay</option>
+                <option value="EasyPaisa">EasyPaisa</option>
+            </select>
             
-            <div class="card" style="background:#111; margin-top:30px; border:1px solid var(--primary);">
-                <h4 style="color:var(--primary);">Manual User Update</h4>
-                <input type="number" id="adm_target" placeholder="User Phone Number">
-                <input type="number" id="adm_bal" placeholder="Amount (+/-)">
-                <button class="btn-gold" onclick="admAdjust()">SYNC USER DATA</button>
+            <div id="acc_info" style="background:var(--light); padding:15px; border-radius:12px; margin-bottom:15px; border:1px dashed var(--gold);">
+                <small id="meth_name">JazzCash / SadaPay</small>
+                <h3 id="meth_num">03705519562</h3>
+                <small>Account Title: <b>PakGold Official</b></small>
             </div>
+
+            <input type="number" id="dep_amt" placeholder="Enter Amount (Rs)">
+            <input type="text" id="dep_tid" placeholder="Transaction ID (TID)">
+            <p style="font-size:0.7rem; margin-bottom:5px; color:var(--gold);">Upload Payment Proof (Screenshot):</p>
+            <input type="file" id="dep_proof" accept="image/*" style="padding:10px;">
+            
+            <button class="btn-gold" onclick="submitDep()">CONFIRM DEPOSIT</button>
         </div>
     </section>
 
-    <!-- Bottom Navigation -->
-    <nav class="nav" id="main_nav" style="display:none;">
-        <div class="nav-item active" onclick="nav('home')"><i class="fa-solid fa-bolt-lightning"></i>Mining</div>
+    <!-- 4. WITHDRAW SYSTEM -->
+    <section id="withdraw" class="page">
+        <div class="header"><i class="fa-solid fa-arrow-left" onclick="nav('home')"></i> <b>Withdraw Profits</b> <div></div></div>
+        <div class="card">
+            <select id="wd_method">
+                <option>EasyPaisa</option>
+                <option>JazzCash</option>
+                <option>SadaPay</option>
+                <option>Bank Transfer</option>
+                <option>Binance (USDT)</option>
+            </select>
+            <input type="number" id="wd_amt" placeholder="Amount to Withdraw">
+            <input type="text" id="wd_acc" placeholder="Account Number / Wallet Address">
+            <input type="text" id="wd_name" placeholder="Account Holder Name">
+            <button class="btn-gold" style="background:#0f172a;" onclick="submitWd()">REQUEST WITHDRAWAL</button>
+            <p style="font-size:0.7rem; text-align:center; margin-top:10px;">Withdrawals are processed within 24 hours.</p>
+        </div>
+    </section>
+
+    <!-- 5. ADMIN CONTROL PANEL -->
+    <section id="admin" class="page" style="background:#000; color:#0f0; padding:20px;">
+        <h2 style="color:var(--gold)">MASTER CONTROL</h2>
+        <hr style="border:0.5px solid #333; margin:15px 0;">
+        
+        <h4>Pending Requests</h4>
+        <div id="adm_requests"></div>
+
+        <div style="background:#111; padding:15px; border-radius:15px; margin-top:20px; border:1px solid #333;">
+            <p>Manual Balance Update</p>
+            <input type="number" id="adm_target" placeholder="User Phone" style="background:#000; border-color:#333; color:#fff;">
+            <input type="number" id="adm_val" placeholder="Amount (+/-)" style="background:#000; border-color:#333; color:#fff;">
+            <button class="btn-gold" onclick="admSync()">UPDATE DATABASE</button>
+        </div>
+    </section>
+
+    <!-- NAV BAR -->
+    <nav class="nav" id="bot_nav" style="display:none;">
+        <div class="nav-item active" onclick="nav('home')"><i class="fa-solid fa-house"></i>Home</div>
+        <div class="nav-item" onclick="nav('nodes')"><i class="fa-solid fa-microchip"></i>Nodes</div>
         <div class="nav-item" onclick="nav('team')"><i class="fa-solid fa-users"></i>Team</div>
-        <div class="nav-item" onclick="nav('history')"><i class="fa-solid fa-list-ul"></i>History</div>
-        <div class="nav-item" onclick="nav('menu')"><i class="fa-solid fa-grid-2"></i>Menu</div>
+        <div class="nav-item" onclick="openAdmin()"><i class="fa-solid fa-shield-halved"></i>Admin</div>
     </nav>
 
     <script>
         // --- Firebase Config ---
         const fbConfig = {
             apiKey: "AIzaSyCMG6KG_oD8cjEk4YpbxXik-C5q8K5MDHk",
-            authDomain: "dark-web-9.firebaseapp.com",
             databaseURL: "https://dark-web-9-default-rtdb.firebaseio.com",
             projectId: "dark-web-9",
-            storageBucket: "dark-web-9.firebasestorage.app",
-            messagingSenderId: "564328425161",
-            appId: "1:564328425161:web:eb109ab77356dafe7f4f18"
         };
         firebase.initializeApp(fbConfig);
         const db = firebase.database();
-        let currentU = localStorage.getItem('pg_session');
+        let user = localStorage.getItem('pg_session');
 
         function init() {
-            if(currentU) { nav('home'); sync(); }
+            if(user) { nav('home'); sync(); }
             loadNodes();
-            runFakeNotifs();
         }
 
-        // --- Theme Engine ---
-        function toggleTheme() {
-            const b = document.body;
-            b.setAttribute('data-theme', b.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        }
-
-        // --- Auth Engine ---
         function handleAuth() {
             let p = document.getElementById('ph').value;
-            let ak = document.getElementById('adm_key').value;
-            let ref = document.getElementById('ref_id').value;
-
-            if(ak === "pakgold786") { nav('admin'); loadAdmin(); return; }
-            if(p.length < 10) return alert("Sweetie, please enter a valid phone number!");
-
-            currentU = p;
-            localStorage.setItem('pg_session', p);
+            let a = document.getElementById('adm_key').value;
+            if(a === "pakgold786") { nav('admin'); loadAdmin(); return; }
+            if(p.length < 10) return alert("Sweetie, enter valid number!");
+            user = p; localStorage.setItem('pg_session', p);
             db.ref('users/'+p).once('value', s => {
-                if(!s.exists()) {
-                    db.ref('users/'+p).set({
-                        wallet:0, profit:0, speed:0, 
-                        uid:'PG'+Math.floor(1000+Math.random()*9000), 
-                        inviter:ref||'System'
-                    });
-                    if(ref) db.ref('users/'+ref+'/team').push(p);
-                }
+                if(!s.exists()) db.ref('users/'+p).set({wallet:0, profit:0, speed:0, team:[]});
                 location.reload();
             });
         }
 
-        // --- Live Sync & Mining ---
         function sync() {
-            db.ref('users/'+currentU).on('value', s => {
+            db.ref('users/'+user).on('value', s => {
                 let d = s.val();
                 document.getElementById('u_wallet').innerText = d.wallet.toLocaleString();
-                document.getElementById('u_profit').innerText = parseFloat(d.profit).toFixed(5);
-                document.getElementById('u_speed').innerText = d.speed.toFixed(4) + "/s";
-                document.getElementById('my_code').innerText = currentU;
+                document.getElementById('u_profit').innerText = parseFloat(d.profit).toFixed(2);
+                document.getElementById('u_speed').innerText = d.speed.toFixed(4);
             });
-
-            // Live Mining Heartbeat
+            // Auto Mining logic
             setInterval(() => {
-                db.ref('users/'+currentU).once('value', s => {
-                    let d = s.val();
-                    if(d.speed > 0) {
-                        db.ref('users/'+currentU).update({profit: parseFloat(d.profit) + d.speed});
-                    }
+                db.ref('users/'+user).once('value', s => {
+                    let d = s.val(); if(d.speed > 0) db.ref('users/'+user).update({profit: d.profit + d.speed});
                 });
             }, 1000);
-
-            // Team List Sync
-            db.ref('users/'+currentU+'/team').on('value', s => {
-                let tc = document.getElementById('team_container'); tc.innerHTML = "";
-                if(!s.exists()) tc.innerHTML = "No partners yet.";
-                s.forEach(c => {
-                    tc.innerHTML += `<div style="padding:10px; border-bottom:1px solid rgba(0,0,0,0.05);">👤 ${c.val()} <span style="float:right; color:var(--success); font-weight:bold;">Active</span></div>`;
-                });
-            });
-
-            // History Sync
-            db.ref('admin_requests').on('value', s => {
-                let hl = document.getElementById('hist_list'); hl.innerHTML = "";
-                s.forEach(c => {
-                    let r = c.val();
-                    if(r.user === currentU) {
-                        hl.innerHTML += `<div style="padding:15px; border-bottom:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-between;">
-                            <div><b>${r.type}</b><br><small>${r.status}</small></div>
-                            <div style="text-align:right;">Rs ${r.amt || 'Bonus'}</div>
-                        </div>`;
-                    }
-                });
-            });
         }
 
-        // --- Node Generation (20 Plans) ---
         function loadNodes() {
-            let g = document.getElementById('node_grid');
-            for(let i=1; i<=20; i++) {
-                let price = 200 * i;
-                let speed = 0.0001 * i;
-                g.innerHTML += `
-                <div class="plan-card" onclick="buyNode(${price}, ${speed})">
-                    <i class="fa-solid fa-microchip" style="color:var(--primary); font-size:1.8rem; margin-bottom:10px;"></i><br>
-                    <b style="font-size:0.9rem;">Level ${i} Node</b><br>
-                    <span style="color:var(--primary); font-weight:900;">Rs ${price}</span>
+            let c = document.getElementById('node_container');
+            const nodes = [
+                {lvl:1, price:200, daily:20, life:30},
+                {lvl:2, price:1000, daily:110, life:30},
+                {lvl:3, price:5000, daily:600, life:40}
+            ];
+            nodes.forEach(n => {
+                c.innerHTML += `
+                <div class="node">
+                    <div style="background:var(--gold); color:white; padding:10px; border-radius:12px;"><i class="fa-solid fa-server"></i></div>
+                    <div style="flex:1;">
+                        <b>Level ${n.lvl} Mining Node</b><br>
+                        <small>Daily: Rs ${n.daily} | Total: ${n.daily*n.life}</small>
+                    </div>
+                    <button onclick="buyNode(${n.price}, ${n.daily/86400})" style="border:none; background:var(--dark); color:white; padding:8px 15px; border-radius:8px;">Rs ${n.price}</button>
                 </div>`;
-            }
-        }
-
-        function buyNode(c, s) {
-            db.ref('users/'+currentU).once('value', v => {
-                if(v.val().wallet < c) return alert("Sweetie, your balance is low! Please deposit first.");
-                db.ref('users/'+currentU).update({
-                    wallet: v.val().wallet - c,
-                    speed: v.val().speed + s
-                });
-                alert("Node successfully activated! Your mining speed has increased. 🚀");
             });
         }
 
-        // --- Promo & Support ---
-        function applyPromo() {
-            let code = document.getElementById('promo_code').value;
-            if(!code) return;
-            db.ref('admin_requests').push({user:currentU, type:'PROMO', code:code, status:'pending'});
-            alert("Promo code submitted! Admin will verify and add your bonus sweetie.");
+        function buyNode(p, s) {
+            db.ref('users/'+user).once('value', v => {
+                if(v.val().wallet < p) return alert("Sweetie, balance low!");
+                db.ref('users/'+user).update({wallet: v.val().wallet - p, speed: v.val().speed + s});
+                alert("Node Activated!");
+            });
         }
 
-        function sendMail() {
-            let msg = document.getElementById('issue').value;
-            window.location.href = `mailto:webhub262@gmail.com?subject=PakGold Support&body=${msg}`;
+        function updateDepInfo() {
+            let m = document.getElementById('dep_method').value;
+            document.getElementById('meth_name').innerText = m === 'EasyPaisa' ? 'EasyPaisa Account' : 'JazzCash / SadaPay';
+            document.getElementById('meth_num').innerText = m === 'EasyPaisa' ? '03379827882' : '03705519562';
         }
 
-        // --- Fake Notifications Hub ---
-        function runFakeNotifs() {
-            const users = ["***432", "***988", "***102", "***556", "***009"];
-            const type = ["withdrew Rs 4,500", "deposited Rs 10,000", "activated VIP Node", "withdrew Rs 1,200"];
-            setInterval(() => {
-                const n = document.getElementById('fake-notif');
-                n.innerHTML = `<i class="fa-solid fa-circle-check" style="color:var(--success);"></i> User ${users[Math.floor(Math.random()*5)]} ${type[Math.floor(Math.random()*4)]}!`;
-                n.style.display = 'block';
-                setTimeout(() => n.style.display = 'none', 4000);
-            }, 12000);
+        function submitDep() {
+            let a = document.getElementById('dep_amt').value;
+            let t = document.getElementById('dep_tid').value;
+            if(!a || !t) return alert("Fill all fields!");
+            db.ref('admin_req').push({user:user, type:'Deposit', amt:a, tid:t, status:'pending'});
+            alert("Request Sent! Wait for approval."); nav('home');
         }
 
-        // --- Navigation ---
+        function submitWd() {
+            let a = document.getElementById('wd_amt').value;
+            let ac = document.getElementById('wd_acc').value;
+            db.ref('users/'+user).once('value', s => {
+                if(s.val().wallet < a) return alert("Insufficient Balance!");
+                db.ref('admin_req').push({user:user, type:'Withdraw', amt:a, acc:ac, status:'pending'});
+                db.ref('users/'+user).update({wallet: s.val().wallet - a});
+                alert("Withdrawal Requested!"); nav('home');
+            });
+        }
+
+        function openAdmin() {
+            let k = prompt("Enter Master PIN:");
+            if(k === "pakgold786") { nav('admin'); loadAdmin(); }
+        }
+
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('main_nav').style.display = (id==='login'||id==='admin')?'none':'flex';
+            document.getElementById('bot_nav').style.display = (id === 'login' || id === 'admin') ? 'none' : 'flex';
         }
 
-        // --- Admin Controls ---
+        // --- Admin Ops ---
         function loadAdmin() {
-            db.ref('admin_requests').on('value', s => {
+            db.ref('admin_req').on('value', s => {
                 let q = document.getElementById('adm_requests'); q.innerHTML = "";
                 s.forEach(c => {
-                    let r = c.val();
-                    if(r.status === 'pending') {
+                    let r = c.val(); if(r.status === 'pending') {
                         q.innerHTML += `
-                        <div class="admin-req">
-                            <b>${r.type} Request</b><br>
-                            User: ${r.user} | Detail: ${r.code || r.amt}<br><br>
-                            <button class="btn-gold" style="padding:10px; width:auto; margin-right:10px;" onclick="admApprove('${c.key}', '${r.user}', '${r.type}')">APPROVE</button>
-                            <button class="btn-gold" style="padding:10px; width:auto; background:var(--error);" onclick="db.ref('admin_requests/${c.key}').update({status:'rejected'})">REJECT</button>
+                        <div style="background:#111; padding:10px; margin-top:10px; border:1px solid #444;">
+                            ${r.type} | User: ${r.user} | Rs ${r.amt}<br>
+                            <small>TID: ${r.tid || 'N/A'}</small><br>
+                            <button onclick="approveReq('${c.key}','${r.user}',${r.amt},'${r.type}')" style="color:green">APPROVE</button>
                         </div>`;
                     }
                 });
             });
         }
 
-        function admApprove(key, user, type) {
-            // Logic to add bonus automatically if it's a promo or deposit can be added here
-            db.ref('admin_requests/'+key).update({status:'approved'});
-            alert("Approved!");
+        function approveReq(key, u, a, t) {
+            if(t === 'Deposit') {
+                db.ref('users/'+u).once('value', s => {
+                    db.ref('users/'+u).update({wallet: s.val().wallet + parseInt(a)});
+                });
+            }
+            db.ref('admin_req/'+key).update({status:'approved'});
+            alert("Done!");
         }
 
-        function admAdjust() {
+        function admSync() {
             let t = document.getElementById('adm_target').value;
-            let v = document.getElementById('adm_bal').value;
+            let v = document.getElementById('adm_val').value;
             db.ref('users/'+t).once('value', s => {
-                if(s.exists()) {
-                    db.ref('users/'+t).update({wallet: s.val().wallet + parseInt(v)});
-                    alert("User balance updated successfully!");
-                } else { alert("User not found!"); }
+                db.ref('users/'+t).update({wallet: s.val().wallet + parseInt(v)});
+                alert("Database Updated!");
             });
         }
     </script>
