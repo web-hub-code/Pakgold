@@ -1,186 +1,204 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PakGold | Premium Investment Portal</title>
-    <!-- Google Fonts for Premium Look -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>PakGold | Ultimate Premium Investment</title>
+    <!-- Modern Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --gold: #d4af37; 
-            --gold-dark: #b8860b;
-            --dark: #1e272e; 
-            --light: #f1f2f6;
-            --success: #2ecc71;
+            --gold: #d4af37; --gold-dark: #b8860b; --dark: #1e272e; 
+            --light: #f1f2f6; --success: #2ecc71; --glass: rgba(255, 255, 255, 0.95);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; scroll-behavior: smooth; }
         body { background: var(--light); color: var(--dark); overflow-x: hidden; }
 
-        /* --- Global Animations --- */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideIn { from { transform: translateX(-100%); } to { transform: translateX(0); } }
+        /* Page Management */
+        .page { display: none; min-height: 100vh; animation: fadeIn 0.5s ease-in-out; }
+        .active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- Page Management --- */
-        .section { display: none; min-height: 100vh; animation: fadeIn 0.5s ease-out; }
-        .section.active { display: block; }
-
-        /* --- Common UI Elements --- */
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        /* UI Elements */
+        .card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; border: 1px solid #eee; }
         .btn-gold { 
             background: linear-gradient(135deg, var(--gold), var(--gold-dark)); 
             color: white; border: none; padding: 15px; border-radius: 50px; 
             width: 100%; font-weight: bold; cursor: pointer; transition: 0.3s;
-            box-shadow: 0 8px 15px rgba(184, 134, 11, 0.3);
+            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3); font-size: 1rem;
         }
-        .btn-gold:hover { transform: translateY(-3px); box-shadow: 0 12px 20px rgba(184, 134, 11, 0.5); }
+        .btn-gold:hover { transform: scale(1.02); box-shadow: 0 15px 25px rgba(184, 134, 11, 0.5); }
 
-        /* --- 1. Hero / Landing Section --- */
-        #landing { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: radial-gradient(circle at top right, #fff, #f9f9f9); }
-        .logo-icon { font-size: 60px; margin-bottom: 10px; }
-        .gold-title { font-size: 3rem; font-weight: 800; background: linear-gradient(90deg, #d4af37, #f1c40f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        /* --- 1. LANDING PAGE --- */
+        #landing-page { background: radial-gradient(circle at top right, #fff9e6, #ffffff); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .hero-title { font-size: 3.5rem; font-weight: 800; background: linear-gradient(90deg, var(--gold), #f1c40f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1.1; }
+        .floating-deco { position: absolute; font-size: 40px; opacity: 0.2; animation: float 3s infinite ease-in-out; }
 
-        /* --- 2. Login Section --- */
-        #login { padding-top: 10vh; }
-        .login-box { max-width: 400px; margin: 0 auto; text-align: center; }
-        input { width: 100%; padding: 15px; border-radius: 12px; border: 1px solid #ddd; margin: 10px 0; outline: none; transition: 0.3s; }
+        /* --- 2. LOGIN PAGE --- */
+        #login-page { padding: 40px 20px; background: #fff; }
+        .input-group { text-align: left; margin-bottom: 15px; }
+        .input-group label { font-size: 0.8rem; color: #777; margin-left: 10px; }
+        input { width: 100%; padding: 15px; border-radius: 15px; border: 2px solid #f1f1f1; outline: none; transition: 0.3s; font-size: 1rem; }
         input:focus { border-color: var(--gold); }
 
-        /* --- 3. Dashboard Section --- */
-        .dash-header { background: var(--dark); color: white; padding: 40px 20px; border-radius: 0 0 40px 40px; text-align: center; margin-bottom: 30px; }
-        .mining-badge { display: inline-block; background: rgba(46, 204, 113, 0.2); color: var(--success); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; margin-top: 10px; border: 1px solid var(--success); }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 0 20px; }
+        /* --- 3. DASHBOARD --- */
+        .dash-header { background: var(--dark); color: white; padding: 50px 20px; border-radius: 0 0 40px 40px; text-align: center; }
+        .balance-box h1 { font-size: 2.8rem; margin: 10px 0; color: var(--gold-dark); }
+        .mining-status { display: inline-block; background: rgba(46, 204, 113, 0.2); color: var(--success); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; border: 1px solid var(--success); }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: -25px 20px 20px 20px; }
+        .stat-card { background: white; padding: 15px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); text-align: center; }
 
-        /* --- WhatsApp Floating Button --- */
-        .whatsapp-btn { 
-            position: fixed; bottom: 30px; right: 20px; background: #25d366; 
-            color: white; padding: 12px 25px; border-radius: 50px; text-decoration: none; 
-            font-weight: bold; display: flex; align-items: center; gap: 10px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 9999;
-        }
+        /* --- 4. REFERRAL & WITHDRAWAL --- */
+        .ref-box { background: #f9f9f9; padding: 15px; border-radius: 15px; margin-top: 10px; font-size: 0.8rem; color: #555; word-break: break-all; }
+        .policy-box { background: #fff9e6; border-left: 5px solid var(--gold); text-align: left; padding: 15px; font-size: 0.75rem; color: #888; line-height: 1.6; }
 
-        /* --- Fake Notifications --- */
-        #notif-box { position: fixed; bottom: 100px; left: 20px; z-index: 9998; }
-        .fake-popup { background: white; padding: 10px 15px; border-radius: 10px; border-left: 5px solid var(--gold); margin-top: 10px; font-size: 0.8rem; box-shadow: 0 5px 15px rgba(0,0,0,0.1); animation: slideIn 0.5s ease; }
+        /* Notifications & Floating Widgets */
+        #notif-area { position: fixed; bottom: 100px; left: 20px; z-index: 1000; }
+        .popup { background: var(--glass); padding: 12px 20px; border-radius: 15px; margin-top: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-left: 5px solid var(--success); font-size: 0.85rem; animation: slideIn 0.5s ease-out; }
+        @keyframes slideIn { from { transform: translateX(-110%); } to { transform: translateX(0); } }
+
+        .wa-btn { position: fixed; bottom: 30px; right: 20px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); z-index: 1001; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </style>
 </head>
-<body onload="initializeSite()">
+<body onload="startSystem()">
 
     <!-- LANDING SECTION -->
-    <section id="landing" class="section active">
-        <div class="logo-icon">⚜️</div>
-        <h1 class="gold-title">PAK GOLD</h1>
-        <p style="color: #777; margin-bottom: 40px;">Professional Gold Mining Portal</p>
-        <button class="btn-gold" style="max-width: 280px;" onclick="goTo('login')">START EARNING</button>
-        <div style="margin-top: 30px; color: #bbb; font-size: 0.8rem;">🔒 Secured by 256-bit Encryption</div>
+    <section id="landing" class="page active">
+        <div class="floating-deco" style="top:10%; left:10%;">💰</div>
+        <div class="floating-deco" style="top:20%; right:15%; animation-delay:1s;">✨</div>
+        <div class="hero-title">PAK GOLD<br>SOLUTIONS</div>
+        <p style="margin: 20px 0 40px 0; color: #666; max-width: 300px;">The most trusted premium gold mining platform in the world.</p>
+        <button class="btn-gold" style="width: 250px;" onclick="nav('login')">ENTER VAULT</button>
+        <p style="margin-top: 30px; font-size: 0.7rem; color: #bbb;">Trusted by 25,000+ Active Miners</p>
     </section>
 
     <!-- LOGIN SECTION -->
-    <section id="login" class="section">
-        <div class="login-box">
-            <div class="card">
-                <h2>Welcome Back</h2>
-                <p style="color: #888; margin-bottom: 20px; font-size: 0.9rem;">Login to your gold vault</p>
-                <input type="text" placeholder="Phone Number" id="phone">
-                <input type="password" placeholder="Account PIN" id="pin">
-                <button class="btn-gold" onclick="goTo('dashboard')">SECURE LOGIN</button>
-                <p style="margin-top: 15px; font-size: 0.8rem; color: #999;">Don't have an account? <span style="color: var(--gold); font-weight: bold; cursor: pointer;">Register</span></p>
+    <section id="login" class="page">
+        <div style="padding: 60px 25px;">
+            <h2 style="font-size: 2rem; margin-bottom: 10px;">Login</h2>
+            <p style="color: #888; margin-bottom: 30px;">Access your secure mining dashboard</p>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="text" placeholder="03xxxxxxxxx">
             </div>
+            <div class="input-group">
+                <label>Account PIN</label>
+                <input type="password" placeholder="••••">
+            </div>
+            <button class="btn-gold" onclick="nav('dashboard')">SECURE LOGIN</button>
+            <p style="text-align: center; margin-top: 20px; font-size: 0.9rem; color: #999;">New user? <span style="color: var(--gold); font-weight: bold;">Register Now</span></p>
         </div>
     </section>
 
     <!-- DASHBOARD SECTION -->
-    <section id="dashboard" class="section">
+    <section id="dashboard" class="page">
         <div class="dash-header">
-            <p style="opacity: 0.8; font-size: 0.9rem;">Total Gold Earnings</p>
-            <h1 id="live-balance" style="font-size: 2.8rem; margin: 10px 0;">₨ 1250.0000</h1>
-            <div class="mining-badge">Mining Active ⚡</div>
+            <p style="font-size: 0.9rem; opacity: 0.8;">Current Mining Balance</p>
+            <h1 id="main-bal">₨ 1250.0000</h1>
+            <div class="mining-status">Node Status: Active ⚡</div>
         </div>
 
         <div class="stats-grid">
-            <div class="card" style="padding: 15px;">
-                <p style="font-size: 0.7rem; color: #888;">Daily Profit</p>
-                <h3 style="color: var(--success);">₨ 45.00</h3>
+            <div class="stat-card">
+                <p style="font-size: 0.7rem; color: #999;">Daily Profit</p>
+                <h3 style="color: var(--success);">₨ 145.00</h3>
             </div>
-            <div class="card" style="padding: 15px;">
-                <p style="font-size: 0.7rem; color: #888;">Team Bonus</p>
-                <h3 style="color: var(--gold);">₨ 12.50</h3>
+            <div class="stat-card">
+                <p style="font-size: 0.7rem; color: #999;">Team Bonus</p>
+                <h3 style="color: var(--gold);">₨ 62.10</h3>
             </div>
         </div>
 
-        <div style="padding: 0 20px;">
+        <div style="padding: 0 20px 100px 20px;">
             <!-- Spin Wheel Card -->
             <div class="card">
                 <h3>🎡 Lucky Spin</h3>
-                <p style="font-size: 0.75rem; color: #777; margin-bottom: 15px;">Try your luck for extra gold</p>
-                <button class="btn-gold" onclick="luckySpin()">SPIN NOW</button>
+                <p style="font-size: 0.75rem; color: #777; margin-bottom: 15px;">Win daily premium gold rewards</p>
+                <button class="btn-gold" onclick="spinWin()">SPIN FOR FREE</button>
             </div>
 
             <!-- Referral Card -->
             <div class="card">
-                <h3>👥 Referral Link</h3>
-                <input type="text" value="https://pakgold.com/ref/user786" readonly style="background: #f8f8f8; text-align: center; border: none; font-size: 0.8rem; color: #555;">
-                <button onclick="alert('Link Copied, Sweetie!')" style="background: none; border: none; color: var(--gold); font-weight: bold; cursor: pointer; font-size: 0.9rem;">Copy Link</button>
+                <h3>👥 Referral Program</h3>
+                <p style="font-size: 0.75rem; color: #777;">Earn 10% instant commission</p>
+                <div class="ref-box" id="refLink">https://pakgold.com/ref/user786</div>
+                <button onclick="copyRef()" style="background: none; border: none; color: var(--gold); font-weight: bold; margin-top: 10px; cursor: pointer;">COPY LINK</button>
             </div>
 
-            <!-- Policy Card -->
-            <div class="card" style="background: #fff9e6; border: 1px dashed var(--gold);">
-                <h4 style="color: var(--gold-dark);">📌 Official Rules</h4>
-                <ul style="font-size: 0.7rem; color: #888; text-align: left; padding-left: 15px; margin-top: 10px;">
-                    <li>Withdrawals are processed 10 AM - 6 PM daily.</li>
-                    <li>Referral commission is credited instantly.</li>
-                    <li>Multiple accounts will result in a permanent ban.</li>
-                </ul>
+            <!-- Policy & Rules Card -->
+            <div class="card">
+                <h3 style="text-align: left; font-size: 1rem; margin-bottom: 10px;">📜 Terms & Conditions</h3>
+                <div class="policy-box">
+                    • Withdrawals: 10 AM to 6 PM Daily.<br>
+                    • Minimum Withdrawal: ₨ 500.<br>
+                    • Service Fee: 5% on each transaction.<br>
+                    • SSL Encryption: All data is 100% secured.
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- UI ELEMENTS -->
-    <div id="notif-box"></div>
+    <!-- GLOBAL WIDGETS -->
+    <div id="notif-area"></div>
 
-    <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3" class="whatsapp-btn" target="_blank">
+    <a href="https://chat.whatsapp.com/EbfTbr66JQLFEmjnxrReE3" class="wa-btn" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="25">
-        Join Official Group
+        Official Group
     </a>
 
-    <!-- LOGIC SCRIPTS -->
+    <!-- SYSTEM LOGIC -->
     <script>
-        let myBalance = 1250.0000;
+        let currentBalance = 1250.0000;
 
-        function goTo(id) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
+        // Navigation Function
+        function nav(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
             window.scrollTo(0,0);
         }
 
-        function initializeSite() {
-            // 1. Live Mining Animation
+        function startSystem() {
+            // 1. Live Mining Counter
             setInterval(() => {
-                myBalance += 0.0011;
-                const balEl = document.getElementById('live-balance');
-                if(balEl) balEl.innerText = "₨ " + myBalance.toFixed(4);
+                currentBalance += 0.0012;
+                const balDisplay = document.getElementById('main-bal');
+                if(balDisplay) balDisplay.innerText = "₨ " + currentBalance.toFixed(4);
             }, 1000);
 
-            // 2. Fake Payout Popups
-            const users = ["Ali_Pro", "Sana_786", "Hammad_Win", "Zain_Gold", "Mehak_Mining", "Khurram_88"];
+            // 2. Fake Proof Notifications
+            const users = ["Asad_Z", "Sana_Official", "Hamza_Gold", "Mehak_786", "King_Miner", "Ali_Pro", "User_992"];
+            const banks = ["Easypaisa", "JazzCash", "Bank Transfer"];
+            
             setInterval(() => {
                 if(document.getElementById('dashboard').classList.contains('active')) {
-                    const u = users[Math.floor(Math.random()*users.length)];
-                    const amt = [450, 1000, 2500, 5000, 200][Math.floor(Math.random()*5)];
-                    const box = document.getElementById('notif-box');
+                    const u = users[Math.floor(Math.random() * users.length)];
+                    const b = banks[Math.floor(Math.random() * banks.length)];
+                    const a = [1200, 5000, 800, 2500, 4000][Math.floor(Math.random() * 5)];
+                    
+                    const area = document.getElementById('notif-area');
                     const pop = document.createElement('div');
-                    pop.className = 'fake-popup';
-                    pop.innerText = `${u}*** just received ₨ ${amt} via Easypaisa! ✅`;
-                    box.appendChild(pop);
+                    pop.className = 'popup';
+                    pop.innerText = `${u}*** just withdrew ₨ ${a} via ${b}! ✅`;
+                    area.appendChild(pop);
+                    
                     setTimeout(() => pop.remove(), 4000);
                 }
-            }, 8000);
+            }, 9000);
         }
 
-        function luckySpin() {
-            alert("Calculating rewards... Sweetie, your balance increased by ₨ 0.50! 🔥");
-            myBalance += 0.50;
+        function spinWin() {
+            alert("Congratulations Sweetie! You won ₨ 1.50 Gold Bonus! 💋");
+            currentBalance += 1.50;
+        }
+
+        function copyRef() {
+            const link = document.getElementById('refLink').innerText;
+            navigator.clipboard.writeText(link);
+            alert("Referral link copied, sweetie! 😘");
         }
     </script>
 </body>
