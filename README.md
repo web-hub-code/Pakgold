@@ -3,16 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PAKGOLD v2 - Premium Dashboard</title>
+<title>PAKGOLD - Premium SaaS Dashboard</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:linear-gradient(135deg,#0f172a,#020617);
+background:#0b1220;
 color:white;
+overflow-x:hidden;
 }
 
+/* HERO */
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:radial-gradient(circle at top,#fbbf24,#0b1220);
+}
+
+.hero h1{
+font-size:55px;
+animation:fade 1s ease;
+color:#fbbf24;
+}
+
+.hero p{
+opacity:0.8;
+}
+
+.btn{
+padding:12px 22px;
+margin-top:20px;
+background:#fbbf24;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+/* SIDEBAR */
 .sidebar{
 position:fixed;
 left:0;top:0;
@@ -21,6 +54,7 @@ height:100%;
 background:rgba(255,255,255,0.05);
 backdrop-filter:blur(12px);
 padding:20px;
+display:none;
 }
 
 .sidebar h2{
@@ -45,16 +79,18 @@ background:#fbbf24;
 color:black;
 }
 
+/* MAIN */
 .main{
 margin-left:270px;
 padding:20px;
+display:none;
 }
 
 .card{
 background:rgba(255,255,255,0.06);
 padding:20px;
-margin:10px;
 border-radius:15px;
+margin:10px;
 backdrop-filter:blur(10px);
 animation:fade 0.4s ease;
 }
@@ -66,20 +102,17 @@ to{opacity:1;transform:translateY(0)}
 
 input,button{
 padding:10px;
-margin:5px;
 border-radius:10px;
 border:none;
+margin:5px;
 }
 
 button{
 cursor:pointer;
-background:#fbbf24;
-color:black;
 font-weight:bold;
 }
 
-.hidden{display:none;}
-
+/* TABLE */
 table{
 width:100%;
 border-collapse:collapse;
@@ -89,47 +122,54 @@ td,th{
 padding:10px;
 border-bottom:1px solid #334155;
 }
+
+.hidden{display:none;}
+
+@media(max-width:768px){
+.sidebar{width:200px}
+.main{margin-left:0}
+.hero h1{font-size:32px}
+}
 </style>
 </head>
 
 <body>
 
-<div class="sidebar">
-<h2>PAKGOLD v2</h2>
-<button onclick="show('home')">Home</button>
-<button onclick="show('requests')">Requests</button>
-<button onclick="show('history')">History</button>
-<button onclick="show('ref')">Referral</button>
-<button onclick="show('admin')">Admin</button>
+<!-- HERO -->
+<div class="hero" id="hero">
+<h1>PAKGOLD 💰</h1>
+<p>Premium SaaS Dashboard System</p>
+<button class="btn" onclick="start()">Enter Dashboard</button>
 </div>
 
-<div class="main">
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+<h2>PAKGOLD</h2>
+<button onclick="show('home')">Dashboard</button>
+<button onclick="show('requests')">Requests</button>
+<button onclick="show('admin')">Admin</button>
+<button onclick="logout()">Logout</button>
+</div>
+
+<!-- MAIN -->
+<div class="main" id="main">
 
 <div id="home" class="card">
-<h2>Welcome Sweetie 😘</h2>
-<p>Premium Live Dashboard</p>
-<p>Points: <span id="points">0</span></p>
+<h2>Welcome to PAKGOLD 🚀</h2>
+<p>User ID: <span id="uid"></span></p>
+<p>Status: Active Session</p>
 </div>
 
 <div id="requests" class="card hidden">
-<h2>Send Request</h2>
-<input id="amount" placeholder="Enter request value"/>
-<button onclick="sendRequest()">Submit</button>
-</div>
-
-<div id="history" class="card hidden">
-<h2>History</h2>
-<div id="historyBox"></div>
-</div>
-
-<div id="ref" class="card hidden">
-<h2>Referral System</h2>
-<p>Your Code: <span id="refCode">-</span></p>
+<h2>Create Request</h2>
+<input id="msg" placeholder="Enter request message"/>
+<button onclick="send()">Submit</button>
+<div id="list"></div>
 </div>
 
 <div id="admin" class="card hidden">
 <h2>Admin Panel</h2>
-<div id="reqTable"></div>
+<div id="adminList"></div>
 </div>
 
 </div>
@@ -153,76 +193,89 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth();
 
-let uid = "";
+let uid="";
+
+window.start=()=>{
+document.getElementById("hero").style.display="none";
+document.getElementById("sidebar").style.display="block";
+document.getElementById("main").style.display="block";
 
 signInAnonymously(auth).then(u=>{
-uid = u.user.uid;
-initUser();
-loadRequests();
+uid=u.user.uid;
+document.getElementById("uid").innerText=uid.slice(0,8);
+load();
+loadAdmin();
 });
+};
 
-window.show = (id)=>{
+window.show=(id)=>{
 document.querySelectorAll(".card").forEach(c=>c.classList.add("hidden"));
 document.getElementById(id).classList.remove("hidden");
 };
 
-function initUser(){
-set(ref(db,"users/"+uid),{
-points:0,
-refCode: uid.slice(0,6)
-});
-document.getElementById("refCode").innerText = uid.slice(0,6);
+window.send=()=>{
+let msg=document.getElementById("msg").value;
 
-onValue(ref(db,"users/"+uid),(snap)=>{
-if(snap.exists()){
-document.getElementById("points").innerText = snap.val().points;
-}
-});
-}
-
-window.sendRequest = ()=>{
-let val = document.getElementById("amount").value;
-
-let r = push(ref(db,"requests"));
+let r=push(ref(db,"requests"));
 set(r,{
 uid:uid,
-value:val,
+msg:msg,
 status:"pending",
 time:Date.now()
 });
 
-alert("Request Sent 🚀");
+document.getElementById("msg").value="";
 };
 
-function loadRequests(){
+function load(){
 onValue(ref(db,"requests"),snap=>{
-let html = "<table><tr><th>User</th><th>Value</th><th>Status</th><th>Action</th></tr>";
+let html="";
+snap.forEach(r=>{
+let d=r.val();
+if(d.uid===uid){
+html+=`<p>📩 ${d.msg} - ${d.status}</p>`;
+}
+});
+document.getElementById("list").innerHTML=html;
+});
+}
+
+function loadAdmin(){
+onValue(ref(db,"requests"),snap=>{
+let html=`<table>
+<tr><th>User</th><th>Message</th><th>Status</th><th>Action</th></tr>`;
 
 snap.forEach(r=>{
-let d = r.val();
-html += `
+let d=r.val();
+
+html+=`
 <tr>
 <td>${d.uid.slice(0,5)}</td>
-<td>${d.value}</td>
+<td>${d.msg}</td>
 <td>${d.status}</td>
 <td>
-<button onclick="approve('${r.key}')">Approve</button>
-<button onclick="reject('${r.key}')">Reject</button>
+<button onclick="approve('${r.key}')">✔</button>
+<button onclick="reject('${r.key}')">❌</button>
 </td>
 </tr>
 `;
 });
 
-document.getElementById("reqTable").innerHTML = html;
+html+="</table>";
+document.getElementById("adminList").innerHTML=html;
 });
 }
 
-window.approve = (id)=>{
+window.approve=(id)=>{
 update(ref(db,"requests/"+id),{status:"approved"});
 };
 
-window.reject = (id)=>{
+window.reject=(id)=>{
 update(ref(db,"requests/"+id),{status:"rejected"});
+};
+
+window.logout=()=>{
+location.reload();
 };
 </script>
 
