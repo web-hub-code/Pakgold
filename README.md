@@ -3,196 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PAK GOLD | Neon Flux Premium</title>
+    <title>PAK GOLD | Enterprise Edition</title>
     
-    <!-- Scripts & Fonts -->
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
-        :root { --neon-gold: #ffcc00; --soft-bg: #ffffff; --glass: rgba(255, 255, 255, 0.7); --text: #1a1a1a; --shadow: rgba(255, 204, 0, 0.3); }
-        
+        :root { --neon: #ffcc00; --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --sub: #64748b; }
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--soft-bg); color: var(--text); overflow-x: hidden; }
+        body { background: var(--bg); color: var(--text); overflow-x: hidden; }
 
-        /* --- PREMIUM ANIMATIONS --- */
-        .page { display:none; animation: fluxIn 0.6s cubic-bezier(0.23, 1, 0.32, 1); padding-bottom: 120px; }
+        /* Animations */
+        .page { display:none; animation: fadeIn 0.4s ease-out; padding-bottom: 100px; min-height: 100vh; }
         .page.active { display:block; }
-        @keyframes fluxIn { from { opacity:0; transform: scale(0.95); filter: blur(10px); } to { opacity:1; transform: scale(1); filter: blur(0); } }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
-        /* --- NEON UTILITIES --- */
-        .neon-glow { box-shadow: 0 10px 30px var(--shadow); border: 1px solid var(--neon-gold); }
-        .ripple { position: relative; overflow: hidden; }
+        /* Premium UI Components */
+        .glass-card { background: var(--card); margin: 15px; padding: 25px; border-radius: 30px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.02); }
+        .neon-btn { background: var(--text); color: white; border: none; padding: 15px; border-radius: 18px; font-weight: 800; cursor: pointer; transition: 0.3s; width: 100%; }
+        .neon-btn:active { background: var(--neon); color: black; transform: scale(0.98); }
+        
+        .input-grp { margin-bottom: 15px; }
+        .input-grp input { width: 100%; padding: 18px; border-radius: 18px; border: 2px solid #f1f5f9; background: #f8fafc; font-size: 1rem; outline: none; }
+        .input-grp input:focus { border-color: var(--neon); }
 
-        /* --- MASTER HEADER --- */
-        .premium-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; background: var(--glass); backdrop-filter: blur(15px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .logo-text { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; }
+        /* Navigation */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px); display: flex; justify-content: space-around; padding: 15px 0 30px; border-top: 1px solid #f1f5f9; z-index: 999; }
+        .nav-item { color: var(--sub); text-align: center; font-size: 0.6rem; font-weight: 700; }
+        .nav-item.active { color: var(--neon); }
+        .nav-item i { font-size: 1.4rem; display: block; margin-bottom: 4px; }
 
-        /* --- NEON ASSET CARD --- */
-        .neon-card { background: white; margin: 20px; padding: 35px; border-radius: 40px; position: relative; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 30px 60px rgba(0,0,0,0.05); overflow: hidden; }
-        .neon-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, transparent, var(--neon-gold), transparent); animation: moveLine 3s infinite; }
-        @keyframes moveLine { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-
-        .balance-title { color: #94a3b8; font-size: 0.7rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-        .balance-main { font-size: 3.5rem; font-weight: 800; margin: 10px 0; color: var(--text); }
-
-        /* --- CLICKABLE ACTION TILES --- */
-        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0 20px; }
-        .tile { background: white; padding: 22px 10px; border-radius: 25px; text-align: center; border: 1px solid #f1f5f9; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(0,0,0,0.02); }
-        .tile:active { transform: scale(0.9); background: #fffdf2; border-color: var(--neon-gold); }
-        .tile i { font-size: 1.6rem; color: var(--neon-gold); margin-bottom: 8px; display: block; filter: drop-shadow(0 0 5px var(--shadow)); }
-        .tile span { font-size: 0.65rem; font-weight: 800; color: #64748b; }
-
-        /* --- PREMIUM NODE BOX --- */
-        .node-box { background: white; margin: 15px 20px; padding: 25px; border-radius: 30px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #f1f5f9; position: relative; transition: 0.3s; }
-        .node-box:hover { border-color: var(--neon-gold); box-shadow: 0 15px 30px var(--shadow); }
-        .node-status { position: absolute; top: 15px; left: 25px; font-size: 0.55rem; font-weight: 900; color: #10b981; display: flex; align-items: center; gap: 5px; }
-        .pulse-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
-
-        .btn-neon { background: var(--text); color: white; border: none; padding: 14px 25px; border-radius: 18px; font-weight: 800; font-size: 0.75rem; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .btn-neon:active { background: var(--neon-gold); color: black; }
-
-        /* --- FLOATING MODERN NAV --- */
-        .neon-nav { position: fixed; bottom: 25px; left: 20px; right: 20px; background: rgba(255,255,255,0.85); backdrop-filter: blur(25px); height: 75px; border-radius: 30px; display: flex; justify-content: space-around; align-items: center; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 20px 40px rgba(0,0,0,0.1); z-index: 2000; }
-        .nav-item { text-align: center; color: #94a3b8; font-size: 0.65rem; font-weight: 800; transition: 0.3s; }
-        .nav-item.active { color: var(--neon-gold); transform: translateY(-5px); }
-        .nav-item i { font-size: 1.6rem; display: block; margin-bottom: 2px; }
-
-        /* --- LOGIN NEON --- */
-        #login-scr { background: white; padding: 80px 40px; text-align: center; min-height: 100vh; }
-        .neon-input { width: 100%; padding: 22px; background: #f8fafc; border: 2px solid #f1f5f9; border-radius: 20px; margin-bottom: 15px; font-size: 1.1rem; font-weight: 600; transition: 0.3s; }
-        .neon-input:focus { border-color: var(--neon-gold); outline: none; background: white; box-shadow: 0 0 20px var(--shadow); }
-        .btn-auth { width: 100%; background: var(--neon-gold); color: black; padding: 22px; border: none; border-radius: 20px; font-weight: 900; font-size: 1.2rem; box-shadow: 0 15px 30px var(--shadow); }
+        /* Specifics */
+        .badge { background: var(--neon); color: black; padding: 4px 10px; border-radius: 8px; font-size: 0.6rem; font-weight: 900; }
+        .history-item { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.8rem; }
     </style>
 </head>
-<body onload="initApp()">
+<body onload="checkSession()">
 
-    <!-- LOGIN -->
-    <section id="login-scr" class="page active">
-        <div style="width:90px; height:90px; background:var(--neon-gold); border-radius:30px; margin:0 auto 30px; display:flex; align-items:center; justify-content:center; box-shadow: 0 20px 40px var(--shadow);">
-            <i class="fa fa-bolt-lightning fa-3x" style="color:black"></i>
-        </div>
-        <h1 style="font-size: 2.8rem; font-weight: 900; letter-spacing: -2px;">NEON <span style="color:var(--neon-gold)">CORE</span></h1>
-        <p style="color:#94a3b8; font-weight:800; font-size:0.75rem; letter-spacing:3px; margin-bottom:50px;">PREMIUM MINING HUB</p>
+    <!-- AUTH PAGE -->
+    <section id="auth-page" class="page active" style="padding: 50px 30px;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">PAK <span style="color:var(--neon)">GOLD</span></h1>
+        <p id="auth-sub" style="color:var(--sub); margin-bottom: 40px;">Sign in to continue mining.</p>
         
-        <input type="number" id="ph" class="neon-input" placeholder="03XXXXXXXXX">
-        <input type="password" id="pass" class="neon-input" placeholder="Secret Access">
-        <button onclick="handleAuth()" class="btn-auth">START ENGINE</button>
+        <div class="input-grp"><input type="number" id="auth-phone" placeholder="Phone Number"></div>
+        <div class="input-grp"><input type="password" id="auth-pass" placeholder="Password"></div>
+        <div id="signup-fields" style="display:none;">
+            <div class="input-grp"><input type="text" id="auth-ref" placeholder="Referral Code (Optional)"></div>
+        </div>
+        
+        <button class="neon-btn" id="main-auth-btn" onclick="handleAuth()">LOGIN NOW</button>
+        <p onclick="toggleAuth()" style="text-align:center; margin-top:20px; font-weight:700; font-size:0.8rem; color:var(--sub);" id="toggle-txt">Don't have an account? Signup</p>
     </section>
 
-    <!-- HUB (HOME) -->
-    <section id="hub-scr" class="page">
-        <div class="premium-header">
-            <div class="logo-text">PG <span style="color:var(--neon-gold)">ULTRA</span></div>
-            <div id="u_id" style="font-size:0.6rem; background:black; color:white; padding:8px 15px; border-radius:50px; font-weight:800;">ID: 03XX...</div>
+    <!-- DASHBOARD -->
+    <section id="dash-page" class="page">
+        <div style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <b>CORE <span style="color:var(--neon)">V2</span></b>
+            <div class="badge" onclick="nav('profile-page')">PRO USER</div>
         </div>
 
-        <div class="neon-card">
-            <div class="balance-title">Liquid Capital</div>
-            <div class="balance-main">Rs <span id="u_wallet">0.00</span></div>
-            <div style="display:flex; justify-content:space-between; margin-top:20px; padding-top:20px; border-top:1px solid #f1f5f9;">
-                <div><small style="color:#94a3b8; font-size:0.6rem; font-weight:800;">LIVE YIELD</small><br><b id="u_profit" style="color:#10b981;">+0.00</b></div>
-                <div><small style="color:#94a3b8; font-size:0.6rem; font-weight:800;">HASH SPEED</small><br><b id="u_speed" style="color:var(--neon-gold)">0.00000</b></div>
+        <div class="glass-card" style="background: var(--text); color: white;">
+            <small style="opacity: 0.6; font-weight: 700;">TOTAL ASSETS</small>
+            <h1 style="font-size: 3rem; margin: 10px 0;">Rs <span id="u-wallet">0</span></h1>
+            <div style="display: flex; gap: 20px; margin-top: 15px;">
+                <div><small style="opacity: 0.6;">Profit</small><br><b style="color:var(--neon)" id="u-profit">0.00</b></div>
+                <div><small style="opacity: 0.6;">Team</small><br><b id="u-team-count">0</b></div>
             </div>
         </div>
 
-        <div class="action-grid">
-            <div class="tile ripple" onclick="nav('deposit')"><i class="fa fa-plus-square"></i><span>Add</span></div>
-            <div class="tile ripple" onclick="nav('withdraw')"><i class="fa fa-arrow-right-from-bracket"></i><span>Out</span></div>
-            <div class="tile ripple" onclick="nav('team')"><i class="fa fa-users-viewfinder"></i><span>Network</span></div>
-            <div class="tile ripple" onclick="alert('Premium AI Support is ready.')"><i class="fa fa-microchip"></i><span>AI</span></div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 15px;">
+            <div class="glass-card" onclick="nav('depo-page')" style="padding: 15px; text-align: center; margin: 0;"><i class="fa fa-plus-circle" style="color:var(--neon)"></i><br><span style="font-size:0.6rem; font-weight:700;">Deposit</span></div>
+            <div class="glass-card" onclick="nav('with-page')" style="padding: 15px; text-align: center; margin: 0;"><i class="fa fa-wallet"></i><br><span style="font-size:0.6rem; font-weight:700;">Withdraw</span></div>
+            <div class="glass-card" onclick="nav('promo-page')" style="padding: 15px; text-align: center; margin: 0;"><i class="fa fa-ticket"></i><br><span style="font-size:0.6rem; font-weight:700;">Promo</span></div>
+            <div class="glass-card" onclick="nav('team-page')" style="padding: 15px; text-align: center; margin: 0;"><i class="fa fa-users"></i><br><span style="font-size:0.6rem; font-weight:700;">Team</span></div>
         </div>
 
-        <div style="padding: 35px 25px 10px; font-weight: 900; font-size: 1.3rem; letter-spacing: -1px;">Premium Flux Nodes</div>
-        <div id="nodes_list"></div>
+        <h3 style="padding: 25px 20px 10px;">Active Mining Nodes</h3>
+        <div id="nodes-list"></div>
     </section>
 
-    <!-- NAVIGATION -->
-    <nav class="neon-nav" id="bot-nav" style="display:none;">
-        <div class="nav-item active" onclick="nav('hub-scr')"><i class="fa fa-house-chimney-window"></i>Hub</div>
-        <div class="nav-item" onclick="nav('team')"><i class="fa fa-diagram-project"></i>Team</div>
-        <div class="nav-item" onclick="nav('withdraw')"><i class="fa fa-vault"></i>Vault</div>
-        <div class="nav-item" onclick="checkAdmin()"><i class="fa fa-fingerprint"></i>Secure</div>
+    <!-- ADMIN PANEL -->
+    <section id="admin-page" class="page">
+        <h2 style="padding: 20px;">Master Administration</h2>
+        <div class="glass-card">
+            <h4>System Control</h4>
+            <p style="font-size:0.7rem; color:var(--sub);">Update user balances manually.</p>
+            <div class="input-grp" style="margin-top:15px;"><input type="number" id="adm-target" placeholder="User Phone"></div>
+            <div class="input-grp"><input type="number" id="adm-amount" placeholder="Amount to Add"></div>
+            <button class="neon-btn" onclick="adminAddFund()">INJECT FUNDS</button>
+        </div>
+        <div id="all-users-list" style="padding: 20px;"></div>
+    </section>
+
+    <!-- PROMO CODE PAGE -->
+    <section id="promo-page" class="page">
+        <h2 style="padding: 20px;">Redeem Code</h2>
+        <div class="glass-card">
+            <input type="text" id="promo-input" class="input-box" placeholder="Enter Code (e.g. PAK2026)" style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd; margin-bottom:15px;">
+            <button class="neon-btn" onclick="applyPromo()">REDEEM</button>
+        </div>
+    </section>
+
+    <!-- TEAM PAGE -->
+    <section id="team-page" class="page">
+        <h2 style="padding: 20px;">My Network</h2>
+        <div class="glass-card">
+            <small>Your Referral ID</small>
+            <h3 id="u-my-ref">----</h3>
+        </div>
+        <div id="team-list" style="padding: 20px;"></div>
+    </section>
+
+    <!-- COMPANY DETAILS & FAQ -->
+    <section id="info-page" class="page">
+        <h2 style="padding: 20px;">Company & Policy</h2>
+        <div class="glass-card">
+            <h4>About PAK GOLD</h4>
+            <p style="font-size:0.8rem; color:var(--sub);">We are a verified mining consortium based in Karachi, operating since 2024 with a focus on neural-link gold mining technology.</p>
+        </div>
+        <div class="glass-card">
+            <h4>Privacy Policy</h4>
+            <p style="font-size:0.8rem; color:var(--sub);">Your data is encrypted via 256-bit SSL protocol. We never share your contact details with third parties.</p>
+        </div>
+        <div class="glass-card">
+            <h4>FAQ</h4>
+            <details style="font-size:0.8rem; padding:10px 0;">
+                <summary>Minimum Withdrawal?</summary>
+                <p>Minimum withdrawal is Rs 500 via EasyPaisa/JazzCash.</p>
+            </details>
+        </div>
+    </section>
+
+    <!-- NAV BAR -->
+    <nav class="nav-bar" id="bottom-nav" style="display:none;">
+        <div class="nav-item active" onclick="nav('dash-page')"><i class="fa fa-house"></i>Home</div>
+        <div class="nav-item" onclick="nav('team-page')"><i class="fa fa-users-viewfinder"></i>Team</div>
+        <div class="nav-item" onclick="nav('info-page')"><i class="fa fa-file-contract"></i>Info</div>
+        <div class="nav-item" onclick="nav('dash-page')"><i class="fa fa-user"></i>Me</div>
     </nav>
 
     <script>
+        // FIREBASE SETUP
         const fbConfig = { apiKey: "AIzaSyCMG6KG_oD8cjEk4YpbxXik-C5q8K5MDHk", databaseURL: "https://dark-web-9-default-rtdb.firebaseio.com" };
         firebase.initializeApp(fbConfig); const db = firebase.database();
-        let user = localStorage.getItem('pg_neon_v11');
 
-        function initApp() {
-            if(user) { nav('hub-scr'); syncHub(); document.getElementById('u_id').innerText = "ID: " + user.substring(0,5)+"..."; }
-            loadPremiumNodes();
+        let currentUser = localStorage.getItem('pg_user');
+        let isSignup = false;
+
+        function checkSession() {
+            if(currentUser) { 
+                if(currentUser === "78692") nav('admin-page');
+                else { nav('dash-page'); syncUserData(); }
+                document.getElementById('bottom-nav').style.display = 'flex';
+            }
+            loadNodes();
+        }
+
+        function toggleAuth() {
+            isSignup = !isSignup;
+            document.getElementById('signup-fields').style.display = isSignup ? 'block' : 'none';
+            document.getElementById('main-auth-btn').innerText = isSignup ? 'CREATE ACCOUNT' : 'LOGIN NOW';
+            document.getElementById('auth-sub').innerText = isSignup ? 'Join the gold revolution.' : 'Sign in to continue mining.';
+            document.getElementById('toggle-txt').innerText = isSignup ? 'Already have an account? Login' : "Don't have an account? Signup";
         }
 
         function handleAuth() {
-            let p = document.getElementById('ph').value;
-            let s = document.getElementById('pass').value;
-            if(p.length < 10) return;
-            user = p; localStorage.setItem('pg_neon_v11', p);
-            db.ref('users/'+p).once('value', snap => {
-                if(!snap.exists()) db.ref('users/'+p).set({wallet:0, profit:0, speed:0, pass:s});
+            const ph = document.getElementById('auth-phone').value;
+            const ps = document.getElementById('auth-pass').value;
+            const ref = document.getElementById('auth-ref').value;
+
+            if(ph === "78692" && ps === "admin123") {
+                localStorage.setItem('pg_user', "78692");
+                location.reload(); return;
+            }
+
+            if(ph.length < 10) return alert("Valid phone required");
+
+            db.ref('users/' + ph).once('value', s => {
+                if(isSignup) {
+                    if(s.exists()) return alert("User already exists");
+                    db.ref('users/' + ph).set({
+                        phone: ph, pass: ps, wallet: 0, profit: 0, speed: 0, 
+                        refBy: ref || "none", myRef: "PG" + Math.floor(1000 + Math.random() * 9000)
+                    });
+                    alert("Account Created!");
+                } else {
+                    if(!s.exists() || s.val().pass !== ps) return alert("Wrong details");
+                }
+                localStorage.setItem('pg_user', ph);
                 location.reload();
             });
         }
 
-        function syncHub() {
-            db.ref('users/'+user).on('value', s => {
-                let d = s.val();
-                document.getElementById('u_wallet').innerText = d.wallet.toLocaleString();
-                document.getElementById('u_profit').innerText = d.profit.toFixed(2);
-                document.getElementById('u_speed').innerText = d.speed.toFixed(5);
+        function syncUserData() {
+            db.ref('users/' + currentUser).on('value', s => {
+                const d = s.val();
+                document.getElementById('u-wallet').innerText = d.wallet.toLocaleString();
+                document.getElementById('u-profit').innerText = d.profit.toFixed(2);
+                document.getElementById('u-my-ref').innerText = d.myRef;
             });
+            // Passive Income Engine
             setInterval(() => {
-                db.ref('users/'+user).once('value', s => {
-                    let d = s.val(); if(d.speed > 0) db.ref('users/'+user).update({profit: d.profit + d.speed});
+                db.ref('users/' + currentUser).once('value', s => {
+                    const d = s.val(); if(d.speed > 0) db.ref('users/'+currentUser).update({profit: d.profit + d.speed});
                 });
             }, 1000);
         }
 
-        function loadPremiumNodes() {
+        function loadNodes() {
             const nodes = [
-                {n:'Flux-Core 1', p:500, d:50}, {n:'Flux-Core 2', p:2000, d:240},
-                {n:'Neon VIP', p:10000, d:1500}, {n:'Titanium', p:50000, d:8500}
+                {n:'Starter Node', p:500, d:50}, {n:'Premium Node', p:2000, d:250}, {n:'Ultra Node', p:10000, d:1400}
             ];
-            let list = document.getElementById('nodes_list');
+            let list = document.getElementById('nodes-list');
             nodes.forEach(i => {
-                list.innerHTML += `<div class="node-box">
-                    <div class="node-status"><div class="pulse-dot"></div> LIVE MINING</div>
-                    <div style="margin-top:10px;">
-                        <h4 style="font-weight:800; color:var(--text);">${i.n}</h4>
-                        <small style="color:#94a3b8; font-weight:700;">Price: Rs ${i.p.toLocaleString()}</small>
-                    </div>
-                    <div style="text-align:right;">
-                        <b style="color:#10b981; display:block; margin-bottom:10px;">+Rs ${i.d}/Day</b>
-                        <button class="btn-neon" onclick="buyNode(${i.p}, ${i.d/86400})">CONNECT</button>
-                    </div>
+                list.innerHTML += `<div class="glass-card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><b>${i.n}</b><br><small>Earn Rs ${i.d}/day</small></div>
+                    <button class="neon-btn" style="width:auto; padding:10px 20px;" onclick="buyNode(${i.p}, ${i.d/86400})">Rs ${i.p}</button>
                 </div>`;
             });
         }
 
         function buyNode(p, s) {
-            db.ref('users/'+user).once('value', v => {
-                if(v.val().wallet < p) return alert("Insufficient Neural Funds.");
-                db.ref('users/'+user).update({wallet: v.val().wallet - p, speed: v.val().speed + s});
-                alert("Protocol Established! Check Hub.");
+            db.ref('users/'+currentUser).once('value', v => {
+                if(v.val().wallet < p) return alert("Low balance");
+                db.ref('users/'+currentUser).update({wallet: v.val().wallet - p, speed: v.val().speed + s});
+                alert("Node Started!");
+            });
+        }
+
+        function applyPromo() {
+            const code = document.getElementById('promo-input').value;
+            if(code === "FREE500") {
+                db.ref('users/'+currentUser).once('value', s => {
+                    db.ref('users/'+currentUser).update({wallet: s.val().wallet + 500});
+                    alert("Rs 500 Bonus Added!");
+                });
+            } else { alert("Invalid Code"); }
+        }
+
+        function adminAddFund() {
+            const target = document.getElementById('adm-target').value;
+            const amt = parseInt(document.getElementById('adm-amount').value);
+            db.ref('users/'+target).once('value', s => {
+                if(!s.exists()) return alert("User not found");
+                db.ref('users/'+target).update({wallet: s.val().wallet + amt});
+                alert("Funds Injected!");
             });
         }
 
         function nav(id) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            document.getElementById('bot-nav').style.display = (id==='login-scr')?'none':'flex';
-            
-            // Animation for nav icons
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            event.currentTarget.classList.add('active');
         }
-
-        function checkAdmin() { let p = prompt("ACCESS KEY:"); if(p==="78692") alert("Admin Auth Success."); }
     </script>
 </body>
 </html>
